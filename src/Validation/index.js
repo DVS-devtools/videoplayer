@@ -2,6 +2,7 @@
 const findOne = (haystack, arr) => arr.some(v => haystack.includes(v));
 
 /**
+ * @ignore
  * Validate the existence of a key in an object
  * @example
  * ValidateObj('x', 'y')
@@ -39,6 +40,7 @@ export function ValidateObj(...fields) {
 }
 
 /**
+ * @ignore
  * Validate method arguments (check if they are not undefined)
  * @example
  * ValidateArg()
