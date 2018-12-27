@@ -177,3 +177,78 @@ describe('VideoPlayer.removeEventListener', () => {
         expect(() => VideoPlayer.removeEventListener(undefined, 'play', cb)).toThrow();
     });
 });
+
+describe('VideoPlayer Apis', () => {
+    let playerId;
+    beforeEach(() => {
+        VideoPlayer.createPlayer({domNode: '#el', videoId: 123});
+        playerId = 'video_123_1';
+    });
+
+    it('should call Player.play on VideoPlayer.play', () => {
+        VideoPlayer.play(playerId);
+        expect(Player.prototype.play).toHaveBeenCalled();
+    });
+
+    it('should call Player.pause on VideoPlayer.pause', () => {
+        VideoPlayer.pause(playerId);
+        expect(Player.prototype.pause).toHaveBeenCalled();
+    });
+
+    it('should call Player.stop on VideoPlayer.stop', () => {
+        VideoPlayer.stop(playerId);
+        expect(Player.prototype.stop).toHaveBeenCalled();
+    });
+
+    it('should call Player.mute on VideoPlayer.mute', () => {
+        VideoPlayer.mute(playerId);
+        expect(Player.prototype.mute).toHaveBeenCalled();
+    });
+
+    it('should call Player.unmute on VideoPlayer.unmute', () => {
+        VideoPlayer.unmute(playerId);
+        expect(Player.prototype.unmute).toHaveBeenCalled();
+    });
+
+    it('should call Player.toggleMute on VideoPlayer.toggleMute', () => {
+        VideoPlayer.toggleMute(playerId);
+        expect(Player.prototype.toggleMute).toHaveBeenCalled();
+    });
+
+    it('should call Player.toggleFullscreen on VideoPlayer.toggleFullscreen', () => {
+        VideoPlayer.toggleFullscreen(playerId);
+        expect(Player.prototype.toggleFullscreen).toHaveBeenCalled();
+    });
+
+    it('should call Player.setVolume on VideoPlayer.setVolume', () => {
+        VideoPlayer.setVolume(playerId, 20);
+        expect(Player.prototype.setVolume).toHaveBeenCalledWith(20);
+    });
+
+    it('should call Player.seek on VideoPlayer.seek', () => {
+        VideoPlayer.seek(playerId, 30);
+        expect(Player.prototype.seek).toHaveBeenCalledWith(30);
+    });
+
+    it('should call Player.forward on VideoPlayer.forward', () => {
+        VideoPlayer.defaults.forward = 10;
+        VideoPlayer.forward(playerId);
+        expect(Player.prototype.forward).toHaveBeenCalledWith(10);
+    });
+
+    it('should call Player.forward on VideoPlayer.forward with custom forward time', () => {
+        VideoPlayer.forward(playerId, 30);
+        expect(Player.prototype.forward).toHaveBeenCalledWith(30);
+    });
+
+    it('should call Player.rewind on VideoPlayer.rewind', () => {
+        VideoPlayer.defaults.rewind = 10;
+        VideoPlayer.rewind(playerId);
+        expect(Player.prototype.rewind).toHaveBeenCalledWith(10);
+    });
+
+    it('should call Player.rewind on VideoPlayer.rewind with custom rewind time', () => {
+        VideoPlayer.rewind(playerId, 30);
+        expect(Player.prototype.rewind).toHaveBeenCalledWith(30);
+    });
+});

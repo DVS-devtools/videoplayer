@@ -7,6 +7,9 @@ import { ValidateArg, ValidateObj } from '../Validation';
 class VideoPlayer {
     defaults = {
         idPrefix: 'video_',
+        provider: null,
+        forward: 15,
+        rewind: 15,
     };
 
     /**
@@ -230,12 +233,20 @@ class VideoPlayer {
     /**
      * Send seek command to the Player
      * @param playerId
-     * @param second
+     * @param seconds
      * @return {*}
      */
     @ValidateArg()
-    seek(playerId, second) {
-        return this.getPlayer(playerId).seek(second);
+    seek(playerId, seconds) {
+        return this.getPlayer(playerId).seek(seconds);
+    }
+
+    forward(playerId, seconds) {
+        return this.getPlayer(playerId).forward(seconds || this.defaults.forward);
+    }
+
+    rewind(playerId, seconds) {
+        return this.getPlayer(playerId).rewind(seconds || this.defaults.rewind);
     }
 }
 
