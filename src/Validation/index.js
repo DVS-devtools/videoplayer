@@ -2,6 +2,7 @@
 const findOne = (haystack, arr) => arr.some(v => haystack.includes(v));
 
 /**
+ * @ignore
  * Validate the existence of a key in an object
  * @example
  * ValidateObj('x', 'y')
@@ -39,6 +40,7 @@ export function ValidateObj(...fields) {
 }
 
 /**
+ * @ignore
  * Validate method arguments (check if they are not undefined)
  * @example
  * ValidateArg()
@@ -49,13 +51,16 @@ export function ValidateObj(...fields) {
  * @return {function(*, *=, *): *}
  * @constructor
  */
-export function ValidateArg() {
+export function ValidateArg() { // TODO
     return function (target, key, descriptor) {
         const fn = descriptor.value;
         descriptor.value = function (...args) {
+            if (args.length === 0) {
+                throw new Error(`Argument is required for method "${key}"`);
+            }
             args.forEach((arg) => {
                 if (typeof arg === 'undefined') { // TODO check
-                    throw new Error(`Argument "${arg}" is required for method "${key}"`);
+                    throw new Error(`Argument is required for method "${key}"`);
                 }
             });
             return fn.call(this, ...args);
