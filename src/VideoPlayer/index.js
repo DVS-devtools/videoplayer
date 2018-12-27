@@ -49,7 +49,7 @@ class VideoPlayer {
      * });
      * @return {Player}
      */
-    @ValidateObj('videoId|url', 'domNode')
+    @ValidateObj({ domNode: 'string', videoId: 'string|number' }, 0, { videoId: 'url' })
     createPlayer(playerInitOptions) {
         // Get the requested provider
         const provider = playerInitOptions.provider || this.defaults.provider;
@@ -83,7 +83,7 @@ class VideoPlayer {
      * VideoPlayer.getPlayer('video_sdHg79_1');
      * @return {Player}
      */
-    @ValidateArg(['string'])
+    @ValidateArg('string')
     getPlayer(playerId) {
         if (!Object.keys(this.playerInstances).includes(playerId)) {
             throw new Error(`Player with id ${playerId} not found`);
@@ -225,7 +225,8 @@ class VideoPlayer {
      * @param volume
      * @return {*}
      */
-    @ValidateArg(['string', 'number'])
+    @ValidateArg('string')
+    @ValidateArg('number', 1)
     setVolume(playerId, volume) {
         return this.getPlayer(playerId).setVolume(volume);
     }
@@ -236,7 +237,8 @@ class VideoPlayer {
      * @param seconds
      * @return {*}
      */
-    @ValidateArg(['string', 'number'])
+    @ValidateArg('string')
+    @ValidateArg('number', 1)
     seek(playerId, seconds) {
         return this.getPlayer(playerId).seek(seconds);
     }
@@ -247,7 +249,8 @@ class VideoPlayer {
      * @param seconds
      * @return {*|void}
      */
-    @ValidateArg(['string', 'number'])
+    @ValidateArg('string')
+    @ValidateArg('number', 1)
     forward(playerId, seconds) {
         return this.getPlayer(playerId).forward(seconds || this.defaults.forward);
     }
@@ -258,7 +261,8 @@ class VideoPlayer {
      * @param seconds
      * @return {*}
      */
-    @ValidateArg(['string', 'number'])
+    @ValidateArg('string')
+    @ValidateArg('number', 1)
     rewind(playerId, seconds) {
         return this.getPlayer(playerId).rewind(seconds || this.defaults.rewind);
     }

@@ -1,5 +1,5 @@
-/* eslint-disable func-names */
-const findOne = (haystack, arr) => arr.some(v => haystack.includes(v));
+/* eslint-disable func-names,valid-typeof,no-prototype-builtins */
+const oneOfType = (value, typesArray) => typesArray.some(type => typeof value === type);
 
 /**
  * @ignore
@@ -21,16 +21,26 @@ const findOne = (haystack, arr) => arr.some(v => haystack.includes(v));
  * @return {function(*, *=, *): *}
  * @constructor
  */
-export function ValidateObj(...fields) {
+export function ValidateObj(schema, position = 0) {
+    const keys = Object.keys(schema);
     return function (target, key, descriptor) {
         const fn = descriptor.value;
-        descriptor.value = function (obj) {
-            const keys = Object.keys(obj);
-            fields.forEach((fieldGroup) => {
-                const splitted = fieldGroup.split('|');
-                if (!findOne(keys, splitted)) {
-                    const msg = splitted.length > 1 ? `Either "${splitted[0]}" or "${splitted[1]}" are required for method "${key}"` : `"${splitted[0]}" is required for method "${key}"`;
-                    throw new Error(msg);
+        descriptor.value = function (...args) {
+            const obj = args[position];
+            if (typeof obj !== 'object') {
+                throw new Error(`Invalid argument passed at index ${position} for method "${key}"
+    Expecting: object
+    Received: ${typeof obj}`);
+            }
+            keys.forEach((k) => {
+                if (!obj.hasOwnProperty(k)) {
+                    throw new Error(`Invalid object passed at index ${position} for method "${key}", field "${k}" is required`);
+                }
+                const types = schema[k].split('|');
+                if (!oneOfType(obj[k], types)) {
+                    throw new Error(`Invalid object passed at index ${position} for method "${key}", field "${k}" does not have the right type
+    Expecting: ${schema[k]}
+    Received: ${typeof obj[k]}`);
                 }
             });
             return fn.call(this, obj);
@@ -53,20 +63,18 @@ export function ValidateObj(...fields) {
  * @return {function(*, *=, *): *}
  * @constructor
  */
-export function ValidateArg(argValidator) {
+export function ValidateArg(type, position = 0) {
     return function (target, key, descriptor) {
         const fn = descriptor.value;
         descriptor.value = function (...args) {
-            if (args.length < argValidator.length) {
-                throw new Error(`Method "${key}" is expecting ${argValidator.length} argument${argValidator.length > 1 ? 's' : ''}, ${args.length} passed`);
+            if (args.length < fn.length) {
+                throw new Error(`Method "${key}" is expecting ${fn.length} argument${fn.length > 1 ? 's' : ''}, ${args.length} passed`);
             }
-            args.forEach((arg, index) => {
-                if (typeof arg !== argValidator[index]) { // eslint-disable-line valid-typeof
-                    throw new Error(`Invalid argument passed at index ${index} for method "${key}"
-    Expecting: ${argValidator[index]}
-    Received: ${typeof arg}`);
-                }
-            });
+            if (typeof args[position] !== type) {
+                throw new Error(`Invalid argument passed at index ${position} for method "${key}"
+    Expecting: ${type}
+    Received: ${typeof args[position]}`);
+            }
             return fn.call(this, ...args);
         };
         return descriptor;
