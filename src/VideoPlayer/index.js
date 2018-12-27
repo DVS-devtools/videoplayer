@@ -49,7 +49,7 @@ class VideoPlayer {
      * });
      * @return {Player}
      */
-    @ValidateObj({ domNode: 'string', videoId: 'string|number' }, 0)
+    @ValidateObj({ domNode: 'string', videoId: 'string|number' })
     createPlayer(playerInitOptions) {
         // Get the requested provider
         const provider = playerInitOptions.provider || this.defaults.provider;
