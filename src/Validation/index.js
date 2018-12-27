@@ -43,7 +43,7 @@ export function ValidateObj(schema, position = 0) {
     Received: ${typeof obj[k]}`);
                 }
             });
-            return fn.call(this, obj);
+            return fn.call(this, ...args);
         };
         return descriptor;
     };
