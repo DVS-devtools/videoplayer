@@ -41,9 +41,6 @@ export default class Player {
      */
 
     on(event, cb) {
-        // this.listeners[event] = this.listeners[event] || [];
-        // this.listeners[event].push(cb);
-        // return cb;
         this.player.on(event, cb);
     }
 
@@ -56,9 +53,6 @@ export default class Player {
      */
     off(event, cb) {
         this.player.off(event, cb);
-
-        // this.listeners[event] = this.listeners[event] || [];
-        // TODO
     }
 
     play() {
@@ -103,5 +97,14 @@ export default class Player {
 
     seek(seconds) {
         this.player.seek(seconds);
+    }
+
+    clear() {
+        this.player.clear();
+        this.player = null;
+    }
+
+    getListeners() {
+        return this.player.getListeners();
     }
 }

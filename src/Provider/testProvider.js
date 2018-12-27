@@ -1,6 +1,8 @@
 export default class TestProvider {
     id = null;
 
+    iframeElement = null;
+
     iframeDoc = null;
 
     iframeContentWindow = null;
@@ -10,6 +12,8 @@ export default class TestProvider {
     isFullScreen = false;
 
     listeners = {};
+
+    parent = null;
 
     /**
      *Creates an instance of TestProvider.
@@ -22,13 +26,28 @@ export default class TestProvider {
 
         this.id = id;
 
-        const iframeElement = document.createElement('iframe');
+        this.iframeElement = document.createElement('iframe');
 
-        iframeElement.id = id;
-        document.body.appendChild(iframeElement);
+        this.iframeElement.id = id;
 
-        this.iframeDoc = iframeElement.contentDocument || iframeElement.contentWindow.document;
-        this.iframeContentWindow = iframeElement.contentWindow;
+        if (typeof options.domNode === 'string') {
+            if (options.domNode.indexOf('#') === 0) {
+                this.parent = document.querySelector(options.domNode);
+                this.parent.appendChild(this.iframeElement);
+            } else {
+                this.parent = document.getElementById(options.domNode);
+                this.parent.appendChild(this.iframeElement);
+            }
+        } else {
+            this.parent = options.domNode;
+            this.parent.appendChild(this.iframeElement);
+        }
+
+
+        this.iframeDoc = this.iframeElement.contentDocument
+                         || this.iframeElement.contentWindow.document;
+
+        this.iframeContentWindow = this.iframeElement.contentWindow;
 
         this.iframeDoc.open();
         this.iframeDoc.write(`
@@ -54,25 +73,29 @@ export default class TestProvider {
             switch (message.command) {
             case 'play':
                 videoBBB.play();
+
                 this.fireEvent('play');
-                console.log('Video player played');
                 break;
             case 'pause':
                 videoBBB.pause();
+
                 this.fireEvent('pause');
-                console.log('Video player paused');
                 break;
             case 'stop':
                 videoBBB.pause();
                 videoBBB.currentTime = 0;
+
                 this.fireEvent('stop');
-                console.log('Video player stopped');
                 break;
             case 'mute':
                 videoBBB.muted = true;
+
+                this.fireEvent('mute');
                 break;
             case 'unmute':
                 videoBBB.muted = false;
+
+                this.fireEvent('unmute');
                 break;
             case 'enterFullScreen':
                 if (videoBBB.requestFullscreen) {
@@ -84,6 +107,8 @@ export default class TestProvider {
                 } else if (videoBBB.msRequestFullscreen) {
                     videoBBB.msRequestFullscreen();
                 }
+
+                this.fireEvent('enterFullScreen');
                 break;
             case 'exitFullScreen':
                 if (this.iframeDoc.mozCancelFullScreen) {
@@ -91,22 +116,49 @@ export default class TestProvider {
                 } else {
                     this.iframeDoc.webkitCancelFullScreen();
                 }
+
+                this.fireEvent('exitFullScreen');
                 break;
             case 'setVolume':
                 videoBBB.volume = message.value;
+
+                this.fireEvent('setVolume');
                 break;
             case 'forward':
                 videoBBB.currentTime += message.value;
+
+                this.fireEvent('forward');
                 break;
             case 'rewind':
                 videoBBB.currentTime -= message.value;
+
+                this.fireEvent('rewind');
                 break;
             case 'seek':
                 videoBBB.currentTime = message.value;
+
+                this.fireEvent('seek');
+                break;
+            case 'destroy':
+                this.parent.removeChild(this.iframeElement);
+
+                this.fireEvent('destroy');
                 break;
             default:
                 console.log('unknown message', receivedMessage.data);
             }
+        });
+
+        this.on('destroy', () => {
+            console.log(`player ${this.id} destroyed`);
+
+            this.id = null;
+            this.iframeDoc = null;
+            this.iframeContentWindow = null;
+            this.isMuted = false;
+            this.isFullScreen = false;
+            this.listeners = {};
+            this.parent = null;
         });
     }
 
@@ -126,6 +178,27 @@ export default class TestProvider {
         this.listeners[event].push(cb);
 
         return cb;
+    }
+
+    off(event, cb) {
+        // TODO;
+        console.log('off', event, cb);
+        if (this.listeners[event] && this.listeners[event].indexOf(cb) > -1) {
+            const index = this.listeners[event].indexOf(cb);
+            this.listeners[event].splice(index, 1);
+        }
+    }
+
+    getListeners(evt) {
+        if (typeof evt === 'string') {
+            if (typeof this.listeners[evt] !== 'undefined') {
+                return this.listeners[evt];
+            }
+
+            return [];
+        }
+
+        return this.listeners;
     }
 
     play() {
@@ -184,5 +257,9 @@ export default class TestProvider {
 
     seek(seconds) {
         this.iframeContentWindow.postMessage(JSON.stringify({ command: 'seek', value: seconds }));
+    }
+
+    clear() {
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'destroy' }));
     }
 }
