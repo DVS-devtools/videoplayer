@@ -51,16 +51,18 @@ export function ValidateObj(...fields) {
  * @return {function(*, *=, *): *}
  * @constructor
  */
-export function ValidateArg() { // TODO
+export function ValidateArg(argValidator) { // TODO
     return function (target, key, descriptor) {
         const fn = descriptor.value;
         descriptor.value = function (...args) {
-            if (args.length === 0) {
-                throw new Error(`Argument is required for method "${key}"`);
+            if (args.length < argValidator.length) {
+                throw new Error(`Method ${key} is expecting ${argValidator.length} argument${argValidator.length > 1 ? 's' : ''}, ${args.length} passed`);
             }
-            args.forEach((arg) => {
-                if (typeof arg === 'undefined') { // TODO check
-                    throw new Error(`Argument is required for method "${key}"`);
+            args.forEach((arg, index) => {
+                if (typeof arg !== argValidator[index]) { // eslint-disable-line valid-typeof
+                    throw new Error(`Invalid argument passed at index ${index} for method ${key}
+    Expecting: ${argValidator[index]}
+    Received: ${typeof arg}`);
                 }
             });
             return fn.call(this, ...args);

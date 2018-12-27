@@ -83,7 +83,7 @@ class VideoPlayer {
      * VideoPlayer.getPlayer('video_sdHg79_1');
      * @return {Player}
      */
-    @ValidateArg()
+    @ValidateArg(['string'])
     getPlayer(playerId) {
         if (!Object.keys(this.playerInstances).includes(playerId)) {
             throw new Error(`Player with id ${playerId} not found`);
@@ -225,7 +225,7 @@ class VideoPlayer {
      * @param volume
      * @return {*}
      */
-    @ValidateArg()
+    @ValidateArg(['string', 'number'])
     setVolume(playerId, volume) {
         return this.getPlayer(playerId).setVolume(volume);
     }
@@ -236,15 +236,29 @@ class VideoPlayer {
      * @param seconds
      * @return {*}
      */
-    @ValidateArg()
+    @ValidateArg(['string', 'number'])
     seek(playerId, seconds) {
         return this.getPlayer(playerId).seek(seconds);
     }
 
+    /**
+     * Send forward command to the Player
+     * @param playerId
+     * @param seconds
+     * @return {*|void}
+     */
+    @ValidateArg(['string', 'number'])
     forward(playerId, seconds) {
         return this.getPlayer(playerId).forward(seconds || this.defaults.forward);
     }
 
+    /**
+     * Send rewind command to the Player
+     * @param playerId
+     * @param seconds
+     * @return {*}
+     */
+    @ValidateArg(['string', 'number'])
     rewind(playerId, seconds) {
         return this.getPlayer(playerId).rewind(seconds || this.defaults.rewind);
     }
