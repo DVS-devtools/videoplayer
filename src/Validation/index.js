@@ -41,26 +41,28 @@ export function ValidateObj(...fields) {
 
 /**
  * @ignore
- * Validate method arguments (check if they are not undefined)
+ * Validate method arguments
  * @example
- * ValidateArg()
+ * ValidateArg(['string', 'boolean'])
  * someMethod(param1, param2) { // Stuff... }
  *
  * someMethod('foo', true) // Ok
- * someMethod('bar') // Throw Error 'Argument "param2" is required for method "someMethod"'
+ * someMethod('bar') // Throw Error 'Method "someMethod" is expecting 2 arguments, 1 passed'
+ * someMethod(123, true) // Throw Error 'Invalid argument passed at index 0 for method "someMethod"
+ * // Expecting: string Received: number'
  * @return {function(*, *=, *): *}
  * @constructor
  */
-export function ValidateArg(argValidator) { // TODO
+export function ValidateArg(argValidator) {
     return function (target, key, descriptor) {
         const fn = descriptor.value;
         descriptor.value = function (...args) {
             if (args.length < argValidator.length) {
-                throw new Error(`Method ${key} is expecting ${argValidator.length} argument${argValidator.length > 1 ? 's' : ''}, ${args.length} passed`);
+                throw new Error(`Method "${key}" is expecting ${argValidator.length} argument${argValidator.length > 1 ? 's' : ''}, ${args.length} passed`);
             }
             args.forEach((arg, index) => {
                 if (typeof arg !== argValidator[index]) { // eslint-disable-line valid-typeof
-                    throw new Error(`Invalid argument passed at index ${index} for method ${key}
+                    throw new Error(`Invalid argument passed at index ${index} for method "${key}"
     Expecting: ${argValidator[index]}
     Received: ${typeof arg}`);
                 }
