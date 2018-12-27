@@ -3,22 +3,22 @@ const oneOfType = (value, typesArray) => typesArray.some(type => typeof value ==
 
 /**
  * @ignore
- * Validate the existence of a key in an object
+ * Validate an Object argument, must match the given schema
+ * @param {Object} schema The schema to match es:
+ * {field: 'string'} (typeof argument.field === 'string')
+ * @param {number} [position] argument position, default 0 (first argument)
  * @example
- * ValidateObj('x', 'y')
+ * ValidateObj({x: 'number', y: 'string'})
  * someMethod(obj) { // Stuff... }
  *
- * someMethod({x: 2, y: 3}) // Ok
- * someMethod({y: 3}) // Throw Error '"x" is required for method "someMethod"'
- * Multiple keys (one of) validation
- * ValidateObj('x|y')
- * someMethod(obj) { // Stuff... }
- *
- * someMethod({x: 2}) // Ok
- * someMethod({y: 3}) // Ok
- * someMethod({z: 4}) // Throw Error 'Either "x" or "y" are required for method "someMethod"'
- * @param fields
- * @return {function(*, *=, *): *}
+ * someMethod({x: 2, y: 'foo'}) // Ok
+ * someMethod({y: 'foo'}) // Throw Error 'Invalid object passed at index 0 for method "someMethod",
+ * // field "x" is required'
+ * someMethod(x: 2, y: true}) // Throw Error Invalid object passed at index 0 for method
+ // "someMethod", field "y" does not have the right type
+ // Expecting: string
+ // Received: boolean
+ * @return {function(*, *, *): *}
  * @constructor
  */
 export function ValidateObj(schema, position = 0) {
@@ -51,16 +51,19 @@ export function ValidateObj(schema, position = 0) {
 
 /**
  * @ignore
- * Validate method arguments
+ * Validate method argument, can be chained for multiple arguments validation
+ * @param {string} type typeof to match
+ * @param {number} [position] argument position, default 0 (first argument)
  * @example
- * ValidateArg(['string', 'boolean'])
+ * ValidateArg('string')
+ * validateArg('boolean', 1)
  * someMethod(param1, param2) { // Stuff... }
  *
  * someMethod('foo', true) // Ok
  * someMethod('bar') // Throw Error 'Method "someMethod" is expecting 2 arguments, 1 passed'
  * someMethod(123, true) // Throw Error 'Invalid argument passed at index 0 for method "someMethod"
  * // Expecting: string Received: number'
- * @return {function(*, *=, *): *}
+ * @return {function(*, *, *): *}
  * @constructor
  */
 export function ValidateArg(type, position = 0) {
