@@ -5,6 +5,8 @@ export default class TestProvider {
 
     iframeContentWindow = null;
 
+    listeners = {};
+
     /**
      *Creates an instance of TestProvider.
      * @param {Object} options
@@ -46,11 +48,19 @@ export default class TestProvider {
             switch (receivedMessage.data) {
             case 'play':
                 videoBBB.play();
+                this.fireEvent('play');
                 console.log('Video player played');
                 break;
             case 'pause':
                 videoBBB.pause();
+                this.fireEvent('pause');
                 console.log('Video player paused');
+                break;
+            case 'stop':
+                videoBBB.pause();
+                videoBBB.currentTime = 0;
+                this.fireEvent('stop');
+                console.log('Video player stopped');
                 break;
             default:
                 console.log('unknown message', receivedMessage.data);
@@ -58,16 +68,33 @@ export default class TestProvider {
         });
     }
 
-    /**
-     * Play the video
-     *
-     * @memberof TestProvider
-     */
+    fireEvent(evt) {
+        if (typeof this.listeners[evt] !== 'undefined') {
+            this.listeners[evt].forEach((callbackFunction) => {
+                callbackFunction();
+            });
+        }
+    }
+
+    on(event, cb) {
+        if (typeof this.listeners[event] === 'undefined') {
+            this.listeners[event] = [];
+        }
+
+        this.listeners[event].push(cb);
+
+        return cb;
+    }
+
     play() {
         this.iframeContentWindow.postMessage('play');
     }
 
     pause() {
         this.iframeContentWindow.postMessage('pause');
+    }
+
+    stop() {
+        this.iframeContentWindow.postMessage('stop');
     }
 }

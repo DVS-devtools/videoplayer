@@ -11,8 +11,6 @@ export default class Player {
 
     player = null;
 
-    listeners = {};
-
     /**
      * Creates an instance of Player.
      * @param {Object} options
@@ -41,10 +39,12 @@ export default class Player {
      * @returns
      * @memberof Player
      */
+
     on(event, cb) {
-        this.listeners[event] = this.listeners[event] || [];
-        this.listeners[event].push(cb);
-        return cb;
+        // this.listeners[event] = this.listeners[event] || [];
+        // this.listeners[event].push(cb);
+        // return cb;
+        this.player.on(event, cb);
     }
 
     /**
@@ -55,7 +55,9 @@ export default class Player {
      * @memberof Player
      */
     off(event, cb) {
-        this.listeners[event] = this.listeners[event] || [];
+        this.player.off(event, cb);
+
+        // this.listeners[event] = this.listeners[event] || [];
         // TODO
     }
 
@@ -65,5 +67,9 @@ export default class Player {
 
     pause() {
         this.player.pause();
+    }
+
+    stop() {
+        this.player.stop();
     }
 }
