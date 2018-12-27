@@ -5,6 +5,10 @@ export default class TestProvider {
 
     iframeContentWindow = null;
 
+    isMuted = false;
+
+    isFullScreen = false;
+
     listeners = {};
 
     /**
@@ -45,7 +49,9 @@ export default class TestProvider {
         this.iframeContentWindow.addEventListener('message', (receivedMessage) => {
             console.log([`iframe: ${id}`, 'received', receivedMessage]);
 
-            switch (receivedMessage.data) {
+            const message = JSON.parse(receivedMessage.data);
+
+            switch (message.command) {
             case 'play':
                 videoBBB.play();
                 this.fireEvent('play');
@@ -61,6 +67,42 @@ export default class TestProvider {
                 videoBBB.currentTime = 0;
                 this.fireEvent('stop');
                 console.log('Video player stopped');
+                break;
+            case 'mute':
+                videoBBB.muted = true;
+                break;
+            case 'unmute':
+                videoBBB.muted = false;
+                break;
+            case 'enterFullScreen':
+                if (videoBBB.requestFullscreen) {
+                    videoBBB.requestFullscreen();
+                } else if (videoBBB.mozRequestFullScreen) {
+                    videoBBB.mozRequestFullScreen();
+                } else if (videoBBB.webkitRequestFullscreen) {
+                    videoBBB.webkitRequestFullscreen();
+                } else if (videoBBB.msRequestFullscreen) {
+                    videoBBB.msRequestFullscreen();
+                }
+                break;
+            case 'exitFullScreen':
+                if (this.iframeDoc.mozCancelFullScreen) {
+                    this.iframeDoc.mozCancelFullScreen();
+                } else {
+                    this.iframeDoc.webkitCancelFullScreen();
+                }
+                break;
+            case 'setVolume':
+                videoBBB.volume = message.value;
+                break;
+            case 'forward':
+                videoBBB.currentTime += message.value;
+                break;
+            case 'rewind':
+                videoBBB.currentTime -= message.value;
+                break;
+            case 'seek':
+                videoBBB.currentTime = message.value;
                 break;
             default:
                 console.log('unknown message', receivedMessage.data);
@@ -87,14 +129,60 @@ export default class TestProvider {
     }
 
     play() {
-        this.iframeContentWindow.postMessage('play');
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'play' }));
     }
 
     pause() {
-        this.iframeContentWindow.postMessage('pause');
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'pause' }));
     }
 
     stop() {
-        this.iframeContentWindow.postMessage('stop');
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'stop' }));
+    }
+
+    mute() {
+        this.isMuted = true;
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'mute' }));
+    }
+
+    unmute() {
+        this.isMuted = false;
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'unmute' }));
+    }
+
+    toggleMute() {
+        if (this.isMuted) {
+            this.isMuted = false;
+            this.unmute();
+        } else {
+            this.isMuted = true;
+            this.mute();
+        }
+    }
+
+    toggleFullScreen() {
+        if (this.isFullScreen) {
+            this.isFullScreen = false;
+            this.iframeContentWindow.postMessage(JSON.stringify({ command: 'exitFullScreen' }));
+        } else {
+            this.isFullScreen = true;
+            this.iframeContentWindow.postMessage(JSON.stringify({ command: 'enterFullScreen' }));
+        }
+    }
+
+    setVolume(volumeLevel) {
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'setVolume', value: volumeLevel }));
+    }
+
+    forward(seconds) {
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'forward', value: seconds }));
+    }
+
+    rewind(seconds) {
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'rewind', value: seconds }));
+    }
+
+    seek(seconds) {
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'seek', value: seconds }));
     }
 }

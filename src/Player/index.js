@@ -72,4 +72,36 @@ export default class Player {
     stop() {
         this.player.stop();
     }
+
+    mute() {
+        this.player.mute();
+    }
+
+    unmute() {
+        this.player.unmute();
+    }
+
+    toggleMute() {
+        this.player.toggleMute();
+    }
+
+    toggleFullScreen() {
+        this.player.toggleFullScreen();
+    }
+
+    setVolume(volumeLevel) {
+        this.player.setVolume(volumeLevel);
+    }
+
+    forward(seconds) {
+        this.player.forward(seconds);
+    }
+
+    rewind(seconds) {
+        this.player.rewind(seconds);
+    }
+
+    seek(seconds) {
+        this.player.seek(seconds);
+    }
 }
