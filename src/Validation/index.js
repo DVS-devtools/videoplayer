@@ -61,7 +61,7 @@ export function ValidateArg(argValidator) {
                 throw new Error(`Method "${key}" is expecting ${argValidator.length} argument${argValidator.length > 1 ? 's' : ''}, ${args.length} passed`);
             }
             args.forEach((arg, index) => {
-                if (typeof arg !== argValidator[index]) { // eslint-disable-line valid-typeof
+                if (typeof argValidator[index] !== 'undefined' && typeof arg !== argValidator[index]) { // eslint-disable-line valid-typeof
                     throw new Error(`Invalid argument passed at index ${index} for method "${key}"
     Expecting: ${argValidator[index]}
     Received: ${typeof arg}`);
