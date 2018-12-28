@@ -215,8 +215,8 @@ class VideoPlayer {
      * @param playerId
      * @return {*|never}
      */
-    toggleFullscreen(playerId) {
-        return this.getPlayer(playerId).toggleFullscreen();
+    toggleFullScreen(playerId) {
+        return this.getPlayer(playerId).toggleFullScreen();
     }
 
     /**
@@ -247,7 +247,7 @@ class VideoPlayer {
      * @param seconds
      * @return {*|void}
      */
-    @ValidateArg(['string', 'number'])
+    @ValidateArg(['string'])
     forward(playerId, seconds) {
         return this.getPlayer(playerId).forward(seconds || this.defaults.forward);
     }
@@ -258,7 +258,7 @@ class VideoPlayer {
      * @param seconds
      * @return {*}
      */
-    @ValidateArg(['string', 'number'])
+    @ValidateArg(['string'])
     rewind(playerId, seconds) {
         return this.getPlayer(playerId).rewind(seconds || this.defaults.rewind);
     }

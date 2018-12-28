@@ -215,9 +215,9 @@ describe('VideoPlayer Apis', () => {
         expect(Player.prototype.toggleMute).toHaveBeenCalled();
     });
 
-    it('should call Player.toggleFullscreen on VideoPlayer.toggleFullscreen', () => {
-        VideoPlayer.toggleFullscreen(playerId);
-        expect(Player.prototype.toggleFullscreen).toHaveBeenCalled();
+    it('should call Player.toggleFullScreen on VideoPlayer.toggleFullScreen', () => {
+        VideoPlayer.toggleFullScreen(playerId);
+        expect(Player.prototype.toggleFullScreen).toHaveBeenCalled();
     });
 
     it('should call Player.setVolume on VideoPlayer.setVolume', () => {
