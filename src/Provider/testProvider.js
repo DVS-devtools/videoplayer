@@ -22,8 +22,6 @@ export default class TestProvider {
      * @memberof TestProvider
      */
     constructor(options, id) {
-        console.log('TestProvider', `Player ${id} initialized with: ${options}`);
-
         this.id = id;
 
         this.iframeElement = document.createElement('iframe');
@@ -50,20 +48,19 @@ export default class TestProvider {
         this.iframeContentWindow = this.iframeElement.contentWindow;
 
         this.iframeDoc.open();
-        this.iframeDoc.write(`
-            <html>
-                <body>
-                <video width="200" controls>
-                <source src="http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_60fps_normal.mp4" type="video/mp4">
-                <source src="http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_60fps_normal.ogg" type="video/ogg">
-                Your browser does not support HTML5 video.
-                </video>
-                </body>
-            </html>`);
+        this.iframeDoc.write('<html>'
+        + '<body>'
+        + '<video width="200" controls>'
+        + '<source src="http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_60fps_normal.mp4" type="video/mp4">'
+        + '<source src="http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_60fps_normal.ogg" type="video/ogg">'
+        + 'Your browser does not support HTML5 video.'
+        + '</video>'
+        + '</body>'
+        + '</html>');
+
         this.iframeDoc.close();
 
         const [videoBBB] = this.iframeDoc.getElementsByTagName('video');
-        console.log(videoBBB);
 
         this.iframeContentWindow.addEventListener('message', (receivedMessage) => {
             console.log([`iframe: ${id}`, 'received', receivedMessage]);
@@ -113,8 +110,10 @@ export default class TestProvider {
             case 'exitFullScreen':
                 if (this.iframeDoc.mozCancelFullScreen) {
                     this.iframeDoc.mozCancelFullScreen();
-                } else {
+                } else if (this.iframeDoc.webkitCancelFullScreen) {
                     this.iframeDoc.webkitCancelFullScreen();
+                } else {
+                    document.exitFullscreen();
                 }
 
                 this.fireEvent('exitFullScreen');
@@ -175,7 +174,7 @@ export default class TestProvider {
             this.listeners[event] = [];
         }
 
-        this.listeners[event].push(cb);
+        this.listeners[event].unshift(cb);
 
         return cb;
     }
@@ -202,25 +201,25 @@ export default class TestProvider {
     }
 
     play() {
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'play' }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'play' }), window.location.origin);
     }
 
     pause() {
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'pause' }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'pause' }), window.location.origin);
     }
 
     stop() {
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'stop' }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'stop' }), window.location.origin);
     }
 
     mute() {
         this.isMuted = true;
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'mute' }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'mute' }), window.location.origin);
     }
 
     unmute() {
         this.isMuted = false;
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'unmute' }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'unmute' }), window.location.origin);
     }
 
     toggleMute() {
@@ -236,30 +235,30 @@ export default class TestProvider {
     toggleFullScreen() {
         if (this.isFullScreen) {
             this.isFullScreen = false;
-            this.iframeContentWindow.postMessage(JSON.stringify({ command: 'exitFullScreen' }));
+            this.iframeContentWindow.postMessage(JSON.stringify({ command: 'exitFullScreen' }), window.location.origin);
         } else {
             this.isFullScreen = true;
-            this.iframeContentWindow.postMessage(JSON.stringify({ command: 'enterFullScreen' }));
+            this.iframeContentWindow.postMessage(JSON.stringify({ command: 'enterFullScreen' }), window.location.origin);
         }
     }
 
     setVolume(volumeLevel) {
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'setVolume', value: volumeLevel }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'setVolume', value: volumeLevel }), window.location.origin);
     }
 
     forward(seconds) {
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'forward', value: seconds }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'forward', value: seconds }), window.location.origin);
     }
 
     rewind(seconds) {
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'rewind', value: seconds }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'rewind', value: seconds }), window.location.origin);
     }
 
     seek(seconds) {
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'seek', value: seconds }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'seek', value: seconds }), window.location.origin);
     }
 
     clear() {
-        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'destroy' }));
+        this.iframeContentWindow.postMessage(JSON.stringify({ command: 'destroy' }), window.location.origin);
     }
 }
