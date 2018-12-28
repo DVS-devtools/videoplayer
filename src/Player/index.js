@@ -19,15 +19,14 @@ export default class Player {
      */
     constructor(options, id) {
         this.id = id;
-        console.log(options); // eslint-disable-line no-console
 
         switch (options.provider) {
         case 'test':
             this.player = new TestProvider(options, id);
             break;
         default:
-            console.log('No default provider, please specify a provider');
             this.player = null;
+            throw new Error('Unsupported Provider');
         }
     }
 
