@@ -1,10 +1,13 @@
 import { VideoPlayer } from '../src/index.js';
 
+window.wVideoPlayer = VideoPlayer;
+
 VideoPlayer.defaults.provider = 'vimeo';
 
 const player = VideoPlayer.createPlayer({
-    domNode: '#video',
-    videoId: 123,
+    domNode: '#video1',
+    provider: 'test',
+    videoId: 1,
     events: {
         play: () => {
             console.log('ciao');
@@ -13,8 +16,9 @@ const player = VideoPlayer.createPlayer({
 });
 
 const player2 = VideoPlayer.createPlayer({
-    domNode: '#video',
-    videoId: 123,
+    domNode: '#video2',
+    provider: 'test',
+    videoId: 2,
     events: {
         play: () => {
             console.log('ciao');
