@@ -1,4 +1,5 @@
 import TestProvider from '../Provider/testProvider';
+import DailymotionProvider from '../Provider/DailymotionProvider';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
@@ -33,9 +34,12 @@ export default class Player {
         case 'test':
             this.player = new TestProvider(options, id);
             break;
+        case 'dailymotion':
+            this.player = new DailymotionProvider(options, id);
+            break;
         default:
             this.player = null;
-            throw new Error('Unsupported Provider');
+            throw new Error(`Unsupported Provider ${options.provider}`);
         }
     }
 
