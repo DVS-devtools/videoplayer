@@ -4,8 +4,21 @@ import { getDomNode, Unsupported } from '../../lib';
 const sdkCdn = 'https://api.dmcdn.net/all.js';
 let sdk = null;
 
-@Unsupported('off')
-export default class DailymotionProvider {
+const eventsNameMapping = {
+    end: 'video_end',
+    playbackProgress: 'timeupdate',
+    loadProgress: 'progress',
+    seek: 'seeked',
+    setVolume: 'volumechange',
+    buffering: 'waiting',
+};
+
+/**
+ * Dailymotion Player Wrapper
+ * @ignore
+ * @class DailymotionProvider
+ */
+class DailymotionProvider {
     id = null;
 
     domNodeId = null;
@@ -15,6 +28,14 @@ export default class DailymotionProvider {
     listeners = {};
 
     ready = null;
+
+    get isMuted() {
+        return this.dmPlayer && this.dmPlayer.muted;
+    }
+
+    get isFullScreen() {
+        return this.dmPlayer && this.dmPlayer.fullscreen;
+    }
 
     constructor(options, id) {
         this.id = id;
@@ -59,8 +80,22 @@ export default class DailymotionProvider {
 
     on(event, cb) {
         this.ready.then(() => {
-            this.dmPlayer.addEventListener(event, cb);
-            this.listeners[event] = cb;
+            if (typeof this.listeners[event] === 'undefined') {
+                this.listeners[event] = [];
+            }
+            this.listeners[event].unshift(cb);
+            const eventName = eventsNameMapping[event] || Object.values(eventsNameMapping).find(e => e === 'event') || event;
+            this.dmPlayer.addEventListener(eventName, cb);
+        });
+    }
+
+    off(event, cb) {
+        this.ready.then(() => {
+            if (this.listeners[event] && this.listeners[event].indexOf(cb) > -1) {
+                const index = this.listeners[event].indexOf(cb);
+                this.listeners[event].splice(index, 1);
+            }
+            this.dmPlayer.removeEventListener(event, cb);
         });
     }
 
@@ -118,3 +153,5 @@ export default class DailymotionProvider {
         return this.listeners;
     }
 }
+
+export default DailymotionProvider;
