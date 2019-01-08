@@ -23,9 +23,25 @@ const player = VideoPlayer.createPlayer({
     videoSrcBaseUrl: 'http://www.pocoyohouse.com/it/bvideoplayer',
     videoId: 'VO990047713',
     contentId: 'd2694a85c54e5b5ef6074224f8a01179',
-    autoplay: 1,
+    autoplay: 0,
     apienabled: 1,
-    debugJs: 1,
+    debugJs: 0,
+    playerId: 'd2694a85c54e5b5ef6074224f8a01179',
+    origin: 'http://localhost:3001/',
+    language: 'it',
+    width: 1680,
+    height: 1050,
+    streamingKey: 'PYSE_158AA1_FM1X_FF_YH'
+});
+
+const player2 = VideoPlayer.createPlayer({
+    domNode: '#video2',
+    videoSrcBaseUrl: 'http://www.pocoyohouse.com/it/bvideoplayer',
+    videoId: 'VO990047713',
+    contentId: 'd2694a85c54e5b5ef6074224f8a01179',
+    autoplay: 0,
+    apienabled: 1,
+    debugJs: 0,
     playerId: 'd2694a85c54e5b5ef6074224f8a01179',
     origin: 'http://localhost:3001/',
     language: 'it',

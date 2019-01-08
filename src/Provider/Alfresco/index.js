@@ -1,5 +1,3 @@
-// example of postmessage communication: a.contentWindow.postMessage(JSON.stringify({event: 'play'}), 'http://www.pocoyohouse.com');
-
 export default class FlowPlayer {
     id = null;
 
@@ -41,7 +39,7 @@ export default class FlowPlayer {
 
     listeners = {};
 
-    insertElementInDOM = (domNode) => {
+    insertElementInDOM(domNode) {
         this.iframeElement = document.createElement('iframe');
         this.iframeElement.id = this.id;
         this.iframeElement.src = this.videoSrcUrl;
@@ -62,9 +60,10 @@ export default class FlowPlayer {
         }
 
         this.iframeContentWindow = document.getElementById(this.id).contentWindow;
-    };
+    }
 
-    generateVideoSrcUrl = () => `${this.videoSrcBaseUrl}?`
+    generateVideoSrcUrl() {
+        return `${this.videoSrcBaseUrl}?`
         + `id=${this.contentId}&`
         + `videoid=${this.videoId}&`
         + `autoplay=${this.autoplay}&`
@@ -76,49 +75,62 @@ export default class FlowPlayer {
         + `w=${this.width}&`
         + `h=${this.height}&`
         + `streamingkey=${this.streamingkey}`;
+    }
+
+    managePostMessageEvents(message) {
+        switch (message.event) {
+        case 'play':
+            if (typeof message.conf !== 'undefined') {
+                console.log('@@@ firstplay', message);
+                this.fireEvent('firsPlay');
+            } else {
+                console.log('@@@ play', message);
+                this.fireEvent('play');
+            }
+            break;
+        case 'pause':
+            console.log('@@@ pause', message);
+            this.fireEvent('pause');
+            break;
+        case 'downloadInfo':
+            console.log('@@@ downloadInfo', message);
+            this.fireEvent('downloadInfo');
+            break;
+        case 'ready':
+            console.log('@@@ ready', message);
+            this.fireEvent('ready');
+            break;
+        case 'finish':
+            console.log('@@@ finish', message);
+            this.fireEvent('finish');
+            break;
+        default:
+            console.warn('Command not found');
+        }
+    }
+
+    receivedMessageCb(receivedMessage) {
+        let message = null;
+
+        if (typeof receivedMessage !== 'undefined' && typeof receivedMessage.data !== 'undefined') {
+            if (receivedMessage.data) {
+                try {
+                    message = JSON.parse(receivedMessage.data);
+
+                    if (message.uid === this.id) {
+                        this.managePostMessageEvents(message);
+                    }
+                } catch (e) {
+                    console.warn(['Product-Fe-Videoplayer', e]);
+                }
+            } else {
+                console.warn(['Product-Fe-Videoplayer', 'No message found']);
+            }
+        }
+    }
 
     listenOnPostMessage = () => {
-        window.addEventListener('message', (receivedMessage) => {
-            let message = null;
-
-            if (typeof receivedMessage !== 'undefined' && typeof receivedMessage.data !== 'undefined') {
-
-                if (receivedMessage.data) {
-                    message = JSON.parse(receivedMessage.data);
-                } else if (receivedMessage.method) {
-                    message = JSON.parse(receivedMessage.method);
-                } else {
-                    console.warn(['Product-Fe-Videoplayer', 'No message found']);
-                    return false;
-                }
-
-                console.log('command is: ', message.event);
-
-                switch (message.event) {
-                case 'play':
-                    if (typeof message.conf !== 'undefined') {
-                        console.log('@@@ firstplay', message);
-                    } else {
-                        console.log('@@@ play', message);
-                    }
-                    break;
-                case 'pause':
-                    console.log('@@@ pause', message);
-                    break;
-                case 'downloadInfo':
-                    console.log('@@@ downloadInfo', message);
-                    break;
-                case 'ready':
-                    console.log('@@@ ready', message);
-                    break;
-                case 'finish':
-                    console.log('@@@ finish', message);
-                    break;
-                default:
-                    console.warn('Command not found');
-                }
-            }
-        });
+        window.addEventListener('message', (message) => { if (typeof message.data === 'string') { this.receivedMessageCb(message); } });
     };
 
     constructor(options, id) {
@@ -148,6 +160,7 @@ export default class FlowPlayer {
         console.log('generated url', this.videoSrcUrl);
 
         this.insertElementInDOM(options.domNode);
+
         this.listenOnPostMessage();
     }
 
@@ -188,11 +201,11 @@ export default class FlowPlayer {
         return this.listeners;
     }
 
-    play = () => {
+    play() {
         this.iframeContentWindow.postMessage(JSON.stringify({ event: 'play' }), '*');
     }
 
-    pause = () => {
+    pause() {
         this.iframeContentWindow.postMessage(JSON.stringify({ event: 'pause' }), '*');
     }
 }
