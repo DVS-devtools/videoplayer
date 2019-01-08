@@ -39,6 +39,7 @@ class MockPlayer {
     setFullscreen(bool) {}
     setVolume(lvl) {}
     seek(sec) {}
+    watchOnSite() {}
 }
 
 document.body.innerHTML = `
@@ -88,6 +89,7 @@ describe('DailymotionProvider API', () => {
             setFullscreen: jest.spyOn(MockPlayer.prototype, 'setFullscreen'),
             setVolume: jest.spyOn(MockPlayer.prototype, 'setVolume'),
             seek: jest.spyOn(MockPlayer.prototype, 'seek'),
+            watchOnSite: jest.spyOn(MockPlayer.prototype, 'watchOnSite'),
         };
     });
 
@@ -154,6 +156,11 @@ describe('DailymotionProvider API', () => {
         await Instance.seek(10);
         expect(spys.seek).toHaveBeenCalledWith(10);
     });
+
+    it('should call watchOnSite on download()', async () => {
+        await Instance.download();
+        expect(spys.watchOnSite).toHaveBeenCalled();
+    })
 });
 
 describe('DailymotionProvider getters and cleanup', () => {

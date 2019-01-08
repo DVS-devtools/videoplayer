@@ -185,6 +185,10 @@ class DailymotionProvider {
         return this.ready.then(() => this.dmPlayer.seek(seconds));
     }
 
+    download() {
+        return this.ready.then(() => this.dmPlayer.watchOnSite());
+    }
+
     getListeners() {
         return this.listeners;
     }
