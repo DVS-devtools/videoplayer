@@ -14,8 +14,10 @@ export function getDomNode(domNode) {
 export function Unsupported(...fields) {
     return function (target, key, descriptor) {
         if (descriptor) {
-            descriptor.value = () => {
+            const fn = descriptor.value;
+            descriptor.value = function (...args) {
                 console.warn(`Provider ${target.constructor.name} does not support the ${key} feature`);
+                return fn.call(this, ...args);
             };
         } else {
             fields.forEach((field) => {

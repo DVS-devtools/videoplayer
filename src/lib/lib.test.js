@@ -59,6 +59,5 @@ describe('Unsupported', () => {
     it('should warn when an unsupported method is defined in the class prototype but marked as @Unsupported()', () => {
         Instance.unsupportedMethod();
         expect(warnSpy).toHaveBeenCalled();
-        expect(logSpy).not.toHaveBeenCalled();
     });
 });
