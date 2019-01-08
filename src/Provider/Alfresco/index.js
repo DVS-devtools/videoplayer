@@ -39,6 +39,8 @@ export default class FlowPlayer {
 
     iframeContentWindow = null;
 
+    listeners = {};
+
     insertElementInDOM = (domNode) => {
         this.iframeElement = document.createElement('iframe');
         this.iframeElement.id = this.id;
@@ -75,6 +77,50 @@ export default class FlowPlayer {
         + `h=${this.height}&`
         + `streamingkey=${this.streamingkey}`;
 
+    listenOnPostMessage = () => {
+        window.addEventListener('message', (receivedMessage) => {
+            let message = null;
+
+            if (typeof receivedMessage !== 'undefined' && typeof receivedMessage.data !== 'undefined') {
+
+                if (receivedMessage.data) {
+                    message = JSON.parse(receivedMessage.data);
+                } else if (receivedMessage.method) {
+                    message = JSON.parse(receivedMessage.method);
+                } else {
+                    console.warn(['Product-Fe-Videoplayer', 'No message found']);
+                    return false;
+                }
+
+                console.log('command is: ', message.event);
+
+                switch (message.event) {
+                case 'play':
+                    if (typeof message.conf !== 'undefined') {
+                        console.log('@@@ firstplay', message);
+                    } else {
+                        console.log('@@@ play', message);
+                    }
+                    break;
+                case 'pause':
+                    console.log('@@@ pause', message);
+                    break;
+                case 'downloadInfo':
+                    console.log('@@@ downloadInfo', message);
+                    break;
+                case 'ready':
+                    console.log('@@@ ready', message);
+                    break;
+                case 'finish':
+                    console.log('@@@ finish', message);
+                    break;
+                default:
+                    console.warn('Command not found');
+                }
+            }
+        });
+    };
+
     constructor(options, id) {
         this.id = id;
         this.videoId = options.videoId; // remember to manage also url as videoid;
@@ -102,6 +148,44 @@ export default class FlowPlayer {
         console.log('generated url', this.videoSrcUrl);
 
         this.insertElementInDOM(options.domNode);
+        this.listenOnPostMessage();
+    }
+
+    fireEvent(evt) {
+        if (typeof this.listeners[evt] !== 'undefined') {
+            this.listeners[evt].forEach((callbackFunction) => {
+                callbackFunction();
+            });
+        }
+    }
+
+    on(event, cb) {
+        if (typeof this.listeners[event] === 'undefined') {
+            this.listeners[event] = [];
+        }
+
+        this.listeners[event].unshift(cb);
+
+        return cb;
+    }
+
+    off(event, cb) {
+        if (this.listeners[event] && this.listeners[event].includes(cb)) {
+            const index = this.listeners[event].indexOf(cb);
+            this.listeners[event].splice(index, 1);
+        }
+    }
+
+    getListeners(evt) {
+        if (typeof evt === 'string') {
+            if (typeof this.listeners[evt] !== 'undefined') {
+                return this.listeners[evt];
+            }
+
+            return [];
+        }
+
+        return this.listeners;
     }
 
     play = () => {
