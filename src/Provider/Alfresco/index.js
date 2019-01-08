@@ -37,6 +37,8 @@ export default class FlowPlayer {
 
     iframeElement = null;
 
+    iframeContentWindow = null;
+
     insertElementInDOM = (domNode) => {
         this.iframeElement = document.createElement('iframe');
         this.iframeElement.id = this.id;
@@ -56,6 +58,8 @@ export default class FlowPlayer {
             this.parent = domNode;
             this.parent.appendChild(this.iframeElement);
         }
+
+        this.iframeContentWindow = document.getElementById(this.id).contentWindow;
     };
 
     generateVideoSrcUrl = () => `${this.videoSrcBaseUrl}?`
@@ -98,5 +102,13 @@ export default class FlowPlayer {
         console.log('generated url', this.videoSrcUrl);
 
         this.insertElementInDOM(options.domNode);
+    }
+
+    play = () => {
+        this.iframeContentWindow.postMessage(JSON.stringify({ event: 'play' }), '*');
+    }
+
+    pause = () => {
+        this.iframeContentWindow.postMessage(JSON.stringify({ event: 'pause' }), '*');
     }
 }
