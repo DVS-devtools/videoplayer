@@ -10,7 +10,6 @@ export function getDomNode(domNode) {
     return domNode;
 }
 
-
 export function Unsupported(...fields) {
     return function (target, key, descriptor) {
         if (descriptor) {
