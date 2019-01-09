@@ -7,6 +7,7 @@ const oneOfType = (value, typesArray) => typesArray.some(type => typeof value ==
  * @param {Object} schema The schema to match es:
  * {field: 'string'} (typeof argument.field === 'string')
  * @param {number} [position] argument position, default 0 (first argument)
+ * @param {Object} [aliases] field name alias
  * @example
  * ValidateObj({x: 'number', y: 'string'})
  * someMethod(obj) { // Stuff... }
@@ -21,7 +22,7 @@ const oneOfType = (value, typesArray) => typesArray.some(type => typeof value ==
  * @return {function(*, *, *): *}
  * @constructor
  */
-export function ValidateObj(schema, position = 0) {
+export function ValidateObj(schema, position = 0, aliases = {}) {
     const keys = Object.keys(schema);
     return function (target, key, descriptor) {
         const fn = descriptor.value;
@@ -33,14 +34,23 @@ export function ValidateObj(schema, position = 0) {
     Received: ${typeof obj}`);
             }
             keys.forEach((k) => {
+                const alias = aliases[k];
+                let i = k;
                 if (!obj.hasOwnProperty(k)) {
-                    throw new Error(`Invalid object passed at index ${position} for method "${key}", field "${k}" is required`);
+                    if (alias) {
+                        if (!obj.hasOwnProperty(alias)) {
+                            throw new Error(`Invalid object passed at index ${position} for method "${key}", field "${k}" or "${alias}" is required`);
+                        }
+                        i = alias;
+                    } else {
+                        throw new Error(`Invalid object passed at index ${position} for method "${key}", field "${k}" is required`);
+                    }
                 }
                 const types = schema[k].split('|');
-                if (!oneOfType(obj[k], types)) {
-                    throw new Error(`Invalid object passed at index ${position} for method "${key}", field "${k}" does not have the right type
+                if (!oneOfType(obj[i], types)) {
+                    throw new Error(`Invalid object passed at index ${position} for method "${key}", field "${i}" does not have the right type
     Expecting: ${schema[k]}
-    Received: ${typeof obj[k]}`);
+    Received: ${typeof obj[i]}`);
                 }
             });
             return fn.call(this, ...args);
@@ -71,12 +81,29 @@ export function ValidateArg(type, position = 0) {
         const fn = descriptor.value;
         descriptor.value = function (...args) {
             if (args.length < fn.length) {
-                throw new Error(`Method "${key}" is expecting ${fn.length} argument${fn.length > 1 ? 's' : ''}, ${args.length} passed`);
+                throw new Error(`Expecting ${fn.length} argument${fn.length > 1 ? 's' : ''}, ${args.length} passed`);
             }
             if (typeof args[position] !== type) {
-                throw new Error(`Invalid argument passed at index ${position} for method "${key}"
+                throw new Error(`Invalid argument passed at index ${position}"
     Expecting: ${type}
     Received: ${typeof args[position]}`);
+            }
+            return fn.call(this, ...args);
+        };
+        return descriptor;
+    };
+}
+
+export function ValidateOptionalArg(type, position = 0) {
+    return function (target, key, descriptor) {
+        const fn = descriptor.value;
+        descriptor.value = function (...args) {
+            if (args[position]) {
+                if (typeof args[position] !== type) {
+                    throw new Error(`Invalid argument passed at index ${position}"
+    Expecting: ${type}
+    Received: ${typeof args[position]}`);
+                }
             }
             return fn.call(this, ...args);
         };
