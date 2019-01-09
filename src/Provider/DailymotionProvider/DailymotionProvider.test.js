@@ -1,6 +1,10 @@
 import DailymotionProvider from './index';
 import global from '../../global';
 
+const flushPromises = () => {
+    return new Promise(resolve => window.setImmediate(resolve));
+};
+
 class MockPlayer {
     _events = {};
 
@@ -212,9 +216,12 @@ describe('DailymotionProvider getters and cleanup', () => {
         expect(Object.keys(listeners)).toEqual(['play', 'pause']);
         expect(listeners.play.length).toEqual(2);
         expect(listeners.pause.length).toEqual(1);
-        expect(listeners.play[1]).toBe(cb1);
-        expect(listeners.play[0]).toBe(cb3);
-        expect(listeners.pause[0]).toBe(cb2);
+        expect(listeners.play[1].callback).toBe(cb1);
+        expect(listeners.play[1].once).toBe(false);
+        expect(listeners.play[0].callback).toBe(cb3);
+        expect(listeners.play[0].once).toBe(false);
+        expect(listeners.pause[0].callback).toBe(cb2);
+        expect(listeners.pause[0].once).toBe(false);
     });
 
     it('should remove the DOM element on clear', async () => {
@@ -224,7 +231,7 @@ describe('DailymotionProvider getters and cleanup', () => {
     });
 });
 
-describe('DailymotionProvider events, on - off', () => {
+describe('DailymotionProvider events, on - off - one', () => {
     let Instance;
     let spys;
     beforeEach(() => {
@@ -246,45 +253,57 @@ describe('DailymotionProvider events, on - off', () => {
        const cb = () => {};
        await Instance.on('play', cb);
        expect(Instance.listeners['play'].length).toBe(1);
-       expect(Instance.listeners['play'][0]).toBe(cb);
-       expect(Instance.dmPlayer._events['play']).toBe(cb);
-       expect(spys.addEventListener).toHaveBeenLastCalledWith('play', cb);
+       expect(Instance.listeners['play'][0].callback).toBe(cb);
+       expect(Instance.dmPlayer._events['play']).toBe(Instance.dmListeners.play);
+       expect(spys.addEventListener).toHaveBeenLastCalledWith('play', Instance.dmListeners.play);
    });
 
     it('should remove an event on off', async () => {
         const cb = () => {};
         await Instance.on('play', cb);
+        const dmCb = Instance.dmListeners.play;
         await Instance.off('play', cb);
         expect(Instance.listeners['play'].length).toBe(0);
         expect(Instance.dmPlayer._events['play']).toBeUndefined();
-        expect(spys.removeEventListener).toHaveBeenLastCalledWith('play', cb);
+        expect(spys.removeEventListener).toHaveBeenLastCalledWith('play', dmCb);
     });
 
-    it('should send timeupdate25 event', async () => {
+    it('should send playbackProgress25 event', async () => {
         const cb = jest.fn();
-        await Instance.on('timeupdate25', cb);
+        await Instance.on('playbackProgress25', cb);
         Instance.dmPlayer.duration = 100;
         Instance.dmPlayer.currentTime = 25;
         Instance.dmPlayer.fireEvent('timeupdate');
-        expect(Instance.listeners['timeupdate25'][0]).toHaveBeenCalled();
+        expect(Instance.listeners['playbackProgress25'][0].callback).toHaveBeenCalled();
     });
 
-    it('should send timeupdate50 event', async () => {
+    it('should send playbackProgress50 event', async () => {
         const cb = jest.fn();
-        await Instance.on('timeupdate50', cb);
+        await Instance.on('playbackProgress50', cb);
         Instance.dmPlayer.duration = 100;
         Instance.dmPlayer.currentTime = 50;
         Instance.dmPlayer.fireEvent('timeupdate');
-        expect(Instance.listeners['timeupdate50'][0]).toHaveBeenCalled();
+        expect(Instance.listeners['playbackProgress50'][0].callback).toHaveBeenCalled();
     });
 
-    it('should send timeupdate75 event', async () => {
+    it('should send playbackProgress75 event', async () => {
         const cb = jest.fn();
-        await Instance.on('timeupdate75', cb);
+        await Instance.on('playbackProgress75', cb);
         Instance.dmPlayer.duration = 100;
         Instance.dmPlayer.currentTime = 75;
         Instance.dmPlayer.fireEvent('timeupdate');
-        expect(Instance.listeners['timeupdate75'][0]).toHaveBeenCalled();
+        expect(Instance.listeners['playbackProgress75'][0].callback).toHaveBeenCalled();
+    });
+
+    it('should register a once event and deregister it after first fire', async () => {
+        const cb = jest.fn();
+        await Instance.one('play', cb);
+        const dmCb = Instance.dmListeners.play;
+        Instance.dmPlayer.fireEvent('play');
+        await flushPromises();
+        expect(cb).toHaveBeenCalled();
+        expect(Instance.getListeners().play.length).toBe(0);
+        expect(spys.removeEventListener).toHaveBeenLastCalledWith('play', dmCb);
     });
 });
 
