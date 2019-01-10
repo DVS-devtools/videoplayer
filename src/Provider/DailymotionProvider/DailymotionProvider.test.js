@@ -225,9 +225,9 @@ describe('DailymotionProvider getters and cleanup', () => {
     });
 
     it('should remove the DOM element on clear', async () => {
-        expect(document.getElementById(options.domNode)).toBeDefined();
+        expect(Array.from(document.getElementById(options.domNode).querySelectorAll('iframe')).length).toBe(1);
         await Instance.clear();
-        expect(document.getElementById(options.domNode)).toBeNull();
+        expect(Array.from(document.getElementById(options.domNode).querySelectorAll('iframe')).length).toBe(0);
     });
 });
 
