@@ -130,8 +130,11 @@ class DailymotionProvider {
         return new Promise((resolve, reject) => {
             this.loadSDK().then((DM) => {
                 domNode = getDomNode(domNode);
-                this.domNodeId = domNode.id;
-                this.dmPlayer = DM.player(domNode, options);
+                const iframe = document.createElement('iframe');
+                iframe.setAttribute('id', this.id);
+                domNode.appendChild(iframe);
+                this.domNodeId = iframe.id;
+                this.dmPlayer = DM.player(iframe, options);
                 this.dmPlayer.addEventListener('apiready', () => resolve());
                 this.registerDefaultListeners();
             }).catch(err => reject(err));
