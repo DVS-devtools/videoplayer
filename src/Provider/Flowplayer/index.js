@@ -149,29 +149,25 @@ export default class FlowPlayer {
                 domNode.appendChild(divElement);
 
                 this.domNodeId = divElement.id;
-
-                // ADD options
                 this.fpPlayer = FP(divElement, options);
-
                 this.fpPlayer.on('ready', () => resolve());
+
                 this.registerDefaultListeners();
             }).catch(err => reject(err));
         });
     }
 
-    // ???
     addFPListener(evt) {
         const cb = () => this.fireEvent(evt);
         this.fpListeners[evt] = cb;
         return cb;
     }
 
-    // DOUBT ????????????? we need to detach the function, and to the event on itself
-    fireEvent(evt) {
+    fireEvent(evt, params) {
         if (typeof this.listeners[evt] !== 'undefined') {
             this.listeners[evt].forEach((event) => {
                 if (typeof event.callback === 'function') {
-                    event.callback();
+                    event.callback(params);
                 }
                 if (event.once) {
                     this.off(evt, event.callback);
@@ -202,8 +198,10 @@ export default class FlowPlayer {
 
         this.fpPlayer.on('resume', () => {
             if (!this.isPlayed) {
-                this.fireEvent('firstPlay');
+                this.fireEvent('resume', { isFirstPlay: true });
                 this.isPlayed = true;
+            } else {
+                this.fireEvent('resume', { isFirstPlay: false });
             }
         });
     }
