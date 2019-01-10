@@ -16,38 +16,17 @@ streamingkey=PYPR_032CB1_FM1X_FF_YH"
 
 window.wVideoPlayer = VideoPlayer;
 
-VideoPlayer.defaults.provider = 'alfresco';
+VideoPlayer.defaults.provider = 'flowplayer';
 
-const player = VideoPlayer.createPlayer({
+window.player = VideoPlayer.createPlayer({
     domNode: '#video1',
-    videoSrcBaseUrl: 'http://www.pocoyohouse.com/it/bvideoplayer',
     videoId: 'VO990047713',
-    contentId: 'd2694a85c54e5b5ef6074224f8a01179',
-    autoplay: 0,
-    apienabled: 1,
-    debugJs: 0,
-    playerId: 'd2694a85c54e5b5ef6074224f8a01179',
-    origin: 'http://localhost:3001/',
-    language: 'it',
-    width: 1680,
-    height: 1050,
-    streamingKey: 'PYSE_158AA1_FM1X_FF_YH'
+    url: 'http://video.kidzinmind.com/cmsp/2017/11/13/15/59/75c34439-e2c5-483d-a9b2-1efdb859f9ba.mp4',
+    providerOptions: {
+        autoplay: 0,
+        muted: 0,
+        poster: 'https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-9/47388900_1952418691547440_2327501395416055808_n.jpg?_nc_cat=105&_nc_ht=scontent-mxp1-1.xx&oh=88e3464271e6da69aa18c97ee90b6a7e&oe=5CCF5219',
+    }
+    // streamingKey: 'PYSE_158AA1_FM1X_FF_YH'
 });
-
-const player2 = VideoPlayer.createPlayer({
-    domNode: '#video2',
-    videoSrcBaseUrl: 'http://www.pocoyohouse.com/it/bvideoplayer',
-    videoId: 'VO990047713',
-    contentId: 'd2694a85c54e5b5ef6074224f8a01179',
-    autoplay: 0,
-    apienabled: 1,
-    debugJs: 0,
-    playerId: 'd2694a85c54e5b5ef6074224f8a01179',
-    origin: 'http://localhost:3001/',
-    language: 'it',
-    width: 1680,
-    height: 1050,
-    streamingKey: 'PYSE_158AA1_FM1X_FF_YH'
-});
-
 console.log(VideoPlayer.getPlayers())

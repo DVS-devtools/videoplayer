@@ -1,5 +1,5 @@
 import TestProvider from '../Provider/testProvider';
-import Alfresco from '../Provider/Alfresco';
+import Alfresco from '../Provider/Flowplayer';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
@@ -34,7 +34,7 @@ export default class Player {
         case 'test':
             this.player = new TestProvider(options, id);
             break;
-        case 'alfresco':
+        case 'flowplayer':
             this.player = new Alfresco(options, id);
             break;
         default:
