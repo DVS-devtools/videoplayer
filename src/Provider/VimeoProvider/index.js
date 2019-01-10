@@ -1,4 +1,6 @@
-let VIMEOSDK = null;
+import getDomNode from '../../lib/getDomNode';
+import Unsupported from '../../lib/unsupported';
+import global from '../../global';
 
 const eventsNameMapping = {
     end: 'ended',
@@ -15,7 +17,7 @@ const eventsToIgnore = [
     'playbackProgress75'
 ];
 
-
+@Unsupported('toggleFullScreen')
 class VimeoProvider {
     id = null;
 
@@ -27,6 +29,17 @@ class VimeoProvider {
 
     vmListeners = {};
 
+    /**
+     * Keep track of playback progress percentage, used to fire playback percentage events
+     * @type {{'25': boolean, '50': boolean, '75': boolean}}
+     */
+    timeupdatePercentages = {
+        25: false,
+        50: false,
+        75: false,
+    };
+
+
     constructor(options, id) {
         this.id = id;
 
@@ -35,11 +48,11 @@ class VimeoProvider {
     }
 
     loadSdk() {
-        if (!VIMEOSDK) {
+        if (!global.VMSDK) {
             if (typeof window.Vimeo === 'object' && typeof window.Vimeo.Player === 'function') {
-                VIMEOSDK = Promise.resolve(window.Vimeo.Player);
+                global.VMSDK = Promise.resolve(window.Vimeo.Player);
             } else {
-                VIMEOSDK = import('@vimeo/player').then((mod) => {
+                global.VMSDK = import('@vimeo/player').then((mod) => {
                     window.Vimeo = {
                         Player: mod.default,
                     };
@@ -47,15 +60,17 @@ class VimeoProvider {
                 });
             }
         }
-        return VIMEOSDK;
+        return global.VMSDK;
     }
 
-    createVM(node, options) {
-        return new Promise((resolve) => {
+    createVM(domNode, options) {
+        return new Promise((resolve, reject) => {
             this.loadSdk().then((Player) => {
-                this.vmPlayer = new Player(node, options);
+                domNode = getDomNode(domNode);
+                this.vmPlayer = new Player(domNode, options);
+                this.registerDefaultListeners();
                 resolve();
-            });
+            }).catch(err => reject(err));
         });
     }
 
@@ -78,6 +93,25 @@ class VimeoProvider {
         }
     }
 
+    onPercentage(percentage, data) {
+        if (Math.floor(data.percent * 100) === percentage) {
+            if (!this.timeupdatePercentages[percentage]) {
+                this.timeupdatePercentages[percentage] = true;
+                this.fireEvent(`playbackProgress${percentage}`, data);
+            }
+        } else {
+            this.timeupdatePercentages[percentage] = false;
+        }
+    }
+
+    registerDefaultListeners() {
+        this.vmPlayer.on('timeupdate', (data) => {
+            this.onPercentage(25, data);
+            this.onPercentage(50, data);
+            this.onPercentage(75, data);
+        });
+    }
+
     clear() {
         return this.ready.then(() => {
             this.listeners = {};
@@ -97,6 +131,10 @@ class VimeoProvider {
             }
             this.listeners[event].unshift({ callback: cb, once });
         });
+    }
+
+    one(event, cb) {
+        return this.on(event, cb, true);
     }
 
     off(event, cb) {
