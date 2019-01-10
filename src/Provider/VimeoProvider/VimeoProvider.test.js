@@ -9,8 +9,6 @@ const flushPromises = () => {
 class MockPlayer {
     _events = {};
 
-    fullscreen = false;
-
     volume = 1;
 
     currentTime = 0;
@@ -33,9 +31,9 @@ class MockPlayer {
         delete this._events[evt];
     }
 
-    fireEvent(evt) {
+    fireEvent(evt, ...data) {
         if (this._events[evt]) {
-            this._events[evt]();
+            this._events[evt](...data);
         }
     }
 
@@ -53,6 +51,9 @@ class MockPlayer {
     setVolume(lvl) {}
     setCurrentTime(sec) {}
     destroy() {}
+    getVideoUrl() {
+        return Promise.resolve('http://test.com');
+    }
 }
 
 document.body.innerHTML = `
@@ -78,15 +79,15 @@ describe('VimeoProvider initialization', () => {
 
     it('should reuse the same Player if already loaded', async () => {
         // Simulate eager load
-        const MockPlayer = jest.fn();
+        const JestMockPlayer = jest.fn(() => new MockPlayer());
         window.Vimeo = {
-            Player: MockPlayer
+            Player: JestMockPlayer
         };
         const Instance = new VimeoProvider(options, id);
         await flushPromises();
         expect(Instance.vmPlayer instanceof Player ).toBe(false);
         expect(Instance.vmPlayer instanceof MockPlayer).toBe(true);
-        expect(MockPlayer).toHaveBeenCalledWith(options.domNode, {id: options.videoId});
+        expect(JestMockPlayer).toHaveBeenCalledWith(document.getElementById(options.domNode), {id: options.videoId});
     });
 });
 
@@ -109,6 +110,7 @@ describe('VimeoProvider API', () => {
             unload: jest.spyOn(MockPlayer.prototype, 'unload'),
             setVolume: jest.spyOn(MockPlayer.prototype, 'setVolume'),
             setCurrentTime: jest.spyOn(MockPlayer.prototype, 'setCurrentTime'),
+            getVideoUrl: jest.spyOn(MockPlayer.prototype, 'getVideoUrl'),
         };
     });
 
@@ -180,6 +182,11 @@ describe('VimeoProvider API', () => {
         Instance.toggleFullScreen();
         expect(mock).toHaveBeenCalled();
     });
+
+    it('should return the video url on Vimeo website on download()', async () => {
+        expect(await Instance.download()).toEqual('http://test.com');
+        expect(spys.getVideoUrl).toHaveBeenCalled();
+    });
 });
 
 describe('VimeoProvider getters and cleanup', () => {
@@ -244,13 +251,12 @@ describe('VimeoProvider events, on - off - one', () => {
     });
 
     it('should add an event on on', async () => {
-        const cb = () => {
-        };
+        const cb = () => {};
         await Instance.on('play', cb);
         expect(Instance.listeners['play'].length).toBe(1);
         expect(Instance.listeners['play'][0].callback).toBe(cb);
         expect(Instance.vmPlayer._events['play']).toBe(Instance.vmListeners.play);
-        expect(spys.addEventListener).toHaveBeenLastCalledWith('play', Instance.vmListeners.play);
+        expect(spys.on).toHaveBeenLastCalledWith('play', Instance.vmListeners.play);
     });
 
     it('should remove an event on off', async () => {
@@ -260,7 +266,7 @@ describe('VimeoProvider events, on - off - one', () => {
         await Instance.off('play', cb);
         expect(Instance.listeners['play'].length).toBe(0);
         expect(Instance.vmPlayer._events['play']).toBeUndefined();
-        expect(spys.removeEventListener).toHaveBeenLastCalledWith('play', dmCb);
+        expect(spys.off).toHaveBeenLastCalledWith('play', dmCb);
     });
 
     it('should send playbackProgress25 event', async () => {
@@ -268,7 +274,7 @@ describe('VimeoProvider events, on - off - one', () => {
         await Instance.on('playbackProgress25', cb);
         Instance.vmPlayer.duration = 100;
         Instance.vmPlayer.currentTime = 25;
-        Instance.vmPlayer.fireEvent('timeupdate');
+        Instance.vmPlayer.fireEvent('timeupdate', {percent: 0.25});
         expect(Instance.listeners['playbackProgress25'][0].callback).toHaveBeenCalled();
     });
 
@@ -277,7 +283,7 @@ describe('VimeoProvider events, on - off - one', () => {
         await Instance.on('playbackProgress50', cb);
         Instance.vmPlayer.duration = 100;
         Instance.vmPlayer.currentTime = 50;
-        Instance.vmPlayer.fireEvent('timeupdate');
+        Instance.vmPlayer.fireEvent('timeupdate', {percent: 0.50});
         expect(Instance.listeners['playbackProgress50'][0].callback).toHaveBeenCalled();
     });
 
@@ -286,7 +292,7 @@ describe('VimeoProvider events, on - off - one', () => {
         await Instance.on('playbackProgress75', cb);
         Instance.vmPlayer.duration = 100;
         Instance.vmPlayer.currentTime = 75;
-        Instance.vmPlayer.fireEvent('timeupdate');
+        Instance.vmPlayer.fireEvent('timeupdate', {percent: 0.75});
         expect(Instance.listeners['playbackProgress75'][0].callback).toHaveBeenCalled();
     });
 
@@ -298,6 +304,6 @@ describe('VimeoProvider events, on - off - one', () => {
         await flushPromises();
         expect(cb).toHaveBeenCalled();
         expect(Instance.getListeners().play.length).toBe(0);
-        expect(spys.removeEventListener).toHaveBeenLastCalledWith('play', dmCb);
+        expect(spys.off).toHaveBeenLastCalledWith('play', dmCb);
     });
 });

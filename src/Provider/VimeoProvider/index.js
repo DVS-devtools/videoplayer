@@ -17,17 +17,44 @@ const eventsToIgnore = [
     'playbackProgress75'
 ];
 
+/**
+ * Vimeo Player Wrapper
+ * @ignore
+ * @class VimeoProvider
+ */
 @Unsupported('toggleFullScreen')
 class VimeoProvider {
+    /**
+     * Internal player id
+     */
     id = null;
 
-    ready = null;
-
+    /**
+     * The Vimeo Player instance
+     */
     vmPlayer = null;
 
+    /**
+     * All registered listeners grouped by event:
+     * {
+     *     play: [
+     *         {callback: fn(), once: false}
+     *     ]
+     * }
+     * once flag: if true, the callback is fired once and then removed
+     */
     listeners = {};
 
+    /**
+     * Internal event mapping to the Vimeo Player events, grouped by event
+     * the event callback will fire all registered event listeners of this.listeners
+     */
     vmListeners = {};
+
+    /**
+     * Promise resolved when the Vimeo SDK is loaded and the Vimeo Player is ready
+     */
+    ready = null;
 
     /**
      * Keep track of playback progress percentage, used to fire playback percentage events
@@ -47,6 +74,11 @@ class VimeoProvider {
             Object.assign({ id: options.videoId }, options.providerOptions || {}));
     }
 
+    /**
+     * Load the DM SDK if not loaded yet
+     * If multiple instances of this provider exists in the same page,
+     * only one SDK is loaded and shared between all instances
+     */
     loadSdk() {
         if (!global.VMSDK) {
             if (typeof window.Vimeo === 'object' && typeof window.Vimeo.Player === 'function') {
@@ -63,6 +95,13 @@ class VimeoProvider {
         return global.VMSDK;
     }
 
+    /**
+     * Create the Vimeo Player in the given DOM Node with the given options
+     * When the Player is ready, resolve the this.ready Promise
+     * @param domNode
+     * @param options
+     * @return {Promise<any>}
+     */
     createVM(domNode, options) {
         return new Promise((resolve, reject) => {
             this.loadSdk().then((Player) => {
@@ -74,12 +113,25 @@ class VimeoProvider {
         });
     }
 
+    /**
+     * Create a callback function that fires all registered listeners for a given event
+     * Store the callback in the this.vmListeners object
+     * @param evt
+     * @return {function(): void}
+     */
     addVmListener(evt) {
         const cb = (...data) => this.fireEvent(evt, ...data);
         this.vmListeners[evt] = cb;
         return cb;
     }
 
+    /**
+     * Fire all listeners for a given event
+     * if a fired listener is flagged as once,
+     * immediately deregister it after its fire (fired only once)
+     * @param evt
+     * @param data
+     */
     fireEvent(evt, ...data) {
         if (typeof this.listeners[evt] !== 'undefined') {
             this.listeners[evt].forEach((event) => {
@@ -93,6 +145,13 @@ class VimeoProvider {
         }
     }
 
+    /**
+     * Given a percentage (one of the this.timeupdatePercentages keys)
+     * check if the video playback reached that percentage of completion,
+     * if yes, fire the playbackProgress% event
+     * @param percentage
+     * @param data
+     */
     onPercentage(percentage, data) {
         if (Math.floor(data.percent * 100) === percentage) {
             if (!this.timeupdatePercentages[percentage]) {
@@ -104,6 +163,9 @@ class VimeoProvider {
         }
     }
 
+    /**
+     * Register default listeners on Player init
+     */
     registerDefaultListeners() {
         this.vmPlayer.on('timeupdate', (data) => {
             this.onPercentage(25, data);
@@ -112,6 +174,10 @@ class VimeoProvider {
         });
     }
 
+    /**
+     * Remove the DM Player DOM Node
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     clear() {
         return this.ready.then(() => {
             this.listeners = {};
@@ -120,6 +186,17 @@ class VimeoProvider {
         });
     }
 
+    /**
+     * Add listener function to an event
+     * Register the function in the internal this.listeners object
+     * if there is no Vimeo Player listeners for the requested event, register one
+     * When the Vimeo Player fires the event,
+     * the registered cb will call all listeners associated with the event
+     * @param event
+     * @param cb
+     * @param once
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     on(event, cb, once = false) {
         return this.ready.then(() => {
             const eventName = eventsNameMapping[event] || Object.values(eventsNameMapping).find(e => e === 'event') || event;
@@ -133,10 +210,25 @@ class VimeoProvider {
         });
     }
 
+    /**
+     * Add a listener to an event,
+     * the listener will be fired only once
+     * @param event
+     * @param cb
+     * @return {PromiseLike<T|never>|Promise<T|never>}
+     */
     one(event, cb) {
         return this.on(event, cb, true);
     }
 
+    /**
+     * Remove a listener from an event
+     * if the given listener is the last one for the given event
+     * remove also the relative Vimeo Player event listener
+     * @param event
+     * @param cb
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     off(event, cb) {
         return this.ready.then(() => {
             if (this.listeners[event]) {
@@ -151,32 +243,63 @@ class VimeoProvider {
         });
     }
 
+    /**
+     * When Vimeo Player is ready, send play command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     play() {
         return this.ready.then(() => this.vmPlayer.play());
     }
 
+    /**
+     * When Vimeo Player is ready, send pause command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     pause() {
         return this.ready.then(() => this.vmPlayer.pause());
     }
 
+    /**
+     * When Vimeo Player is ready, send unload command (restore the video at the initial state)
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     stop() {
         return this.ready.then(() => this.vmPlayer.unload());
     }
 
+    /**
+     * When Vimeo Player is ready, send setVolume to 0 command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     mute() {
         return this.ready.then(() => this.vmPlayer.setVolume(0));
     }
 
+    /**
+     * When Vimeo Player is ready, send setVolume to 1 command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     unmute() {
         return this.ready.then(() => this.vmPlayer.setVolume(1));
     }
 
+    /**
+     * When Vimeo Player is ready,
+     * check the current volume and send setVolume command with 1 or 0 to mute or unmute
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     toggleMute() {
         return this.ready
             .then(() => this.vmPlayer.getVolume())
             .then(volume => this.vmPlayer.setVolume(volume > 0 ? 0 : 1));
     }
 
+    /**
+     * When Vimeo Player is ready, send setVolume command
+     * volumeLevel can be a float from 0 to 1 or an integer from 0 to 100
+     * @param volumeLevel
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     setVolume(volumeLevel) {
         if (volumeLevel > 1) {
             volumeLevel /= 100;
@@ -184,26 +307,48 @@ class VimeoProvider {
         return this.ready.then(() => this.vmPlayer.setVolume(volumeLevel));
     }
 
+    /**
+     * When Vimeo Player is ready, send command to seek to the current time plus the given seconds
+     * @param seconds
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     forward(seconds) {
         return this.ready
             .then(() => this.vmPlayer.getCurrentTime())
             .then(current => this.vmPlayer.setCurrentTime(current + seconds));
     }
 
+    /**
+     * When Vimeo Player is ready, send command to seek to the current time minus the given seconds
+     * @param seconds
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     rewind(seconds) {
         return this.ready
             .then(() => this.vmPlayer.getCurrentTime())
             .then(current => this.vmPlayer.setCurrentTime(current - seconds));
     }
 
+    /**
+     * When Vimeo Player is ready, send command to seek to the given seconds
+     * @param seconds
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     seek(seconds) {
         return this.ready.then(() => this.vmPlayer.setCurrentTime(seconds));
     }
 
+    /**
+     * When Vimeo Player is ready, send command to get the video url
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     download() {
         return this.ready.then(() => this.vmPlayer.getVideoUrl());
     }
 
+    /**
+     * Return all the registered listeners grouped by their event
+     */
     getListeners() {
         return this.listeners;
     }
