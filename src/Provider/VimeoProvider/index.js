@@ -60,16 +60,16 @@ class VimeoProvider {
     }
 
     addVmListener(evt) {
-        const cb = data => this.fireEvent(evt, data);
+        const cb = (...data) => this.fireEvent(evt, ...data);
         this.vmListeners[evt] = cb;
         return cb;
     }
 
-    fireEvent(evt, data) {
+    fireEvent(evt, ...data) {
         if (typeof this.listeners[evt] !== 'undefined') {
             this.listeners[evt].forEach((event) => {
                 if (typeof event.callback === 'function') {
-                    event.callback(data);
+                    event.callback(...data);
                 }
                 if (event.once) {
                     this.off(evt, event.callback);
@@ -119,6 +119,55 @@ class VimeoProvider {
 
     pause() {
         return this.ready.then(() => this.vmPlayer.pause());
+    }
+
+    stop() {
+        return this.ready.then(() => this.vmPlayer.unload());
+    }
+
+    mute() {
+        return this.ready.then(() => this.vmPlayer.setVolume(0));
+    }
+
+    unmute() {
+        return this.ready.then(() => this.vmPlayer.setVolume(1));
+    }
+
+    toggleMute() {
+        return this.ready
+            .then(() => this.vmPlayer.getVolume())
+            .then(volume => this.vmPlayer.setVolume(volume > 0 ? 0 : 1));
+    }
+
+    setVolume(volumeLevel) {
+        if (volumeLevel > 1) {
+            volumeLevel /= 100;
+        }
+        return this.ready.then(() => this.vmPlayer.setVolume(volumeLevel));
+    }
+
+    forward(seconds) {
+        return this.ready
+            .then(() => this.vmPlayer.getCurrentTime())
+            .then(current => this.vmPlayer.setCurrentTime(current + seconds));
+    }
+
+    rewind(seconds) {
+        return this.ready
+            .then(() => this.vmPlayer.getCurrentTime())
+            .then(current => this.vmPlayer.setCurrentTime(current - seconds));
+    }
+
+    seek(seconds) {
+        return this.ready.then(() => this.vmPlayer.setCurrentTime(seconds));
+    }
+
+    download() {
+        return this.ready.then(() => this.vmPlayer.getVideoUrl());
+    }
+
+    getListeners() {
+        return this.listeners;
     }
 }
 
