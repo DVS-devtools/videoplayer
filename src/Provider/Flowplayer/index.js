@@ -19,7 +19,25 @@ import getDomNode from '../../lib/getDomNode';
     - volume: (0 to 1),
     - key: For commercial use (string),
     - logo: (string or object)
+
+    for all the player options, please refer to https://flowplayer.com/help/developers/flowplayer-7/setup#player-options,
+    for all the player events, please refer to: https://flowplayer.com/help/developers/flowplayer-7/api#events,
+    for all the player commands, please refer to: https://flowplayer.com/help/developers/flowplayer-7/api
 */
+
+const eventsNameMapping = {
+    end: 'finish',
+    playbackProgress: 'progress',
+    loadProgress: 'buffer',
+    setVolume: 'volume',
+    play: 'resume',
+};
+
+const eventsToIgnore = [
+    'playbackProgress25',
+    'playbackProgress50',
+    'playbackProgress75'
+];
 
 export default class FlowPlayer {
     id = null;
@@ -31,6 +49,8 @@ export default class FlowPlayer {
     videoId = null;
 
     listeners = {};
+
+    fpListeners = {};
 
     ready = null;
 
@@ -47,6 +67,8 @@ export default class FlowPlayer {
         50: false,
         75: false,
     };
+
+    isPlayed = false;
 
     constructor(options, id) {
         this.id = id;
@@ -137,6 +159,27 @@ export default class FlowPlayer {
         });
     }
 
+    // ???
+    addFPListener(evt) {
+        const cb = () => this.fireEvent(evt);
+        this.fpListeners[evt] = cb;
+        return cb;
+    }
+
+    // DOUBT ????????????? we need to detach the function, and to the event on itself
+    fireEvent(evt) {
+        if (typeof this.listeners[evt] !== 'undefined') {
+            this.listeners[evt].forEach((event) => {
+                if (typeof event.callback === 'function') {
+                    event.callback();
+                }
+                if (event.once) {
+                    this.off(evt, event.callback);
+                }
+            });
+        }
+    }
+
     onPercentage(percentage) {
         const { duration, time } = this.fpPlayer.video;
 
@@ -155,6 +198,51 @@ export default class FlowPlayer {
             this.onPercentage(25);
             this.onPercentage(50);
             this.onPercentage(75);
+        });
+
+        this.fpPlayer.on('resume', () => {
+            if (!this.isPlayed) {
+                this.fireEvent('firstPlay');
+                this.isPlayed = true;
+            }
+        });
+    }
+
+    clear() {
+        // TO IMPLEMENT
+    }
+
+    on(event, cb, once = false) {
+        return this.ready.then(() => {
+            const eventName = eventsNameMapping[event] || Object.values(eventsNameMapping).find(e => e === 'event') || event;
+
+            if (typeof this.listeners[event] === 'undefined') {
+                this.listeners[event] = [];
+
+                if (!eventsToIgnore.includes(event)) {
+                    this.fpPlayer.on(eventName, this.addFPListener(event));
+                }
+            }
+
+            this.listeners[event].unshift({ callback: cb, once });
+        });
+    }
+
+    one(event, cb) {
+        return this.on(event, cb, true);
+    }
+
+    off(event, cb) {
+        return this.ready.then(() => {
+            if (this.listeners[event]) {
+                const index = this.listeners[event].findIndex(evt => evt.callback === cb);
+                if (index > -1) {
+                    this.listeners[event].splice(index, 1);
+                }
+                if (!this.listeners[event].length && this.fpListeners[event]) {
+                    this.fpPlayer.off(event, this.fpListeners[event]);
+                }
+            }
         });
     }
 }
