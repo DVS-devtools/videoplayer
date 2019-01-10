@@ -1,4 +1,5 @@
 import TestProvider from '../Provider/testProvider';
+import VimeoProvider from '../Provider/VimeoProvider';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
@@ -32,6 +33,9 @@ export default class Player {
         switch (options.provider) {
         case 'test':
             this.player = new TestProvider(options, id);
+            break;
+        case 'vimeo':
+            this.player = new VimeoProvider(options, id);
             break;
         default:
             this.player = null;

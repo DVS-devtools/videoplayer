@@ -19,7 +19,9 @@
     "version": "npm run build && npm run doc && npm run doc:latest",
     "postversion": "git add docs/ && git commit -am \"Documentation ${npm_package_version}\" && git push --follow-tags"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@vimeo/player": "^2.6.7"
+  },
   "devDependencies": {
     "@babel/core": "^7.1.5",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
