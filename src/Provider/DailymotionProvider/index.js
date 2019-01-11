@@ -226,7 +226,9 @@ class DailymotionProvider {
      */
     on(event, cb, once = false) {
         return this.ready.then(() => {
-            const eventName = eventsNameMapping[event] || Object.values(eventsNameMapping).find(e => e === 'event') || event;
+            const eventName = eventsNameMapping[event]
+                || Object.values(eventsNameMapping).find(e => e === event)
+                || event;
             if (typeof this.listeners[event] === 'undefined') {
                 this.listeners[event] = [];
                 if (!eventsToIgnore.includes(event)) {
