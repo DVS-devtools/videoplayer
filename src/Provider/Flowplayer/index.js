@@ -60,6 +60,8 @@ export default class FlowPlayer {
 
     fpUrl = 'https://releases.flowplayer.org/7.2.7/flowplayer.min.js';
 
+    lastVolumeValue = 0;
+
     fpPlayer = null;
 
     timeupdatePercentages = {
@@ -69,6 +71,10 @@ export default class FlowPlayer {
     };
 
     isPlayed = false;
+
+    get activeListeners() {
+        return this.listeners;
+    }
 
     constructor(options, id) {
         this.id = id;
@@ -189,6 +195,16 @@ export default class FlowPlayer {
         }
     }
 
+    fireFirstPlay = () => {
+        if (!this.isPlayed) {
+            this.fireEvent('firstPlay');
+            this.isPlayed = true;
+            this.lastVolumeValue = this.fpPlayer.volumeLevel;
+
+            this.off('resume', this.fireFirstPlay);
+        }
+    };
+
     registerDefaultListeners() {
         this.fpPlayer.on('progress', () => {
             this.onPercentage(25);
@@ -196,18 +212,15 @@ export default class FlowPlayer {
             this.onPercentage(75);
         });
 
-        this.fpPlayer.on('resume', () => {
-            if (!this.isPlayed) {
-                this.fireEvent('resume', { isFirstPlay: true });
-                this.isPlayed = true;
-            } else {
-                this.fireEvent('resume', { isFirstPlay: false });
-            }
-        });
+        this.fpPlayer.on('resume', this.fireFirstPlay);
     }
 
     clear() {
-        // TO IMPLEMENT
+        return this.ready.then(() => {
+            document.getElementById(this.domNodeId).remove();
+            this.fpListeners = {};
+            this.listeners = {};
+        });
     }
 
     on(event, cb, once = false) {
@@ -242,5 +255,69 @@ export default class FlowPlayer {
                 }
             }
         });
+    }
+
+    play() {
+        return this.ready.then(() => { this.fpPlayer.resume(); });
+    }
+
+    pause() {
+        return this.ready.then(() => { this.fpPlayer.pause(); });
+    }
+
+    togglePlay() {
+        return this.ready.then(() => { this.fpPlayer.toggle(); });
+    }
+
+    stop() {
+        return this.ready.then(() => {
+            this.fpPlayer.stop();
+            this.isPlayed = false;
+            this.fpPlayer.on('resume', this.fireFirstPlay);
+        });
+    }
+
+    mute() {
+        return this.ready.then(() => { this.fpPlayer.mute(true); });
+    }
+
+    unmute() {
+        return this.ready.then(() => { this.fpPlayer.mute(false); });
+    }
+
+    toggleMute() {
+        return this.ready.then(() => { this.fpPlayer.mute(); });
+    }
+
+    toggleFullScreen() {
+        return this.ready.then(() => { this.fpPlayer.fullscreen(); });
+    }
+
+    setVolume(volumeLevel) {
+        if (volumeLevel > 1) {
+            volumeLevel /= 100;
+        }
+
+        return this.ready.then(() => this.fpPlayer.volume(volumeLevel));
+    }
+
+    forward(seconds) {
+        return this.ready.then(() => {
+            this.fpPlayer.seek(this.fpPlayer.video.time + seconds);
+        });
+    }
+
+    rewind(seconds) {
+        return this.ready.then(() => {
+            this.fpPlayer.seek(this.fpPlayer.video.time - seconds);
+        });
+    }
+
+    seek(seconds) {
+        this.ready.then(() => { this.fpPlayer.seek(seconds); });
+    }
+
+    download() {
+        // to implement;
     }
 }
