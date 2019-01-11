@@ -60,8 +60,6 @@ export default class FlowPlayer {
 
     fpUrl = 'https://releases.flowplayer.org/7.2.7/flowplayer.min.js';
 
-    lastVolumeValue = 0;
-
     fpPlayer = null;
 
     timeupdatePercentages = {
@@ -75,6 +73,10 @@ export default class FlowPlayer {
     get activeListeners() {
         return this.listeners;
     }
+
+    get isMuted() { return this.ready.then(() => this.fpPlayer.muted); }
+
+    get isFullScreen() { return this.ready.then(() => this.fpPlayer.isFullscreen); }
 
     constructor(options, id) {
         this.id = id;
@@ -100,37 +102,13 @@ export default class FlowPlayer {
     }
 
     loadSDK() {
-        const jqueryPromise = new Promise((resolve, reject) => {
-            loadscript(this.jqueryUrl, (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-
-        const fpPromise = new Promise((resolve, reject) => {
-            loadscript(this.fpUrl, (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-
-        const fpCSSPromise = new Promise((resolve, reject) => {
-            loadstyle(this.fpCSSUrl, (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-
         if (!global.FPSDK) {
+            const jqueryPromise = loadscript(this.jqueryUrl);
+
+            const fpPromise = loadscript(this.fpUrl);
+
+            const fpCSSPromise = loadstyle(this.fpCSSUrl);
+
             if (typeof window.flowplayer === 'function') {
                 global.FPSDK = Promise.resolve(window.flowplayer);
             } else {
@@ -199,7 +177,6 @@ export default class FlowPlayer {
         if (!this.isPlayed) {
             this.fireEvent('firstPlay');
             this.isPlayed = true;
-            this.lastVolumeValue = this.fpPlayer.volumeLevel;
 
             this.off('resume', this.fireFirstPlay);
         }

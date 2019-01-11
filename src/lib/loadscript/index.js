@@ -1,4 +1,4 @@
-export default (url, callback) => {
+export default url => new Promise((resolve, reject) => {
     if (typeof url === 'string') {
         const head = document.head || document.getElementsByTagName('head')[0];
         const script = document.createElement('script');
@@ -11,16 +11,16 @@ export default (url, callback) => {
             script.onerror = null;
             script.onload = null;
 
-            callback(null, script);
+            resolve(null, script);
         };
 
         script.onerror = () => {
             script.onerror = null;
             script.onload = null;
 
-            callback(new Error(`Failed to load: ${url}`), script);
+            reject(new Error(`Failed to load: ${url}`), script);
         };
 
         head.appendChild(script);
     }
-};
+});
