@@ -291,7 +291,7 @@ export default class FlowPlayer {
     }
 
     seek(seconds) {
-        this.ready.then(() => { this.fpPlayer.seek(seconds); });
+        return this.ready.then(() => { this.fpPlayer.seek(seconds); });
     }
 
     download() {
