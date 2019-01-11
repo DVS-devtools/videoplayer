@@ -78,14 +78,14 @@ class DailymotionProvider {
      * Get video Muted status
      */
     get isMuted() {
-        return this.dmPlayer ? this.dmPlayer.muted : undefined;
+        return this.ready.then(() => this.dmPlayer.muted);
     }
 
     /**
      * Get video Fullscreen status
      */
     get isFullScreen() {
-        return this.dmPlayer ? this.dmPlayer.fullscreen : undefined;
+        return this.ready.then(() => this.dmPlayer.fullscreen);
     }
 
     constructor(options, id) {

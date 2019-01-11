@@ -180,28 +180,18 @@ describe('DailymotionProvider getters and cleanup', () => {
         `;
     });
 
-    it('should get muted status with isMuted getter', () => {
+    it('should get muted status with isMuted getter', async () => {
         Instance.dmPlayer.muted = true;
-        expect(Instance.isMuted).toBe(true);
+        expect(await Instance.isMuted).toBe(true);
         Instance.dmPlayer.muted = false;
-        expect(Instance.isMuted).toBe(false);
+        expect(await Instance.isMuted).toBe(false);
     });
 
-    it('should get fullscreen status with isFullScreen getter', () => {
+    it('should get fullscreen status with isFullScreen getter', async () => {
         Instance.dmPlayer.fullscreen = true;
-        expect(Instance.isFullScreen).toBe(true);
+        expect(await Instance.isFullScreen).toBe(true);
         Instance.dmPlayer.fullscreen = false;
-        expect(Instance.isFullScreen).toBe(false);
-    });
-
-    it('should return undefined on isMuted getter if DM is not ready', () => {
-        Instance.dmPlayer = null;
-        expect(Instance.isMuted).toBeUndefined();
-    });
-
-    it('should return undefined on isFullScreen getter if DM is not ready', () => {
-        Instance.dmPlayer = null;
-        expect(Instance.isFullScreen).toBeUndefined();
+        expect(await Instance.isFullScreen).toBe(false);
     });
 
     it('should return all the registered listeners', async () => {
