@@ -57,6 +57,15 @@ class VimeoProvider {
     ready = null;
 
     /**
+     * Get video Muted status
+     * @return {PromiseLike<boolean | never>}
+     */
+    get isMuted() {
+        return this.ready.then(() => this.vmPlayer.getVolume())
+            .then(volume => volume <= 0);
+    }
+
+    /**
      * Keep track of playback progress percentage, used to fire playback percentage events
      * @type {{'25': boolean, '50': boolean, '75': boolean}}
      */

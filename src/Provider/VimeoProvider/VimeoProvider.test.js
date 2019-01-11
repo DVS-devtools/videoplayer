@@ -204,6 +204,13 @@ describe('VimeoProvider getters and cleanup', () => {
         destroySpy = jest.spyOn(MockPlayer.prototype, 'destroy');
     });
 
+    it('should get muted status with isMuted getter', async () => {
+        Instance.vmPlayer.volume = 0;
+        expect(await Instance.isMuted).toBe(true);
+        Instance.vmPlayer.volume = 0.6;
+        expect(await Instance.isMuted).toBe(false);
+    });
+
     it('should return all the registered listeners', async () => {
         const cb1 = () => {};
         const cb2 = () => {};
