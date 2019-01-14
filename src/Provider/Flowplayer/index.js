@@ -39,43 +39,105 @@ const eventsToIgnore = [
     'playbackProgress75'
 ];
 
+/**
+ * Flowplayer Player Wrapper
+ * @ignore
+ * @class FlowplayerProvider
+ */
 export default class FlowPlayer {
+    /**
+     * Internal player id
+     */
     id = null;
 
+    /**
+     * Video src url
+     */
     videoUrl = null;
 
+    /**
+     * DOM Node id, where to mount the Flowplayer videplayer
+     */
     domNodeId = null;
 
+    /**
+     *  The id of a video
+     */
     videoId = null;
 
+    /**
+     * All registered internalListeners grouped by event:
+     * {
+     *     play: [
+     *         {callback: fn(), once: false}
+     *     ]
+     * }
+     * once flag: if true, the callback is fired once and then removed
+     */
     internalListeners = {};
 
+    /**
+     * Internal event mapping to the flowplayer Player events, grouped by event
+     * the event callback will fire all registered event internalListeners of this.internalListeners
+     */
     fpListeners = {};
 
+    /**
+     * Promise resolved when the Flowplayer Player is ready to accept API calls
+     */
     ready = null;
 
+    /**
+     * CSS url of flowplayer, can also be custom, must be implemented
+     */
     fpCSSUrl = 'https://releases.flowplayer.org/7.2.7/skin/skin.css';
 
+    /**
+     * Flowplayer needs jquery, it's url is specified here
+     */
     jqueryUrl = 'https://code.jquery.com/jquery-1.12.4.min.js';
 
+    
+    /**
+     * Flowplayer JS url
+     */
     fpUrl = 'https://releases.flowplayer.org/7.2.7/flowplayer.min.js';
 
+    /**
+     * The Flowplayer Player instance
+     */
     fpPlayer = null;
 
+    /**
+     * Keep track of playback progress percentage, used to fire playback percentage events
+     * @type {{'25': boolean, '50': boolean, '75': boolean}}
+     */
     timeupdatePercentages = {
         25: false,
         50: false,
         75: false,
     };
 
+    /**
+    * Used for first play event
+    */
     isPlayed = false;
 
+    /**
+     * Return all the registered internalListeners grouped by their event
+     */
     get listeners() {
         return this.internalListeners;
     }
 
+    /**
+     * Get video muted status
+     */
     get isMuted() { return this.fpPlayer.muted; } // TO UNDERSTAND - PROMISE
 
+    /**
+     * Get video fullscreen status
+     */
     get isFullScreen() { return this.fpPlayer.isFullscreen; } // TO UNDERSTAND - PROMISE
 
     constructor(options, id) {
@@ -101,6 +163,11 @@ export default class FlowPlayer {
             options.providerOptions || {}));
     }
 
+    /**
+     * Load the Flowplayer SDK if not loaded yet
+     * If multiple instances of this provider exists in the same page,
+     * only one SDK is loaded and shared between all instances
+     */
     loadSDK() {
         if (!global.FPSDK) {
             const jqueryPromise = loadscript(this.jqueryUrl);
@@ -123,6 +190,12 @@ export default class FlowPlayer {
         return global.FPSDK;
     }
 
+    /**
+     * Create the Flowplayer Player in the given DOM Node with the given options
+     * When the Player is ready, resolve the this.ready Promise
+     * domNode: id of the container, or a domNode, or a query selector element
+     * options: provider options of the player
+     */
     createFP(domNode, options) {
         return new Promise((resolve, reject) => {
             this.loadSDK().then((FP) => {
@@ -141,12 +214,21 @@ export default class FlowPlayer {
         });
     }
 
+    /**
+     * Create a callback function that fires all registered internalListeners for a given event
+     * Store the callback in the this.fpListeners object
+     */
     addFPListener(evt) {
         const cb = () => this.fireEvent(evt);
         this.fpListeners[evt] = cb;
         return cb;
     }
 
+    /**
+     * Fire all internalListeners for a given event
+     * if a fired listener is flagged as once,
+     * immediately deregister it after its fire (fired only once)
+     */
     fireEvent(evt, params) {
         if (typeof this.internalListeners[evt] !== 'undefined') {
             this.internalListeners[evt].forEach((event) => {
@@ -160,6 +242,11 @@ export default class FlowPlayer {
         }
     }
 
+    /**
+     * Given a percentage (one of the this.timeupdatePercentages keys)
+     * check if the video playback reached that percentage of completion,
+     * if yes, fire the playbackProgress% event
+     */
     onPercentage(percentage) {
         const { duration, time } = this.fpPlayer.video;
 
@@ -173,6 +260,9 @@ export default class FlowPlayer {
         }
     }
 
+    /**
+     * Fire the first play event (if played has not been started before)
+     */
     fireFirstPlay = () => {
         if (!this.isPlayed) {
             this.fireEvent('firstPlay');
@@ -182,6 +272,9 @@ export default class FlowPlayer {
         }
     };
 
+    /**
+     * Register default internalListeners on Player init
+     */
     registerDefaultListeners() {
         this.fpPlayer.on('progress', () => {
             this.onPercentage(25);
@@ -192,6 +285,9 @@ export default class FlowPlayer {
         this.fpPlayer.on('resume', this.fireFirstPlay);
     }
 
+    /**
+     * Remove the Flowplayer Player DOM Node, and clear all the status and listeners
+     */
     clear() {
         return this.ready.then(() => {
             document.getElementById(this.domNodeId).remove();
@@ -200,6 +296,13 @@ export default class FlowPlayer {
         });
     }
 
+    /**
+     * Add listener function to an event
+     * Register the function in the internal this.internalListeners object
+     * if there is no Flowplayer Player internalListeners for the requested event, register one
+     * When the Flowplayer Player fires the event,
+     * the registered cb will call all internalListeners associated with the event
+     */
     on(event, cb, once = false) {
         return this.ready.then(() => {
             const eventName = eventsNameMapping[event] || Object.values(eventsNameMapping).find(e => e === 'event') || event;
@@ -216,10 +319,19 @@ export default class FlowPlayer {
         });
     }
 
+    /**
+     * Add a listener to an event,
+     * the listener will be fired only once
+     */
     one(event, cb) {
         return this.on(event, cb, true);
     }
 
+    /**
+     * Remove a listener from an event
+     * if the given listener is the last one for the given event
+     * remove also the relative Flowplayer Player event listener
+     */
     off(event, cb) {
         return this.ready.then(() => {
             if (this.internalListeners[event]) {
@@ -234,18 +346,30 @@ export default class FlowPlayer {
         });
     }
 
+    /**
+     * When Flowplayer Player is ready, send play command
+     */
     play() {
         return this.ready.then(() => { this.fpPlayer.resume(); });
     }
 
+    /**
+     * When Flowplayer Player is ready, send pause command
+     */
     pause() {
         return this.ready.then(() => { this.fpPlayer.pause(); });
     }
 
+    /**
+     * When Flowplayer Player is ready, send togglePlay command
+     */
     togglePlay() {
         return this.ready.then(() => { this.fpPlayer.toggle(); });
     }
 
+    /**
+     * When Flowplayer Player is ready, send stop command
+     */
     stop() {
         return this.ready.then(() => {
             this.fpPlayer.stop();
@@ -254,22 +378,37 @@ export default class FlowPlayer {
         });
     }
 
+    /**
+     * When Flowplayer Player is ready, send mute command
+     */
     mute() {
         return this.ready.then(() => { this.fpPlayer.mute(true); });
     }
 
+    /**
+     * When Flowplayer Player is ready, send unmute command
+     */
     unmute() {
         return this.ready.then(() => { this.fpPlayer.mute(false); });
     }
 
+    /**
+     * When Flowplayer Player is ready, send togglemute command
+     */
     toggleMute() {
         return this.ready.then(() => { this.fpPlayer.mute(); });
     }
 
+    /**
+     * When Flowplayer Player is ready, send togglefullscreen command
+     */
     toggleFullScreen() {
         return this.ready.then(() => { this.fpPlayer.fullscreen(); });
     }
 
+    /**
+     * When Flowplayer Player is ready, set the volume to a given percentage
+     */
     setVolume(volumeLevel) {
         if (volumeLevel > 1) {
             volumeLevel /= 100;
@@ -278,22 +417,34 @@ export default class FlowPlayer {
         return this.ready.then(() => this.fpPlayer.volume(volumeLevel));
     }
 
+    /**
+     * When Flowplayer Player is ready, go forward from current time to given seconds
+     */
     forward(seconds) {
         return this.ready.then(() => {
             this.fpPlayer.seek(this.fpPlayer.video.time + seconds);
         });
     }
 
+    /**
+     * When Flowplayer Player is ready, rewind from current time to given seconds
+     */
     rewind(seconds) {
         return this.ready.then(() => {
             this.fpPlayer.seek(this.fpPlayer.video.time - seconds);
         });
     }
 
+    /**
+     * When Flowplayer Player is ready, set the current time to a specified time (in seconds)
+     */
     seek(seconds) {
         return this.ready.then(() => { this.fpPlayer.seek(seconds); });
     }
 
+    /**
+     * start download flow
+     */
     download() {
         // to implement;
     }
