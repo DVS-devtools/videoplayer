@@ -56,6 +56,8 @@ class VimeoProvider {
      */
     ready = null;
 
+    isPlayed = false;
+
     /**
      * Get video Muted status
      * @return {PromiseLike<boolean | never>}
@@ -172,6 +174,15 @@ class VimeoProvider {
         }
     }
 
+    fireFirstPlay = () => {
+        if (!this.isPlayed) {
+            this.fireEvent('firstPlay');
+            this.isPlayed = true;
+
+            this.off('play', this.fireFirstPlay);
+        }
+    };
+
     /**
      * Register default listeners on Player init
      */
@@ -181,6 +192,7 @@ class VimeoProvider {
             this.onPercentage(50, data);
             this.onPercentage(75, data);
         });
+        this.vmPlayer.on('play', this.fireFirstPlay);
     }
 
     /**
