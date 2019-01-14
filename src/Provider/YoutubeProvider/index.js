@@ -9,24 +9,60 @@ const eventsNameMapping = {
     3: 'buffering',
 };
 
+/**
+ * Youtube Player Wrapper
+ * @ignore
+ * @class YoutubeProvider
+ */
 @Unsupported('toggleFullScreen')
 class YoutubeProvider {
+    /**
+     * Internal player id
+     */
     id = null;
 
+    /**
+     * The Youtube Player instance
+     */
     ytPlayer = null;
 
+    /**
+     * All registered listeners grouped by event:
+     * {
+     *     play: [
+     *         {callback: fn(), once: false}
+     *     ]
+     * }
+     * once flag: if true, the callback is fired once and then removed
+     */
     listeners = {};
 
+    /**
+     * Promise resolved when the Youtube library is loaded and the Youtube Player is ready
+     */
     ready = null;
 
+    /**
+     * setInterval id to simulate the playback progress event,
+     * stored to remove the interval whan player is cleared
+     * @type {null}
+     */
     fakeProgressListener = null;
 
+    /**
+     * Keep track of playback progress percentage, used to fire playback percentage events
+     * @type {{'25': boolean, '50': boolean, '75': boolean}}
+     */
     timeupdatePercentages = {
         25: false,
         50: false,
         75: false,
     };
 
+    /**
+     * Get video Muted status
+     * @return {PromiseLike<boolean | never>}
+     */
     get isMuted() {
         return this.ready.then(() => this.ytPlayer.isMuted());
     }
@@ -38,6 +74,11 @@ class YoutubeProvider {
             Object.assign({}, { videoId: options.videoId }, options.providerOptions || {}));
     }
 
+    /**
+     * Load the Youtube library if not loaded yet
+     * If multiple instances of this provider exists in the same page,
+     * only one library is loaded and shared between all instances
+     */
     loadSDK() {
         if (!global.YTSDK) {
             if (typeof window.AYT === 'object' && typeof window.AYT.Player === 'function') {
@@ -54,6 +95,13 @@ class YoutubeProvider {
         return global.YTSDK;
     }
 
+    /**
+     * Create the Youtube Player in the given DOM Node with the given options
+     * When the Player is ready, resolve the this.ready Promise
+     * @param domNode
+     * @param options
+     * @return {Promise<any>}
+     */
     createYT(domNode, options) {
         return new Promise((resolve, reject) => {
             this.loadSDK().then((Player) => {
@@ -66,6 +114,12 @@ class YoutubeProvider {
         });
     }
 
+    /**
+     * Register default listeners on Player init
+     * Youtube player has only one event (stateChange),
+     * we register a listener to that event
+     * and call the internal listeners based on the event.data value (eventsNameMapping)
+     */
     registerDefaultListeners() {
         this.ytPlayer.on('stateChange', (e) => {
             if (eventsNameMapping[e.data]) {
@@ -74,6 +128,13 @@ class YoutubeProvider {
         });
     }
 
+    /**
+     * Given a percentage (one of the this.timeupdatePercentages keys)
+     * check if the video playback reached that percentage of completion,
+     * if yes, fire the playbackProgress% event
+     * @param percentage
+     * @param data
+     */
     onPercentage(percentage, data) {
         if (Math.floor((data.total / 100) * percentage) === Math.floor(data.progress)) {
             if (!this.timeupdatePercentages[percentage]) {
@@ -85,6 +146,10 @@ class YoutubeProvider {
         }
     }
 
+    /**
+     * Because of Youtube player lacks of playback progress event,
+     * we simulate it with an interval every 250ms
+     */
     addProgressFakeListener() {
         this.fakeProgressListener = setInterval(async () => {
             const total = await this.ytPlayer.getDuration();
@@ -115,6 +180,16 @@ class YoutubeProvider {
         }
     }
 
+    /**
+     * Add listener function to an event
+     * Register the function in the internal this.listeners object
+     * When the Youtube Player fires the stateChange event with the event associated State,
+     * all listeners associated with the event will be called
+     * @param event
+     * @param cb
+     * @param once
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     on(event, cb, once = false) {
         return this.ready.then(() => {
             if (typeof this.listeners[event] === 'undefined') {
@@ -124,10 +199,23 @@ class YoutubeProvider {
         });
     }
 
+    /**
+     * Add a listener to an event,
+     * the listener will be fired only once
+     * @param event
+     * @param cb
+     * @return {PromiseLike<T|never>|Promise<T|never>}
+     */
     one(event, cb) {
         return this.on(event, cb, true);
     }
 
+    /**
+     * Remove a listener from an event
+     * @param event
+     * @param cb
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     off(event, cb) {
         return this.ready.then(() => {
             if (this.listeners[event]) {
@@ -139,6 +227,10 @@ class YoutubeProvider {
         });
     }
 
+    /**
+     * Remove the Youtube Player DOM Node
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     clear() {
         return this.ready.then(() => {
             clearInterval(this.fakeProgressListener);
@@ -147,26 +239,52 @@ class YoutubeProvider {
         });
     }
 
+    /**
+     * When Youtube Player is ready, send playVideo command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     play() {
         return this.ready.then(() => this.ytPlayer.playVideo());
     }
 
+    /**
+     * When Youtube Player is ready, send pauseVideo command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     pause() {
         return this.ready.then(() => this.ytPlayer.pauseVideo());
     }
 
+    /**
+     * When Youtube Player is ready, send stopVideo command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     stop() {
         return this.ready.then(() => this.ytPlayer.stopVideo());
     }
 
+    /**
+     * When Youtube Player is ready, send mute command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     mute() {
         return this.ready.then(() => this.ytPlayer.mute());
     }
 
+    /**
+     * When Youtube Player is ready, send unMute command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     unmute() {
         return this.ready.then(() => this.ytPlayer.unMute());
     }
 
+    /**
+     * When Youtube Player is ready,
+     * check if video is currently muted, if so, send the unMute command
+     * else, send the mute command
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     toggleMute() {
         return this.ready.then(() => this.ytPlayer.isMuted())
             .then((bool) => {
@@ -177,28 +295,56 @@ class YoutubeProvider {
             });
     }
 
+    /**
+     * When Youtube Player is ready, send setVolume command
+     * volumeLevel must be an number from 0 to 100
+     * @param volumeLevel
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     setVolume(volumeLevel) {
         return this.ready.then(() => this.ytPlayer.setVolume(volumeLevel));
     }
 
+    /**
+     * When Youtube Player is ready, send command to seek to the current time plus the given seconds
+     * @param seconds
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     forward(seconds) {
         return this.ready.then(() => this.ytPlayer.getCurrentTime())
             .then(current => this.ytPlayer.seekTo(current + seconds));
     }
 
+    /**
+     * When Youtube Player is ready, send command to seek to the current time minus the given seconds
+     * @param seconds
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     rewind(seconds) {
         return this.ready.then(() => this.ytPlayer.getCurrentTime())
             .then(current => this.ytPlayer.seekTo(current - seconds));
     }
 
+    /**
+     * When Youtube Player is ready, send command to seek to the given seconds
+     * @param seconds
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     seek(seconds) {
         return this.ready.then(() => this.ytPlayer.seekTo(seconds));
     }
 
+    /**
+     * When Youtube Player is ready, send command to get the video url
+     * @return {PromiseLike<T | never> | Promise<T | never>}
+     */
     download() {
         return this.ready.then(() => this.ytPlayer.getVideoUrl());
     }
 
+    /**
+     * Return all the registered listeners grouped by their event
+     */
     getListeners() {
         return this.listeners;
     }
