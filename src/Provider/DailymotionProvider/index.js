@@ -12,7 +12,7 @@ const eventsNameMapping = {
     seek: 'seeked',
     setVolume: 'volumechange',
     buffering: 'waiting',
-    firstStart: 'start',
+    firstPlay: 'start',
 };
 
 const eventsToIgnore = [
