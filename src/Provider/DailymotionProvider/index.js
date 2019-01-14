@@ -43,7 +43,7 @@ class DailymotionProvider {
     dmPlayer = null;
 
     /**
-     * All registered listeners grouped by event:
+     * All registered internalListeners grouped by event:
      * {
      *     play: [
      *         {callback: fn(), once: false}
@@ -51,11 +51,11 @@ class DailymotionProvider {
      * }
      * once flag: if true, the callback is fired once and then removed
      */
-    listeners = {};
+    internalListeners = {};
 
     /**
      * Internal event mapping to the DM Player events, grouped by event
-     * the event callback will fire all registered event listeners of this.listeners
+     * the event callback will fire all registered event internalListeners of this.internalListeners
      */
     dmListeners = {};
 
@@ -73,6 +73,13 @@ class DailymotionProvider {
         50: false,
         75: false,
     };
+
+    /**
+     * Return all the registered internalListeners grouped by their event
+     */
+    get listeners() {
+        return this.internalListeners;
+    }
 
     /**
      * Get video Muted status
@@ -142,7 +149,7 @@ class DailymotionProvider {
     }
 
     /**
-     * Create a callback function that fires all registered listeners for a given event
+     * Create a callback function that fires all registered internalListeners for a given event
      * Store the callback in the this.dmListeners object
      * @param evt
      * @return {function(): void}
@@ -154,14 +161,14 @@ class DailymotionProvider {
     }
 
     /**
-     * Fire all listeners for a given event
+     * Fire all internalListeners for a given event
      * if a fired listener is flagged as once,
      * immediately deregister it after its fire (fired only once)
      * @param evt
      */
     fireEvent(evt) {
-        if (typeof this.listeners[evt] !== 'undefined') {
-            this.listeners[evt].forEach((event) => {
+        if (typeof this.internalListeners[evt] !== 'undefined') {
+            this.internalListeners[evt].forEach((event) => {
                 if (typeof event.callback === 'function') {
                     event.callback();
                 }
@@ -191,7 +198,7 @@ class DailymotionProvider {
     }
 
     /**
-     * Register default listeners on Player init
+     * Register default internalListeners on Player init
      */
     registerDefaultListeners() {
         this.dmPlayer.addEventListener('timeupdate', () => {
@@ -209,16 +216,16 @@ class DailymotionProvider {
         return this.ready.then(() => {
             document.getElementById(this.domNodeId).remove();
             this.dmListeners = {};
-            this.listeners = {};
+            this.internalListeners = {};
         });
     }
 
     /**
      * Add listener function to an event
-     * Register the function in the internal this.listeners object
-     * if there is no DM Player listeners for the requested event, register one
+     * Register the function in the internal this.internalListeners object
+     * if there is no DM Player internalListeners for the requested event, register one
      * When the DM Player fires the event,
-     * the registered cb will call all listeners associated with the event
+     * the registered cb will call all internalListeners associated with the event
      * @param event
      * @param cb
      * @param once
@@ -229,13 +236,13 @@ class DailymotionProvider {
             const eventName = eventsNameMapping[event]
                 || Object.values(eventsNameMapping).find(e => e === event)
                 || event;
-            if (typeof this.listeners[event] === 'undefined') {
-                this.listeners[event] = [];
+            if (typeof this.internalListeners[event] === 'undefined') {
+                this.internalListeners[event] = [];
                 if (!eventsToIgnore.includes(event)) {
                     this.dmPlayer.addEventListener(eventName, this.addDmListener(event));
                 }
             }
-            this.listeners[event].unshift({ callback: cb, once });
+            this.internalListeners[event].unshift({ callback: cb, once });
         });
     }
 
@@ -260,12 +267,12 @@ class DailymotionProvider {
      */
     off(event, cb) {
         return this.ready.then(() => {
-            if (this.listeners[event]) {
-                const index = this.listeners[event].findIndex(evt => evt.callback === cb);
+            if (this.internalListeners[event]) {
+                const index = this.internalListeners[event].findIndex(evt => evt.callback === cb);
                 if (index > -1) {
-                    this.listeners[event].splice(index, 1);
+                    this.internalListeners[event].splice(index, 1);
                 }
-                if (!this.listeners[event].length && this.dmListeners[event]) {
+                if (!this.internalListeners[event].length && this.dmListeners[event]) {
                     this.dmPlayer.removeEventListener(event, this.dmListeners[event]);
                 }
             }
@@ -377,13 +384,6 @@ class DailymotionProvider {
      */
     download() {
         return this.ready.then(() => this.dmPlayer.watchOnSite());
-    }
-
-    /**
-     * Return all the registered listeners grouped by their event
-     */
-    getListeners() {
-        return this.listeners;
     }
 }
 

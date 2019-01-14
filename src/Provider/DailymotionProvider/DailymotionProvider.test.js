@@ -202,7 +202,7 @@ describe('DailymotionProvider getters and cleanup', () => {
         await Instance.on('pause', cb2);
         await Instance.on('play', cb3);
 
-        const listeners = Instance.getListeners();
+        const listeners = Instance.listeners;
         expect(Object.keys(listeners)).toEqual(['play', 'pause']);
         expect(listeners.play.length).toEqual(2);
         expect(listeners.pause.length).toEqual(1);
@@ -292,7 +292,7 @@ describe('DailymotionProvider events, on - off - one', () => {
         Instance.dmPlayer.fireEvent('play');
         await flushPromises();
         expect(cb).toHaveBeenCalled();
-        expect(Instance.getListeners().play.length).toBe(0);
+        expect(Instance.listeners.play.length).toBe(0);
         expect(spys.removeEventListener).toHaveBeenLastCalledWith('play', dmCb);
     });
 });
