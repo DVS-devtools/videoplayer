@@ -48,7 +48,7 @@ export default class FlowPlayer {
 
     videoId = null;
 
-    listeners = {};
+    internalListeners = {};
 
     fpListeners = {};
 
@@ -70,13 +70,13 @@ export default class FlowPlayer {
 
     isPlayed = false;
 
-    get activeListeners() {
-        return this.listeners;
+    get listeners() {
+        return this.internalListeners;
     }
 
-    get isMuted() { return this.ready.then(() => this.fpPlayer.muted); }
+    get isMuted() { return this.fpPlayer.muted; } // TO UNDERSTAND - PROMISE
 
-    get isFullScreen() { return this.ready.then(() => this.fpPlayer.isFullscreen); }
+    get isFullScreen() { return this.fpPlayer.isFullscreen; } // TO UNDERSTAND - PROMISE
 
     constructor(options, id) {
         this.id = id;
@@ -148,8 +148,8 @@ export default class FlowPlayer {
     }
 
     fireEvent(evt, params) {
-        if (typeof this.listeners[evt] !== 'undefined') {
-            this.listeners[evt].forEach((event) => {
+        if (typeof this.internalListeners[evt] !== 'undefined') {
+            this.internalListeners[evt].forEach((event) => {
                 if (typeof event.callback === 'function') {
                     event.callback(params);
                 }
@@ -196,7 +196,7 @@ export default class FlowPlayer {
         return this.ready.then(() => {
             document.getElementById(this.domNodeId).remove();
             this.fpListeners = {};
-            this.listeners = {};
+            this.internalListeners = {};
         });
     }
 
@@ -204,15 +204,15 @@ export default class FlowPlayer {
         return this.ready.then(() => {
             const eventName = eventsNameMapping[event] || Object.values(eventsNameMapping).find(e => e === 'event') || event;
 
-            if (typeof this.listeners[event] === 'undefined') {
-                this.listeners[event] = [];
+            if (typeof this.internalListeners[event] === 'undefined') {
+                this.internalListeners[event] = [];
 
                 if (!eventsToIgnore.includes(event)) {
                     this.fpPlayer.on(eventName, this.addFPListener(event));
                 }
             }
 
-            this.listeners[event].unshift({ callback: cb, once });
+            this.internalListeners[event].unshift({ callback: cb, once });
         });
     }
 
@@ -222,12 +222,12 @@ export default class FlowPlayer {
 
     off(event, cb) {
         return this.ready.then(() => {
-            if (this.listeners[event]) {
-                const index = this.listeners[event].findIndex(evt => evt.callback === cb);
+            if (this.internalListeners[event]) {
+                const index = this.internalListeners[event].findIndex(evt => evt.callback === cb);
                 if (index > -1) {
-                    this.listeners[event].splice(index, 1);
+                    this.internalListeners[event].splice(index, 1);
                 }
-                if (!this.listeners[event].length && this.fpListeners[event]) {
+                if (!this.internalListeners[event].length && this.fpListeners[event]) {
                     this.fpPlayer.off(event, this.fpListeners[event]);
                 }
             }
