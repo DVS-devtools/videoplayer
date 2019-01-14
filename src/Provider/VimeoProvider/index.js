@@ -84,7 +84,7 @@ class VimeoProvider {
     }
 
     /**
-     * Load the DM SDK if not loaded yet
+     * Load the Vimeo SDK if not loaded yet
      * If multiple instances of this provider exists in the same page,
      * only one SDK is loaded and shared between all instances
      */
@@ -184,7 +184,7 @@ class VimeoProvider {
     }
 
     /**
-     * Remove the DM Player DOM Node
+     * Remove the Vimeo Player DOM Node
      * @return {PromiseLike<T | never> | Promise<T | never>}
      */
     clear() {
