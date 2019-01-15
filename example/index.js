@@ -35,7 +35,6 @@ window.player = VideoPlayer.createPlayer({
             console.log('1- pause');
         }
     }
-    // streamingKey: 'PYSE_158AA1_FM1X_FF_YH'
 });
 
 window.player2 = VideoPlayer.createPlayer({
@@ -58,7 +57,6 @@ window.player2 = VideoPlayer.createPlayer({
             console.log('2 - pause');
         }
     }
-    // streamingKey: 'PYSE_158AA1_FM1X_FF_YH'
 });
 
 console.log(VideoPlayer.getPlayers())
