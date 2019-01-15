@@ -391,3 +391,32 @@ describe('YoutubeProvider events, on - off - one', () => {
         expect(cb).toHaveBeenCalledTimes(2);
     });
 });
+
+describe('YoutubeProvider Errors', () => {
+    beforeEach(() => {
+        global.YTSDK = null;
+        delete window.AYT;
+        jest.resetAllMocks();
+    });
+    afterAll(() => {
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
+        jest.resetModules();
+    });
+
+    it('should catch an error while loading the sdk', () => {
+        jest.mock('youtube-player', () => {
+            throw new Error('Test Error');
+        });
+        const Instance = new YoutubeProvider(options, id);
+        return expect(Instance.ready).rejects.toEqual(new Error('Test Error'));
+    });
+
+    it('should catch an error while creating the player', () =>  {
+        jest.mock('youtube-player', () => () => {
+            throw new Error('Player Test Error');
+        });
+        const Instance = new YoutubeProvider(options, id);
+        return expect(Instance.ready).rejects.toEqual(new Error('Player Test Error'));
+    });
+});
