@@ -16,6 +16,8 @@ class MockPlayer {
 
     duration = 100;
 
+    paused = false;
+
     constructor(...params) {
         setTimeout(() => {
             this.fireEvent('apiready');

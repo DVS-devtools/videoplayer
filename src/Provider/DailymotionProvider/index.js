@@ -330,6 +330,15 @@ class DailymotionProvider {
         return this.ready.then(() => this.dmPlayer.toggleMuted());
     }
 
+    togglePlay() {
+        return this.ready.then(() => {
+            if (this.dmPlayer.paused) {
+                return this.play();
+            }
+            return this.pause();
+        });
+    }
+
     /**
      * When DM Player is ready, send command to toggle fullScreen state
      * @return {PromiseLike<T | never> | Promise<T | never>}
