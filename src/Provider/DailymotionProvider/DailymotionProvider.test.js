@@ -130,6 +130,17 @@ describe('DailymotionProvider API', () => {
         expect(spys.toggleMuted).toHaveBeenCalled();
     });
 
+    it('should call play or pause on togglePlay()', async () => {
+        Instance.dmPlayer.paused = true;
+        await Instance.togglePlay();
+        expect(spys.play).toHaveBeenCalled();
+        expect(spys.pause).not.toHaveBeenCalled();
+        Instance.dmPlayer.paused = false;
+        await Instance.togglePlay();
+        expect(spys.pause).toHaveBeenCalled();
+        expect(spys.play).toHaveBeenCalledTimes(1);
+    });
+
     it('should call setFullscreen on toggleFullScreen()', async () => {
         Instance.dmPlayer.fullscreen = false;
         await Instance.toggleFullScreen();
