@@ -103,7 +103,7 @@ class VimeoProvider {
             if (typeof window.Vimeo === 'object' && typeof window.Vimeo.Player === 'function') {
                 global.VMSDK = Promise.resolve(window.Vimeo.Player);
             } else {
-                global.VMSDK = import('@vimeo/player').then((mod) => {
+                global.VMSDK = import(/* webpackChunkName: 'Vimeo' */'@vimeo/player').then((mod) => {
                     window.Vimeo = {
                         Player: mod.default,
                     };
