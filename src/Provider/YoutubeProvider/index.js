@@ -35,7 +35,7 @@ class YoutubeProvider {
      * }
      * once flag: if true, the callback is fired once and then removed
      */
-    listeners = {};
+    internalListeners = {};
 
     /**
      * Promise resolved when the Youtube library is loaded and the Youtube Player is ready
@@ -59,12 +59,21 @@ class YoutubeProvider {
         75: false,
     };
 
+    isPlayed = false;
+
     /**
      * Get video Muted status
      * @return {PromiseLike<boolean | never>}
      */
     get isMuted() {
         return this.ready.then(() => this.ytPlayer.isMuted());
+    }
+
+    /**
+     * Return all the registered listeners grouped by their event
+     */
+    get listeners() {
+        return this.internalListeners;
     }
 
     constructor(options, id) {
@@ -114,6 +123,15 @@ class YoutubeProvider {
         });
     }
 
+    fireFirstPlay = () => {
+        if (!this.isPlayed) {
+            this.fireEvent('firstPlay');
+            this.isPlayed = true;
+
+            this.off('play', this.fireFirstPlay);
+        }
+    };
+
     /**
      * Register default listeners on Player init
      * Youtube player has only one event (stateChange),
@@ -124,6 +142,9 @@ class YoutubeProvider {
         this.ytPlayer.on('stateChange', (e) => {
             if (eventsNameMapping[e.data]) {
                 this.fireEvent(eventsNameMapping[e.data], e);
+            }
+            if (e.data === 1) { // Play event
+                this.fireFirstPlay();
             }
         });
     }
@@ -168,8 +189,8 @@ class YoutubeProvider {
      * @param data
      */
     fireEvent(evt, ...data) {
-        if (typeof this.listeners[evt] !== 'undefined') {
-            this.listeners[evt].forEach((event) => {
+        if (typeof this.internalListeners[evt] !== 'undefined') {
+            this.internalListeners[evt].forEach((event) => {
                 if (typeof event.callback === 'function') {
                     event.callback(...data);
                 }
@@ -182,7 +203,7 @@ class YoutubeProvider {
 
     /**
      * Add listener function to an event
-     * Register the function in the internal this.listeners object
+     * Register the function in the internal this.internalListeners object
      * When the Youtube Player fires the stateChange event with the event associated State,
      * all listeners associated with the event will be called
      * @param event
@@ -192,10 +213,10 @@ class YoutubeProvider {
      */
     on(event, cb, once = false) {
         return this.ready.then(() => {
-            if (typeof this.listeners[event] === 'undefined') {
-                this.listeners[event] = [];
+            if (typeof this.internalListeners[event] === 'undefined') {
+                this.internalListeners[event] = [];
             }
-            this.listeners[event].unshift({ callback: cb, once });
+            this.internalListeners[event].unshift({ callback: cb, once });
         });
     }
 
@@ -218,10 +239,10 @@ class YoutubeProvider {
      */
     off(event, cb) {
         return this.ready.then(() => {
-            if (this.listeners[event]) {
-                const index = this.listeners[event].findIndex(evt => evt.callback === cb);
+            if (this.internalListeners[event]) {
+                const index = this.internalListeners[event].findIndex(evt => evt.callback === cb);
                 if (index > -1) {
-                    this.listeners[event].splice(index, 1);
+                    this.internalListeners[event].splice(index, 1);
                 }
             }
         });
@@ -260,7 +281,10 @@ class YoutubeProvider {
      * @return {PromiseLike<T | never> | Promise<T | never>}
      */
     stop() {
-        return this.ready.then(() => this.ytPlayer.stopVideo());
+        return this.ready.then(() => {
+            this.isPlayed = false;
+            return this.ytPlayer.stopVideo();
+        });
     }
 
     /**
@@ -316,7 +340,8 @@ class YoutubeProvider {
     }
 
     /**
-     * When Youtube Player is ready, send command to seek to the current time minus the given seconds
+     * When Youtube Player is ready,
+     * send command to seek to the current time minus the given seconds
      * @param seconds
      * @return {PromiseLike<T | never> | Promise<T | never>}
      */
@@ -340,13 +365,6 @@ class YoutubeProvider {
      */
     download() {
         return this.ready.then(() => this.ytPlayer.getVideoUrl());
-    }
-
-    /**
-     * Return all the registered listeners grouped by their event
-     */
-    getListeners() {
-        return this.listeners;
     }
 }
 

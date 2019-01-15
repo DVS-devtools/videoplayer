@@ -64,7 +64,6 @@ class MockPlayer {
     }
 }
 
-
 document.body.innerHTML = `
     <div id="video"></div>
 `;
@@ -252,7 +251,7 @@ describe('Youtube getters and cleanup', () => {
         await Instance.on('pause', cb2);
         await Instance.on('play', cb3);
 
-        const listeners = Instance.getListeners();
+        const listeners = Instance.listeners;
         expect(Object.keys(listeners)).toEqual(['play', 'pause']);
         expect(listeners.play.length).toEqual(2);
         expect(listeners.pause.length).toEqual(1);
@@ -364,6 +363,31 @@ describe('YoutubeProvider events, on - off - one', () => {
         Instance.ytPlayer.fireEvent('stateChange', {data: 1});
         await flushPromises();
         expect(cb).toHaveBeenCalledWith({data: 1});
-        expect(Instance.getListeners().play.length).toBe(0);
+        expect(Instance.listeners.play.length).toBe(0);
+    });
+
+    it('should fire firstPlay event only on first play', async () => {
+        const cb = jest.fn();
+        await Instance.on('firstPlay', cb);
+        expect(Instance.listeners.firstPlay.length).toBe(1);
+        Instance.ytPlayer.fireEvent('stateChange', {data: 1});
+        await flushPromises();
+        expect(cb).toHaveBeenCalled();
+        expect(Instance.listeners.firstPlay.length).toBe(1);
+        expect(Instance.isPlayed).toBe(true);
+        // Check that cb is not called on subsequent play events
+        Instance.ytPlayer.fireEvent('stateChange', {data: 1});
+        expect(cb).toHaveBeenCalledTimes(1);
+        expect(Instance.isPlayed).toBe(true);
+    });
+
+    it('should fire firstPlay again after player stop', async () => {
+        const cb = jest.fn();
+        await Instance.on('firstPlay', cb);
+        Instance.ytPlayer.fireEvent('stateChange', {data: 1});
+        await flushPromises();
+        await Instance.stop();
+        Instance.ytPlayer.fireEvent('stateChange', {data: 1});
+        expect(cb).toHaveBeenCalledTimes(2);
     });
 });
