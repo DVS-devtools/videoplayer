@@ -2,11 +2,18 @@ import getDomNode from '../../lib/getDomNode';
 import Unsupported from '../../lib/unsupported';
 import global from '../../global';
 
+const YTSTATES = {
+    END: 0,
+    PLAY: 1,
+    PAUSE: 2,
+    BUFFER: 3,
+};
+
 const eventsNameMapping = {
-    0: 'end',
-    1: 'play',
-    2: 'pause',
-    3: 'buffering',
+    [YTSTATES.END]: 'end',
+    [YTSTATES.PLAY]: 'play',
+    [YTSTATES.PAUSE]: 'pause',
+    [YTSTATES.BUFFER]: 'buffering',
 };
 
 /**
@@ -317,6 +324,17 @@ class YoutubeProvider {
                     return this.ytPlayer.unMute();
                 }
                 return this.ytPlayer.mute();
+            });
+    }
+
+    togglePlay() {
+        return this.ready
+            .then(() => this.ytPlayer.getPlayerState())
+            .then((state) => {
+                if (state === YTSTATES.PLAY) {
+                    return this.ytPlayer.pauseVideo();
+                }
+                return this.ytPlayer.playVideo();
             });
     }
 

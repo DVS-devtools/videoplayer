@@ -17,6 +17,8 @@ class MockPlayer {
 
     duration = 100;
 
+    state = 2;
+
     constructor(dom, opts) {
         const parent = document.getElementById(dom);
         if (parent) {
@@ -61,6 +63,9 @@ class MockPlayer {
     destroy() {}
     getVideoUrl() {
         return Promise.resolve('http://test.com');
+    }
+    getPlayerState() {
+        return Promise.resolve(this.state);
     }
 }
 
@@ -152,6 +157,7 @@ describe('YoutubeProvider API', () => {
             setVolume: jest.spyOn(MockPlayer.prototype, 'setVolume'),
             seekTo: jest.spyOn(MockPlayer.prototype, 'seekTo'),
             getVideoUrl: jest.spyOn(MockPlayer.prototype, 'getVideoUrl'),
+            getPlayerState: jest.spyOn(MockPlayer.prototype, 'getPlayerState'),
         };
     });
 
@@ -190,6 +196,19 @@ describe('YoutubeProvider API', () => {
         await Instance.toggleMute();
         expect(spys.isMuted).toHaveBeenCalled();
         expect(spys.mute).toHaveBeenCalled();
+    });
+
+    it('should call getPlayerState first and then playVideo or pauseVideo', async () => {
+        Instance.ytPlayer.state = 2; // Paused
+        await Instance.togglePlay();
+        expect(spys.getPlayerState).toHaveBeenCalled();
+        expect(spys.playVideo).toHaveBeenCalled();
+        expect(spys.pauseVideo).not.toHaveBeenCalled();
+        Instance.ytPlayer.state = 1; // Playing
+        await Instance.togglePlay();
+        expect(spys.getPlayerState).toHaveBeenCalledTimes(2);
+        expect(spys.pauseVideo).toHaveBeenCalled();
+        expect(spys.playVideo).toHaveBeenCalledTimes(1);
     });
 
     it('should call setVolume on setVolume()', async () => {
