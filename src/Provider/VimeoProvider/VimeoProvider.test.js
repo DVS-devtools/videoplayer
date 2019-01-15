@@ -219,7 +219,7 @@ describe('VimeoProvider getters and cleanup', () => {
         await Instance.on('pause', cb2);
         await Instance.on('play', cb3);
 
-        const listeners = Instance.getListeners();
+        const listeners = Instance.listeners;
         expect(Object.keys(listeners)).toEqual(['play', 'pause']);
         expect(listeners.play.length).toEqual(2);
         expect(listeners.pause.length).toEqual(1);
@@ -310,7 +310,30 @@ describe('VimeoProvider events, on - off - one', () => {
         Instance.vmPlayer.fireEvent('play');
         await flushPromises();
         expect(cb).toHaveBeenCalled();
-        expect(Instance.getListeners().play.length).toBe(0);
+        expect(Instance.listeners.play.length).toBe(0);
         expect(spys.off).toHaveBeenLastCalledWith('play', dmCb);
+    });
+
+    it('should fire firstPlay event only on first play', async () => {
+        const cb = jest.fn();
+        expect(Instance.vmPlayer._events.play).toBeDefined();
+        await Instance.on('firstPlay', cb);
+        expect(Instance.listeners.firstPlay.length).toBe(1);
+        Instance.vmPlayer.fireEvent('play');
+        await flushPromises();
+        expect(cb).toHaveBeenCalled();
+        expect(Instance.listeners.firstPlay.length).toBe(1);
+        expect(Instance.vmPlayer._events.play).toBeDefined();
+        expect(Instance.isPlayed).toBe(true);
+    });
+
+    it('should fire firstPlay again after player stop', async () => {
+        const cb = jest.fn();
+        await Instance.on('firstPlay', cb);
+        Instance.vmPlayer.fireEvent('play');
+        await flushPromises();
+        await Instance.stop();
+        Instance.vmPlayer.fireEvent('play');
+        expect(cb).toHaveBeenCalledTimes(2);
     });
 });

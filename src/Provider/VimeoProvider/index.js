@@ -14,7 +14,8 @@ const eventsNameMapping = {
 const eventsToIgnore = [
     'playbackProgress25',
     'playbackProgress50',
-    'playbackProgress75'
+    'playbackProgress75',
+    'firstPlay',
 ];
 
 /**
@@ -43,11 +44,11 @@ class VimeoProvider {
      * }
      * once flag: if true, the callback is fired once and then removed
      */
-    listeners = {};
+    internalListeners = {};
 
     /**
      * Internal event mapping to the Vimeo Player events, grouped by event
-     * the event callback will fire all registered event listeners of this.listeners
+     * the event callback will fire all registered event listeners of this.internalListeners
      */
     vmListeners = {};
 
@@ -65,6 +66,13 @@ class VimeoProvider {
     get isMuted() {
         return this.ready.then(() => this.vmPlayer.getVolume())
             .then(volume => volume <= 0);
+    }
+
+    /**
+     * Return all the registered listeners grouped by their event
+     */
+    get listeners() {
+        return this.internalListeners;
     }
 
     /**
@@ -144,8 +152,8 @@ class VimeoProvider {
      * @param data
      */
     fireEvent(evt, ...data) {
-        if (typeof this.listeners[evt] !== 'undefined') {
-            this.listeners[evt].forEach((event) => {
+        if (typeof this.internalListeners[evt] !== 'undefined') {
+            this.internalListeners[evt].forEach((event) => {
                 if (typeof event.callback === 'function') {
                     event.callback(...data);
                 }
@@ -201,7 +209,7 @@ class VimeoProvider {
      */
     clear() {
         return this.ready.then(() => {
-            this.listeners = {};
+            this.internalListeners = {};
             this.vmListeners = {};
             return this.vmPlayer.destroy();
         });
@@ -209,7 +217,7 @@ class VimeoProvider {
 
     /**
      * Add listener function to an event
-     * Register the function in the internal this.listeners object
+     * Register the function in the internal this.internalListeners object
      * if there is no Vimeo Player listeners for the requested event, register one
      * When the Vimeo Player fires the event,
      * the registered cb will call all listeners associated with the event
@@ -223,13 +231,13 @@ class VimeoProvider {
             const eventName = eventsNameMapping[event]
                 || Object.values(eventsNameMapping).find(e => e === event)
                 || event;
-            if (typeof this.listeners[event] === 'undefined') {
-                this.listeners[event] = [];
+            if (typeof this.internalListeners[event] === 'undefined') {
+                this.internalListeners[event] = [];
                 if (!eventsToIgnore.includes(event)) {
                     this.vmPlayer.on(eventName, this.addVmListener(event));
                 }
             }
-            this.listeners[event].unshift({ callback: cb, once });
+            this.internalListeners[event].unshift({ callback: cb, once });
         });
     }
 
@@ -254,12 +262,12 @@ class VimeoProvider {
      */
     off(event, cb) {
         return this.ready.then(() => {
-            if (this.listeners[event]) {
-                const index = this.listeners[event].findIndex(evt => evt.callback === cb);
+            if (this.internalListeners[event]) {
+                const index = this.internalListeners[event].findIndex(evt => evt.callback === cb);
                 if (index > -1) {
-                    this.listeners[event].splice(index, 1);
+                    this.internalListeners[event].splice(index, 1);
                 }
-                if (!this.listeners[event].length && this.vmListeners[event]) {
+                if (!this.internalListeners[event].length && this.vmListeners[event]) {
                     this.vmPlayer.off(event, this.vmListeners[event]);
                 }
             }
@@ -287,7 +295,10 @@ class VimeoProvider {
      * @return {PromiseLike<T | never> | Promise<T | never>}
      */
     stop() {
-        return this.ready.then(() => this.vmPlayer.unload());
+        return this.ready.then(() => {
+            this.isPlayed = false;
+            return this.vmPlayer.unload();
+        });
     }
 
     /**
@@ -367,13 +378,6 @@ class VimeoProvider {
      */
     download() {
         return this.ready.then(() => this.vmPlayer.getVideoUrl());
-    }
-
-    /**
-     * Return all the registered listeners grouped by their event
-     */
-    getListeners() {
-        return this.listeners;
     }
 }
 
