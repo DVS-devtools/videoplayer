@@ -182,7 +182,7 @@ export default class FlowPlayer {
                 global.FPSDK = Promise.all([jqueryPromise, fpPromise, fpCSSPromise])
                     .then(() => window.flowplayer)
                     .catch((err) => {
-                        console.log(err);
+                        throw err;
                     });
             }
         }
@@ -199,17 +199,21 @@ export default class FlowPlayer {
     createFP(domNode, options) {
         return new Promise((resolve, reject) => {
             this.loadSDK().then((FP) => {
-                const divElement = document.createElement('div');
+                if (typeof FP === 'function') {
+                    const divElement = document.createElement('div');
 
-                domNode = getDomNode(domNode);
-                divElement.setAttribute('id', this.id);
-                domNode.appendChild(divElement);
+                    domNode = getDomNode(domNode);
+                    divElement.setAttribute('id', this.id);
+                    domNode.appendChild(divElement);
 
-                this.domNodeId = divElement.id;
-                this.fpPlayer = FP(divElement, options);
-                this.fpPlayer.on('ready', () => resolve());
+                    this.domNodeId = divElement.id;
+                    this.fpPlayer = FP(divElement, options);
+                    this.fpPlayer.on('ready', () => resolve());
 
-                this.registerDefaultListeners();
+                    this.registerDefaultListeners();
+                } else {
+                    throw new Error('Unable to laod flowplayer');
+                }
             }).catch(err => reject(err));
         });
     }

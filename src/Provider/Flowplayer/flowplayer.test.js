@@ -301,3 +301,45 @@ describe('Flowplayer providers event on - off - one', () => {
         expect(spies.off).toHaveBeenLastCalledWith('play', fpCb);
     });
 });
+
+describe('It should throw an error', () => {
+    let Instance;
+
+    beforeEach(() => {
+        global.FPSDK = null;
+        window.flowplayer = null;
+        document.body.innerHTML = `<div id="fp-video"></div>`;
+        Promise.all = () => {
+            return Promise.reject(new Error('Unable to load flowplayer'));
+        };
+        jest.restoreAllMocks();
+    });
+
+    it('ready should be a rejected promise', (done) => {
+        Instance = new FlowplayerProvider(options, id);
+        expect(Instance.ready).rejects.toEqual(new Error('Unable to load flowplayer'));
+        done();
+    });
+
+    it('ready should be a rejected promise and should not call a command play', (done) => {
+        Instance = new FlowplayerProvider(options, id);
+        expect(Instance.ready).rejects.toEqual(new Error('Unable to load flowplayer'));
+
+        window.flowplayer = () => new MockedPlayer;
+        const spies = {
+            resume: jest.spyOn(MockedPlayer.prototype, 'resume') 
+        };
+        Instance.play();
+        expect(spies.resume).not.toHaveBeenCalled();
+        done();
+    });
+
+    it('ready should be ready', (done) => {
+        Promise.all = () => {
+            return Promise.resolve(new MockedPlayer());
+        };
+        Instance = new FlowplayerProvider(options, id);
+        expect(Instance.ready).resolves.toEqual();
+        done();
+    })
+});
