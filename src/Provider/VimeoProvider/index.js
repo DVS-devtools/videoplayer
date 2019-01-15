@@ -328,6 +328,17 @@ class VimeoProvider {
             .then(volume => this.vmPlayer.setVolume(volume > 0 ? 0 : 1));
     }
 
+    togglePlay() {
+        return this.ready
+            .then(() => this.vmPlayer.getPaused())
+            .then((paused) => {
+                if (paused) {
+                    return this.play();
+                }
+                return this.pause();
+            });
+    }
+
     /**
      * When Vimeo Player is ready, send setVolume command
      * volumeLevel can be a float from 0 to 1 or an integer from 0 to 100

@@ -15,6 +15,8 @@ class MockPlayer {
 
     duration = 100;
 
+    paused = false;
+
     constructor(dom, opts) {
         const parent = document.getElementById(dom);
         if (parent) {
@@ -53,6 +55,9 @@ class MockPlayer {
     destroy() {}
     getVideoUrl() {
         return Promise.resolve('http://test.com');
+    }
+    getPaused() {
+        return Promise.resolve(this.paused);
     }
 }
 
@@ -111,6 +116,7 @@ describe('VimeoProvider API', () => {
             setVolume: jest.spyOn(MockPlayer.prototype, 'setVolume'),
             setCurrentTime: jest.spyOn(MockPlayer.prototype, 'setCurrentTime'),
             getVideoUrl: jest.spyOn(MockPlayer.prototype, 'getVideoUrl'),
+            getPaused: jest.spyOn(MockPlayer.prototype, 'getPaused'),
         };
     });
 
@@ -149,6 +155,19 @@ describe('VimeoProvider API', () => {
         await Instance.toggleMute();
         expect(spys.getVolume).toHaveBeenCalled();
         expect(spys.setVolume).toHaveBeenCalledWith(0);
+    });
+
+    it('should call getPaused and then play() or pause() on togglePlay()', async () => {
+        Instance.vmPlayer.paused = true;
+        await Instance.togglePlay();
+        expect(spys.getPaused).toHaveBeenCalled();
+        expect(spys.play).toHaveBeenCalled();
+        expect(spys.pause).not.toHaveBeenCalled();
+        Instance.vmPlayer.paused = false;
+        await Instance.togglePlay();
+        expect(spys.getPaused).toHaveBeenCalledTimes(2);
+        expect(spys.pause).toHaveBeenCalled();
+        expect(spys.play).toHaveBeenCalledTimes(1);
     });
 
     it('should call setVolume on setVolume()', async () => {
