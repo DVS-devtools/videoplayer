@@ -151,7 +151,7 @@ class YoutubeProvider {
             if (eventsNameMapping[e.data]) {
                 this.fireEvent(eventsNameMapping[e.data], e);
             }
-            if (e.data === 1) { // Play event
+            if (e.data === YTSTATES.PLAY) { // Play event
                 this.fireFirstPlay();
             }
         });
