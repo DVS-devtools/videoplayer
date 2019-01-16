@@ -1,5 +1,5 @@
 import TestProvider from '../Provider/testProvider';
-import VimeoProvider from '../Provider/VimeoProvider';
+import VimeoProvider from '../Provider/Vimeo';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
