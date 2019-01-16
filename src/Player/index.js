@@ -1,5 +1,5 @@
 import TestProvider from '../Provider/testProvider';
-import DailymotionProvider from '../Provider/DailymotionProvider';
+import DailymotionProvider from '../Provider/Dailymotion';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
