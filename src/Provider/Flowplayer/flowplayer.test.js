@@ -184,17 +184,17 @@ describe('Flowplayer getters and cleanup', () => {
     });
 
     it('should get muted value with ismuted getter', async () => {
-        await Instance.toggleMute();
-        expect(Instance.isMuted).toBe(true);
-        await Instance.toggleMute();
-        expect(Instance.isMuted).toBe(false);
+        Instance.toggleMute();
+        expect(await Instance.isMuted).toBe(true);
+        Instance.toggleMute();
+        expect(await Instance.isMuted).toBe(false);
     });
 
     it('should get fullscreen status with isFullscreen getter', async () => {
-        await Instance.toggleFullScreen();
-        expect(Instance.isFullScreen).toBe(true);
-        await Instance.toggleFullScreen();
-        expect(Instance.isFullScreen).toBe(false);
+        Instance.toggleFullScreen();
+        expect(await Instance.isFullScreen).toBe(true);
+        Instance.toggleFullScreen();
+        expect(await Instance.isFullScreen).toBe(false);
     });
 
     it('should return all the listeners', async () => {

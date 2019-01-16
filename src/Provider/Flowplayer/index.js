@@ -44,7 +44,7 @@ const eventsToIgnore = [
  * @ignore
  * @class FlowplayerProvider
  */
-export default class FlowPlayer {
+export default class FlowPlayerProvider {
     /**
      * Internal player id
      */
@@ -133,12 +133,16 @@ export default class FlowPlayer {
     /**
      * Get video muted status
      */
-    get isMuted() { return this.fpPlayer.muted; } // TO UNDERSTAND - PROMISE
+    get isMuted() {
+        return this.ready.then(() => this.fpPlayer.muted);
+    }
 
     /**
      * Get video fullscreen status
      */
-    get isFullScreen() { return this.fpPlayer.isFullscreen; } // TO UNDERSTAND - PROMISE
+    get isFullScreen() {
+        return this.ready.then(() => this.fpPlayer.isFullscreen);
+    }
 
     constructor(options, id) {
         this.id = id;
