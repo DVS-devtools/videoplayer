@@ -87,7 +87,7 @@ class YoutubeProvider {
         this.id = id;
 
         this.ready = this.createYT(options.domNode,
-            Object.assign({}, { videoId: options.videoId }, options.providerOptions || {}))
+            Object.assign({}, { videoId: options.videoId }, options.providerOptions || {}));
             // .catch(console.error); // TODO what to do in error?
     }
 
