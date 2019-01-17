@@ -1,4 +1,5 @@
 import TestProvider from '../Provider/testProvider';
+import FlowplayerProvider from '../Provider/Flowplayer';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
@@ -32,6 +33,9 @@ export default class Player {
         switch (options.provider) {
         case 'test':
             this.player = new TestProvider(options, id);
+            break;
+        case 'flowplayer':
+            this.player = new FlowplayerProvider(options, id);
             break;
         default:
             this.player = null;
