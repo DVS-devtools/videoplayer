@@ -1,7 +1,5 @@
-import loadscript from '../../lib/loadscript';
-import loadstyle from '../../lib/loadstyle';
+import { loadScript, loadStyle, getDomNode } from '../../lib';
 import global from '../../global';
-import getDomNode from '../../lib/getDomNode';
 
 /*
     ACCEPTED PROVIDER OPTIONS:
@@ -174,11 +172,11 @@ export default class FlowPlayerProvider {
      */
     loadSDK() {
         if (!global.FPSDK) {
-            const jqueryPromise = loadscript(this.jqueryUrl);
+            const jqueryPromise = loadScript(this.jqueryUrl);
 
-            const fpPromise = loadscript(this.fpUrl);
+            const fpPromise = loadScript(this.fpUrl);
 
-            const fpCSSPromise = loadstyle(this.fpCSSUrl);
+            const fpCSSPromise = loadStyle(this.fpCSSUrl);
 
             if (typeof window.flowplayer === 'function') {
                 global.FPSDK = Promise.resolve(window.flowplayer);

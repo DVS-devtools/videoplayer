@@ -1,3 +1,5 @@
+
 export default {
-    FPSDK: null
+    DMSDK: null,
+    FPSDK: null,
 };

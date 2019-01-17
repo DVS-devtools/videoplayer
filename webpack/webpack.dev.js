@@ -33,6 +33,7 @@ module.exports = {
         port: 3001,
         compress: true,
     },
+    devtool: 'source-map',
     plugins: [
         new HtmlWebpackPlugin({
             template: commonPaths.examplePath.html,
