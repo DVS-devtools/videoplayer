@@ -2,7 +2,7 @@ import loadScript from './';
 
 let error = false;
 
-fdescribe('loadScript test', () => {
+describe('loadScript test', () => {
     beforeEach(() => {
     });
 
