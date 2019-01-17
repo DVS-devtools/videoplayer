@@ -1,5 +1,5 @@
 import TestProvider from '../Provider/testProvider';
-import YoutubeProvider from '../Provider/YoutubeProvider';
+import YoutubeProvider from '../Provider/Youtube';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
