@@ -310,3 +310,44 @@ describe('DailymotionProvider events, on - off - one', () => {
     });
 });
 
+describe('DailymotionProvider errors', () => {
+    let Instance;
+
+    beforeEach(() => {
+        window.DMSDK = null;
+        window.DM = undefined;
+        jest.mock('../../lib', () => ({
+            getDomNode: (d) => d,
+            loadScript: (src) => Promise.reject('Test Error')
+        }));
+        jest.restoreAllMocks();
+    });
+
+    it('ready should be a rejected promise', async () => {
+        Instance = new DailymotionProvider(options, id);
+        await flushPromises();
+        expect(Instance.ready).rejects.toEqual(new Error('Test error'));
+    });
+
+    it('ready should be a rejected promise and should not call a command play', async () => {
+        Instance = new DailymotionProvider(options, id);
+        await flushPromises();
+        expect(Instance.ready).rejects.toEqual(new Error('Test error'));
+
+        window.DM = {
+            player: () => new MockPlayer(),
+        };
+        const spies = {
+            play: jest.spyOn(MockPlayer.prototype, 'play')
+        };
+        // await Instance.play();
+        expect(spies.play).not.toHaveBeenCalled();
+    });
+
+    it('ready should be ready', (done) => {
+        jest.restoreAllMocks();
+        Instance = new DailymotionProvider(options, id);
+        expect(Instance.ready).resolves.toEqual();
+        done();
+    })
+});

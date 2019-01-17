@@ -1,5 +1,4 @@
-import loadScript from 'load-script2';
-import { getDomNode } from '../../lib';
+import { getDomNode, loadScript } from '../../lib';
 import global from '../../global';
 
 const sdkCdn = 'https://api.dmcdn.net/all.js';
@@ -113,13 +112,8 @@ class DailymotionProvider {
                 global.DMSDK = Promise.resolve(window.DM);
             } else {
                 global.DMSDK = new Promise((resolve, reject) => {
-                    loadScript(sdkCdn, (err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(window.DM);
-                        }
-                    });
+                    loadScript(sdkCdn).then(() => resolve(window.DM))
+                        .catch(err => reject(err));
                 });
             }
         }

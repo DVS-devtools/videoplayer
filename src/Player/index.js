@@ -1,5 +1,6 @@
 import TestProvider from '../Provider/testProvider';
 import DailymotionProvider from '../Provider/Dailymotion';
+import FlowplayerProvider from '../Provider/Flowplayer';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
@@ -36,6 +37,9 @@ export default class Player {
             break;
         case 'dailymotion':
             this.player = new DailymotionProvider(options, id);
+            break;
+        case 'flowplayer':
+            this.player = new FlowplayerProvider(options, id);
             break;
         default:
             this.player = null;
