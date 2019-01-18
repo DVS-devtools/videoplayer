@@ -1,3 +1,6 @@
+/**
+ * @ignore
+ */
 export default class TestProvider {
     id = null;
 
