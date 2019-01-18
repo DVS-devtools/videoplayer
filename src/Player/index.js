@@ -24,6 +24,13 @@ class Player {
     /**
      * Creates an instance of Player.
      * @param {Object} options configuration options ( provider, videoId, url, domNode... )
+     * @param {String|Node} options.domNode DOM element identifier, where to mount the player
+     * @param {String} options.provider The provider to use,
+     * one of: 'dailymotion', 'vimeo', 'youtube', 'flowplayer'
+     * @param {String} [options.videoId] ID of the video, passed to the provider to find the video
+     * @param {String} [options.url] url of the video resource, passed to the provider
+     * @param {Object<any>}[options.providerOptions] provider init options,
+     * see each provider doc to know what can be passed here
      * @param {String} id Id of the player to associate inside the dom
      */
     constructor(options, id) {
