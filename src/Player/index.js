@@ -2,6 +2,7 @@ import TestProvider from '../Provider/testProvider';
 import DailymotionProvider from '../Provider/Dailymotion';
 import FlowplayerProvider from '../Provider/Flowplayer';
 import VimeoProvider from '../Provider/Vimeo';
+import { ValidateArg } from '../Validation';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
@@ -28,6 +29,10 @@ class Player {
      */
     constructor(options, id) {
         this.id = id;
+
+        if (!options.provider || typeof options.provider !== 'string') {
+            throw new Error('Invalid Provider');
+        }
 
         switch (options.provider) {
         case 'test':
@@ -74,6 +79,8 @@ class Player {
      * @return {Promise<void>}
      * @memberOf Player
      */
+    @ValidateArg('string')
+    @ValidateArg('function', 1)
     on(event, cb) {
         return this.player.on(event, cb);
     }
@@ -87,6 +94,8 @@ class Player {
      * @return {Promise<void>}
      * @memberOf Player
      */
+    @ValidateArg('string')
+    @ValidateArg('function', 1)
     off(event, cb) {
         return this.player.off(event, cb);
     }
@@ -170,6 +179,7 @@ class Player {
      * @return {Promise<void>}
      * @memberOf Player
      */
+    @ValidateArg('number')
     setVolume(volumeLevel) {
         return this.player.setVolume(volumeLevel);
     }
@@ -181,6 +191,7 @@ class Player {
      * @return {Promise<void>}
      * @memberOf Player
      */
+    @ValidateArg('number')
     forward(seconds) {
         return this.player.forward(seconds);
     }
@@ -192,6 +203,7 @@ class Player {
      * @return {Promise<void>}
      * @memberOf Player
      */
+    @ValidateArg('number')
     rewind(seconds) {
         return this.player.rewind(seconds);
     }
@@ -203,6 +215,7 @@ class Player {
      * @return {Promise<void>}
      * @memberOf Player
      */
+    @ValidateArg('number')
     seek(seconds) {
         return this.player.seek(seconds);
     }
