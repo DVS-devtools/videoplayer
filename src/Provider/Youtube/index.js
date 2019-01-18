@@ -1,5 +1,4 @@
-import getDomNode from '../../lib/getDomNode';
-import Unsupported from '../../lib/unsupported';
+import { getDomNode, Unsupported } from '../../lib';
 import global from '../../global';
 
 const YTSTATES = {
