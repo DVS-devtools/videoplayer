@@ -2,7 +2,7 @@ import Player from '../Player';
 import { ValidateArg, ValidateObj, ValidateOptionalArg } from '../Validation';
 
 /**
- * @class VideoPlayer
+ *
  */
 class VideoPlayer {
     defaults = {

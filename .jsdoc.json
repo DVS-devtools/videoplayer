@@ -5,8 +5,9 @@
   },
   "source": {
     "include": ["src", "README.md"],
+    "exclude": ["src/Provider"],
     "includePattern": ".js$",
-    "excludePattern": "(node_modules/|docs|_old|dist|examples)"
+    "excludePattern": "(node_modules/|docs|dist|examples)"
   },
   "plugins": [
     "plugins/markdown"

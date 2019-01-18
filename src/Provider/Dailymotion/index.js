@@ -22,7 +22,7 @@ const eventsToIgnore = [
 
 /**
  * Dailymotion Player Wrapper
- * @ignore
+ *
  * @class DailymotionProvider
  */
 class DailymotionProvider {
@@ -75,6 +75,7 @@ class DailymotionProvider {
 
     /**
      * Return all the registered internalListeners grouped by their event
+     *
      */
     get listeners() {
         return this.internalListeners;
@@ -82,6 +83,7 @@ class DailymotionProvider {
 
     /**
      * Get video Muted status
+     *
      */
     get isMuted() {
         return this.ready.then(() => this.dmPlayer.muted);
@@ -89,11 +91,17 @@ class DailymotionProvider {
 
     /**
      * Get video Fullscreen status
+     *
      */
     get isFullScreen() {
         return this.ready.then(() => this.dmPlayer.fullscreen);
     }
 
+    /**
+     *
+     * @param options
+     * @param id
+     */
     constructor(options, id) {
         this.id = id;
 
@@ -105,6 +113,8 @@ class DailymotionProvider {
      * Load the DM SDK if not loaded yet
      * If multiple instances of this provider exists in the same page,
      * only one SDK is loaded and shared between all instances
+     *
+     * @return {Promise<any>}
      */
     loadSDK() {
         if (!global.DMSDK) {
@@ -123,6 +133,7 @@ class DailymotionProvider {
     /**
      * Create the DM Player in the given DOM Node with the given options
      * When the Player is ready, resolve the this.ready Promise
+     *
      * @param domNode
      * @param options
      * @return {Promise<any>}
@@ -145,6 +156,7 @@ class DailymotionProvider {
     /**
      * Create a callback function that fires all registered internalListeners for a given event
      * Store the callback in the this.dmListeners object
+     *
      * @param evt
      * @return {function(): void}
      */
@@ -158,6 +170,7 @@ class DailymotionProvider {
      * Fire all internalListeners for a given event
      * if a fired listener is flagged as once,
      * immediately deregister it after its fire (fired only once)
+     *
      * @param evt
      */
     fireEvent(evt) {
@@ -177,6 +190,7 @@ class DailymotionProvider {
      * Given a percentage (one of the this.timeupdatePercentages keys)
      * check if the video playback reached that percentage of completion,
      * if yes, fire the playbackProgress% event
+     *
      * @param percentage
      */
     onPercentage(percentage) {
@@ -193,6 +207,7 @@ class DailymotionProvider {
 
     /**
      * Register default internalListeners on Player init
+     *
      */
     registerDefaultListeners() {
         this.dmPlayer.addEventListener('timeupdate', () => {
@@ -204,7 +219,8 @@ class DailymotionProvider {
 
     /**
      * Remove the DM Player DOM Node
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     *
+     * @return {Promise<void>}
      */
     clear() {
         return this.ready.then(() => {
@@ -220,10 +236,11 @@ class DailymotionProvider {
      * if there is no DM Player internalListeners for the requested event, register one
      * When the DM Player fires the event,
      * the registered cb will call all internalListeners associated with the event
+     *
      * @param event
      * @param cb
      * @param once
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<void>}
      */
     on(event, cb, once = false) {
         return this.ready.then(() => {
@@ -243,9 +260,10 @@ class DailymotionProvider {
     /**
      * Add a listener to an event,
      * the listener will be fired only once
+     *
      * @param event
      * @param cb
-     * @return {PromiseLike<T|never>|Promise<T|never>}
+     * @return {Promise<void>}
      */
     one(event, cb) {
         return this.on(event, cb, true);
@@ -255,9 +273,10 @@ class DailymotionProvider {
      * Remove a listener from an event
      * if the given listener is the last one for the given event
      * remove also the relative DM Player event listener
+     *
      * @param event
      * @param cb
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<void>}
      */
     off(event, cb) {
         return this.ready.then(() => {
@@ -275,7 +294,8 @@ class DailymotionProvider {
 
     /**
      * When DM Player is ready, send play command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     *
+     * @return {Promise<any>}
      */
     play() {
         return this.ready.then(() => this.dmPlayer.play());
@@ -283,7 +303,8 @@ class DailymotionProvider {
 
     /**
      * When DM Player is ready, send pause command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     *
+     * @return {Promise<any>}
      */
     pause() {
         return this.ready.then(() => this.dmPlayer.pause());
@@ -291,7 +312,7 @@ class DailymotionProvider {
 
     /**
      * When DM Player is ready, send pause and seek to 0 command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     stop() {
         return this.ready.then(() => {
@@ -302,7 +323,7 @@ class DailymotionProvider {
 
     /**
      * When DM Player is ready, send command to mute
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     mute() {
         return this.ready.then(() => this.dmPlayer.setMuted(true));
@@ -310,7 +331,7 @@ class DailymotionProvider {
 
     /**
      * When DM Player is ready, send command to unmute
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     unmute() {
         return this.ready.then(() => this.dmPlayer.setMuted(false));
@@ -318,7 +339,7 @@ class DailymotionProvider {
 
     /**
      * When DM Player is ready, send command to toggle mute state
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     toggleMute() {
         return this.ready.then(() => this.dmPlayer.toggleMuted());
@@ -335,7 +356,7 @@ class DailymotionProvider {
 
     /**
      * When DM Player is ready, send command to toggle fullScreen state
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     toggleFullScreen() {
         return this.ready.then(() => this.dmPlayer.setFullscreen(!this.dmPlayer.fullscreen));
@@ -345,7 +366,7 @@ class DailymotionProvider {
      * When DM Player is ready, send command to set volume
      * volumeLevel can be a float from 0 to 1 or an integer from 0 to 100
      * @param volumeLevel
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     setVolume(volumeLevel) {
         if (volumeLevel > 1) {
@@ -357,7 +378,7 @@ class DailymotionProvider {
     /**
      * When DM Player is ready, send command to seek to the current time plus the given seconds
      * @param seconds
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     forward(seconds) {
         return this.ready.then(() => this.dmPlayer.seek(this.dmPlayer.currentTime + seconds));
@@ -366,7 +387,7 @@ class DailymotionProvider {
     /**
      * When DM Player is ready, send command to seek to the current time minus the given seconds
      * @param seconds
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     rewind(seconds) {
         return this.ready.then(() => this.dmPlayer.seek(this.dmPlayer.currentTime - seconds));
@@ -375,7 +396,7 @@ class DailymotionProvider {
     /**
      * When DM Player is ready, send command to seek to the given seconds
      * @param seconds
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     seek(seconds) {
         return this.ready.then(() => this.dmPlayer.seek(seconds));
@@ -383,7 +404,7 @@ class DailymotionProvider {
 
     /**
      * When DM Player is ready, send command to open the video on the Dailymotion website
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return {Promise<any>}
      */
     download() {
         return this.ready.then(() => this.dmPlayer.watchOnSite());
