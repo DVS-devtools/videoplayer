@@ -1,5 +1,5 @@
 import Player from '../Player';
-import { ValidateArg, ValidateObj } from '../Validation';
+import { ValidateArg, ValidateObj, ValidateOptionalArg } from '../Validation';
 
 /**
  * @class VideoPlayer
@@ -49,7 +49,7 @@ class VideoPlayer {
      * });
      * @return {Player}
      */
-    @ValidateObj('videoId|url', 'domNode')
+    @ValidateObj({ domNode: 'string|object', videoId: 'string|number' }, 0, { videoId: 'url' })
     createPlayer(playerInitOptions) {
         // Get the requested provider
         const provider = playerInitOptions.provider || this.defaults.provider;
@@ -83,7 +83,7 @@ class VideoPlayer {
      * VideoPlayer.getPlayer('video_sdHg79_1');
      * @return {Player}
      */
-    @ValidateArg(['string'])
+    @ValidateArg('string')
     getPlayer(playerId) {
         if (!Object.keys(this.playerInstances).includes(playerId)) {
             throw new Error(`Player with id ${playerId} not found`);
@@ -123,6 +123,8 @@ class VideoPlayer {
      * @param cb
      * @return cb
      */
+    @ValidateArg('string', 1)
+    @ValidateArg('function', 2)
     addEventListener(playerId, event, cb) {
         return this.getPlayer(playerId).on(event, cb);
     }
@@ -133,6 +135,8 @@ class VideoPlayer {
      * @param event
      * @param cb
      */
+    @ValidateArg('string', 1)
+    @ValidateArg('function', 2)
     removeEventListener(playerId, event, cb) {
         return this.getPlayer(playerId).off(event, cb);
     }
@@ -225,7 +229,7 @@ class VideoPlayer {
      * @param volume
      * @return {*}
      */
-    @ValidateArg(['string', 'number'])
+    @ValidateArg('number', 1)
     setVolume(playerId, volume) {
         return this.getPlayer(playerId).setVolume(volume);
     }
@@ -236,7 +240,7 @@ class VideoPlayer {
      * @param seconds
      * @return {*}
      */
-    @ValidateArg(['string', 'number'])
+    @ValidateArg('number', 1)
     seek(playerId, seconds) {
         return this.getPlayer(playerId).seek(seconds);
     }
@@ -247,7 +251,7 @@ class VideoPlayer {
      * @param seconds
      * @return {*|void}
      */
-    @ValidateArg(['string'])
+    @ValidateOptionalArg('number', 1)
     forward(playerId, seconds) {
         return this.getPlayer(playerId).forward(seconds || this.defaults.forward);
     }
@@ -258,7 +262,7 @@ class VideoPlayer {
      * @param seconds
      * @return {*}
      */
-    @ValidateArg(['string'])
+    @ValidateOptionalArg('number', 1)
     rewind(playerId, seconds) {
         return this.getPlayer(playerId).rewind(seconds || this.defaults.rewind);
     }

@@ -70,7 +70,7 @@ class YoutubeProvider {
 
     /**
      * Get video Muted status
-     * @return {PromiseLike<boolean | never>}
+     * @return {Promise<boolean>}
      */
     get isMuted() {
         return this.ready.then(() => this.ytPlayer.isMuted());
@@ -88,7 +88,7 @@ class YoutubeProvider {
 
         this.ready = this.createYT(options.domNode,
             Object.assign({}, { videoId: options.videoId }, options.providerOptions || {}));
-            // .catch(console.error); // TODO what to do in error?
+        // .catch(console.error); // TODO what to do in error?
     }
 
     /**
@@ -217,7 +217,7 @@ class YoutubeProvider {
      * @param event
      * @param cb
      * @param once
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     on(event, cb, once = false) {
         return this.ready.then(() => {
@@ -233,7 +233,7 @@ class YoutubeProvider {
      * the listener will be fired only once
      * @param event
      * @param cb
-     * @return {PromiseLike<T|never>|Promise<T|never>}
+     * @return Promise
      */
     one(event, cb) {
         return this.on(event, cb, true);
@@ -243,7 +243,7 @@ class YoutubeProvider {
      * Remove a listener from an event
      * @param event
      * @param cb
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     off(event, cb) {
         return this.ready.then(() => {
@@ -258,7 +258,7 @@ class YoutubeProvider {
 
     /**
      * Remove the Youtube Player DOM Node
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     clear() {
         return this.ready.then(() => {
@@ -270,7 +270,7 @@ class YoutubeProvider {
 
     /**
      * When Youtube Player is ready, send playVideo command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     play() {
         return this.ready.then(() => this.ytPlayer.playVideo());
@@ -278,7 +278,7 @@ class YoutubeProvider {
 
     /**
      * When Youtube Player is ready, send pauseVideo command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     pause() {
         return this.ready.then(() => this.ytPlayer.pauseVideo());
@@ -286,7 +286,7 @@ class YoutubeProvider {
 
     /**
      * When Youtube Player is ready, send stopVideo command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     stop() {
         return this.ready.then(() => {
@@ -297,7 +297,7 @@ class YoutubeProvider {
 
     /**
      * When Youtube Player is ready, send mute command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     mute() {
         return this.ready.then(() => this.ytPlayer.mute());
@@ -305,7 +305,7 @@ class YoutubeProvider {
 
     /**
      * When Youtube Player is ready, send unMute command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     unmute() {
         return this.ready.then(() => this.ytPlayer.unMute());
@@ -315,7 +315,7 @@ class YoutubeProvider {
      * When Youtube Player is ready,
      * check if video is currently muted, if so, send the unMute command
      * else, send the mute command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     toggleMute() {
         return this.ready.then(() => this.ytPlayer.isMuted())
@@ -342,7 +342,7 @@ class YoutubeProvider {
      * When Youtube Player is ready, send setVolume command
      * volumeLevel must be an number from 0 to 100
      * @param volumeLevel
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     setVolume(volumeLevel) {
         return this.ready.then(() => this.ytPlayer.setVolume(volumeLevel));
@@ -351,7 +351,7 @@ class YoutubeProvider {
     /**
      * When Youtube Player is ready, send command to seek to the current time plus the given seconds
      * @param seconds
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     forward(seconds) {
         return this.ready.then(() => this.ytPlayer.getCurrentTime())
@@ -362,7 +362,7 @@ class YoutubeProvider {
      * When Youtube Player is ready,
      * send command to seek to the current time minus the given seconds
      * @param seconds
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     rewind(seconds) {
         return this.ready.then(() => this.ytPlayer.getCurrentTime())
@@ -372,7 +372,7 @@ class YoutubeProvider {
     /**
      * When Youtube Player is ready, send command to seek to the given seconds
      * @param seconds
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     seek(seconds) {
         return this.ready.then(() => this.ytPlayer.seekTo(seconds));
@@ -380,7 +380,7 @@ class YoutubeProvider {
 
     /**
      * When Youtube Player is ready, send command to get the video url
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     download() {
         return this.ready.then(() => this.ytPlayer.getVideoUrl());

@@ -1,4 +1,7 @@
 import TestProvider from '../Provider/testProvider';
+import DailymotionProvider from '../Provider/Dailymotion';
+import FlowplayerProvider from '../Provider/Flowplayer';
+import VimeoProvider from '../Provider/Vimeo';
 import YoutubeProvider from '../Provider/Youtube';
 
 /**
@@ -34,12 +37,21 @@ export default class Player {
         case 'test':
             this.player = new TestProvider(options, id);
             break;
+        case 'dailymotion':
+            this.player = new DailymotionProvider(options, id);
+            break;
+        case 'flowplayer':
+            this.player = new FlowplayerProvider(options, id);
+            break;
+        case 'vimeo':
+            this.player = new VimeoProvider(options, id);
+            break;
         case 'youtube':
             this.player = new YoutubeProvider(options, id);
             break;
         default:
             this.player = null;
-            throw new Error('Unsupported Provider');
+            throw new Error(`Unsupported Provider ${options.provider}`);
         }
     }
 
