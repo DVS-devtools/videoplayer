@@ -1,3 +1,6 @@
+import VideoPlayer from './VideoPlayer';
+import Player from './Player';
 
-export { default as VideoPlayer } from './VideoPlayer';
-export { default as Player } from './Player';
+export default VideoPlayer;
+
+export { Player, VideoPlayer };

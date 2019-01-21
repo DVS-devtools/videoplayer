@@ -3,7 +3,9 @@
     "collectCoverageFrom": [
         "src/**/*.js",
         "!src/index.js",
-        "!src/global.js"
+        "!src/global.js",
+        "!src/Provider/testProvider.js",
+        "!src/lib/index.js"
     ],
     "coverageReporters": ["lcov", "text", "text-summary"]
 }

@@ -4,17 +4,26 @@ import FlowplayerProvider from '../Provider/Flowplayer';
 import VimeoProvider from '../Provider/Vimeo';
 
 /**
- * This class will provide you a player instance. An instance is indipendent
- * by all the other player instances, this does it mean that you can manage more
- * players inside a single page, all managed indipendently.
- * How to manage the instances is your own choice .
+ * This class will provide you a player instance. An instance is independent
+ * to all the other player instances, this means that you can have more
+ * players inside a single page, all managed independently.
+ * How to manage the instances is your own choice.
  * You can use your own players manager, creating your interface and manage it in
- * the way you want, or you can use the VideoPlayer interface,
+ * the way you want, or you can use the {@link VideoPlayer} interface,
  * that provides you a faster and easier way to manage more players in a single page. Please
  * remember that if you are using the VideoPlayer class you need to interact directly with that.
- *
- * You can read the full VideoPlayer documentation here: LINK_TO_VIDEOPLAYER_CLASS
- *
+ * @example
+ * const options = {
+ *     domNode: document.getElementById('player'),
+ *     provider: 'dailymotion',
+ *     videoId: 'xwr14q',
+ *     providerOptions: {
+ *        params: {
+ *            quality: 720,
+ *        },
+ *     },
+ * };
+ * const player = new Player(options, 'player_1');
  */
 class Player {
     id = null;
@@ -30,8 +39,13 @@ class Player {
      * @param {String} [options.videoId] ID of the video, passed to the provider to find the video
      * @param {String} [options.url] url of the video resource, passed to the provider
      * @param {Object<any>}[options.providerOptions] provider init options,
-     * see each provider doc to know what can be passed here
-     * @param {String} id Id of the player to associate inside the dom
+     * see each provider doc to know what can be passed here:
+     * * **Vimeo**: https://github.com/vimeo/player.js#embed-options
+     * * **Dailymotion**: https://developer.dailymotion.com/player#player-parameters
+     * * **Youtube**: https://developers.google.com/youtube/player_parameters?playerVersion=HTML5#Parameters
+     * * **Flowplayer**: https://flowplayer.com/help/developers/flowplayer-7/setup#player-options
+     * @param {String} [id] Id of the player,
+     * it is used by {@link VideoPlayer} to manage multiple Player instances
      */
     constructor(options, id) {
         this.id = id;
@@ -56,22 +70,8 @@ class Player {
     }
 
     /**
-     * Add listener to event.
-     * Note that a same event can manage more listeners.
-     *
-     * Here is the list of the accepted listeners:
-     * - play;
-     * - pause;
-     * - stop;
-     * - mute;
-     * - unmute;
-     * - enterFullScreen;
-     * - exitFullScreen;
-     * - setVolume;
-     * - forward;
-     * - rewind;
-     * - seek;
-     * - destroy;
+     * Add a listener callback to an event.
+     * Note that the same event can manage more listeners.
      *
      * Please remember to store the function inside a variable, in order to call the off method
      * to remove the listener on a precise event
@@ -79,65 +79,74 @@ class Player {
      * @param {String} event name of the event (see list of compatible listeners)
      * @param {Function} cb method to call when the event is fired
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * const cb = (evt) => {
+     *     // Do stuff..
+     * };
+     * player.on('play', cb);
      */
     on(event, cb) {
         return this.player.on(event, cb);
     }
 
     /**
-     * Remove Listener to event (you can have a look at the "on" method to see a full list of
-     * the compatible listeners);
+     * Remove a listener from an event
      *
      * @param {String} event name of the event (see list of compatible listeners)
      * @param {Function} cb method to remove
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.off('play', cb);
      */
     off(event, cb) {
         return this.player.off(event, cb);
     }
 
     /**
-     * Play a video.
+     * Play the video.
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.play();
      */
     play() {
         return this.player.play();
     }
 
     /**
-     * Pause a video.
+     * Pause the video
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.pause();
      */
     pause() {
         return this.player.pause();
     }
 
     /**
-     * Stop the player (restarting from 0s).
+     * Stop the video (restarting from 0s)
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.stop();
      */
     stop() {
         return this.player.stop();
     }
 
     /**
-     * Set the attribute muted to true.
+     * Mute the video
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.mute();
      */
     mute() {
         return this.player.mute();
     }
 
     /**
-     * Set the attribute muted to false
+     * Unmute the video
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.unmute();
      */
     unmute() {
         return this.player.unmute();
@@ -146,7 +155,8 @@ class Player {
     /**
      * Switch between muted and unmuted
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.toggleMute();
      */
     toggleMute() {
         return this.player.toggleMute();
@@ -155,7 +165,8 @@ class Player {
     /**
      * Enter/exit in fullscreen mode
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.toggleFullScreen();
      */
     toggleFullScreen() {
         return this.player.toggleFullScreen();
@@ -164,7 +175,8 @@ class Player {
     /**
      * Play/Pause the video
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.togglePlay();
      */
     togglePlay() {
         return this.player.togglePlay();
@@ -173,20 +185,23 @@ class Player {
     /**
      * Set the volume level to the given value.
      *
-     * @param {Number} volumeLevel Value between 0 and 1, all other value are not accepted.
+     * @param {Number} volumeLevel Value between 0 and 1.
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.setVolume(1); // Max volume
+     * player.setVolume(0); // Muted
      */
     setVolume(volumeLevel) {
         return this.player.setVolume(volumeLevel);
     }
 
     /**
-     * Go ahead in the video by the specified value (in seconds)
+     * Go forward in the video by the specified value (in seconds)
      *
      * @param {Number} seconds
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.forward(15);
      */
     forward(seconds) {
         return this.player.forward(seconds);
@@ -197,7 +212,8 @@ class Player {
      *
      * @param {Number} seconds
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.rewind(15);
      */
     rewind(seconds) {
         return this.player.rewind(seconds);
@@ -208,7 +224,8 @@ class Player {
      *
      * @param {*} seconds
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.seek(45);
      */
     seek(seconds) {
         return this.player.seek(seconds);
@@ -219,7 +236,8 @@ class Player {
      * player element in the DOM).
      *
      * @return {Promise<void>}
-     * @memberOf Player
+     * @example
+     * player.clear();
      */
     clear() {
         this.player.clear();
@@ -229,6 +247,8 @@ class Player {
     /**
      * Directly download the video or returns the video Url
      * @return {Promise<void|string>}
+     * @example
+     * player.download();
      */
     download() {
         return this.player.download();
@@ -236,10 +256,16 @@ class Player {
 
     /**
      * Get the list of all the active listeners on the player, with the
-     *  added function
+     *  added functions
      *
      * @return {Object<string, Array<function>>}
-     * @memberOf Player
+     * @example
+     * player.getListeners();
+     * /* {
+     * *    play: [Function, Function, ...],
+     * *    pause: [Function, ...],
+     * *  }
+     *
      */
     getListeners() {
         return this.player.listeners();
