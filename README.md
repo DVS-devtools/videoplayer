@@ -1,6 +1,7 @@
 ## VideoPlayer
 
 VideoPlayer is a Manager for all the videos displayed in a web page
+
 It can manage multiple video instances with multiple video Provider:
 
 #### Supported providers:
