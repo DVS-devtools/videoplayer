@@ -38,7 +38,10 @@ class VideoPlayer {
      * Create a new {@link Player} instance
      * @param {Object} playerInitOptions configuration options (provider, videoId, url, domNode...)
      * @param {String|Node} playerInitOptions.domNode DOM element identifier,
-     * where to mount the player
+     * where to mount the player.
+     *
+     * Can be a DOM Node instance (ex: document.getElementById(id),
+     * a string representing the Node ID or a querySelector for a Node ID
      * @param {String} playerInitOptions.provider The provider to use,
      * one of: 'dailymotion', 'vimeo', 'youtube', 'flowplayer'
      * @param {String} [playerInitOptions.videoId] ID of the video,
