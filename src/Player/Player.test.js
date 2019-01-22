@@ -1,12 +1,21 @@
 import Player from '../Player';
 import TestProvider from '../Provider/testProvider';
+import DailymotionProvider from '../Provider/Dailymotion';
+import VimeoProvider from '../Provider/Vimeo';
+import FlowplayerProvider from '../Provider/Flowplayer';
 
 jest.mock('../Provider/testProvider');
+jest.mock('../Provider/Dailymotion');
+jest.mock('../Provider/Vimeo');
+jest.mock('../Provider/Flowplayer');
 
 let TestPlayer = null;
 
 beforeEach(() => {
     TestProvider.mockClear();
+    DailymotionProvider.mockClear();
+    VimeoProvider.mockClear();
+    FlowplayerProvider.mockClear();
     TestPlayer = null;
 });
 
@@ -14,7 +23,8 @@ describe('Player - TestProvider - Create a test player instance with div id', ()
     it('should create a new Player passing a div id', () => {
         TestPlayer = new Player({
             domNode: 'video1',
-            provider: 'test'
+            provider: 'test',
+            videoId: '123',
         }, '123');
 
         expect(TestProvider).toHaveBeenCalled();
@@ -23,7 +33,8 @@ describe('Player - TestProvider - Create a test player instance with div id', ()
     it('should create a new test Player passing a query selector', () => {
         TestPlayer = new Player({
             domNode: '#video1',
-            provider: 'test'
+            provider: 'test',
+            videoId: '123',
         }, '123');
 
         expect(TestProvider).toHaveBeenCalled();
@@ -37,7 +48,8 @@ describe('Player - TestProvider - Create a test player instance with div id', ()
 
         TestPlayer = new Player({
             domNode: domElement,
-            provider: 'test'
+            provider: 'test',
+            videoId: '123',
         }, '123');
 
         expect(TestProvider).toHaveBeenCalled();
@@ -46,8 +58,41 @@ describe('Player - TestProvider - Create a test player instance with div id', ()
     it('should not create a new test Player with an inexistent provider', () => {
         expect(() =>  new Player({
             domNode: 'video1',
-            provider: 'myinexistentvideoplayer'
+            provider: 'myinexistentvideoplayer',
+            videoId: '123',
         }, '123')).toThrow();
+    });
+});
+
+describe('Player - Different Providers - Create a Player instance', () => {
+    it('should create a Player with the Dailymotion Provider', () => {
+        TestPlayer = new Player({
+            domNode: 'video1',
+            provider: 'dailymotion',
+            videoId: '123',
+        }, '123');
+
+        expect(DailymotionProvider).toHaveBeenCalled();
+    });
+
+    it('should create a Player with the Vimeo Provider', () => {
+        TestPlayer = new Player({
+            domNode: 'video1',
+            provider: 'vimeo',
+            videoId: '123',
+        }, '123');
+
+        expect(VimeoProvider).toHaveBeenCalled();
+    });
+
+    it('should create a Player with the Flowplayer Provider', () => {
+        TestPlayer = new Player({
+            domNode: 'video1',
+            provider: 'flowplayer',
+            videoId: '123',
+        }, '123');
+
+        expect(FlowplayerProvider).toHaveBeenCalled();
     });
 });
 
@@ -55,6 +100,7 @@ describe('PlayerMethods - TestProvider - function call', () => {
     beforeEach(() => {
         TestPlayer = new Player({
             domNode: '#video1',
+            videoId: '123',
             provider: 'test'
         }, '123');
     });
@@ -114,14 +160,19 @@ describe('PlayerMethods - TestProvider - function call', () => {
         expect(TestProvider.prototype.seek).toHaveBeenCalled();
     });
 
-    it('Should call the TestProvider getListeners method', () => {
-        TestPlayer.getListeners();
-        expect(TestProvider.prototype.getListeners).toHaveBeenCalled();
-    });
-
     it('Should call the TestProvider clear method', () => {
         TestPlayer.clear();
         expect(TestProvider.prototype.clear).toHaveBeenCalled();
+    });
+
+    it('should call TestProvider togglePlay method', () => {
+        TestPlayer.togglePlay();
+        expect(TestProvider.prototype.togglePlay).toHaveBeenCalled();
+    });
+
+    it('should call TestProvider download method', () => {
+        TestPlayer.download();
+        expect(TestProvider.prototype.download).toHaveBeenCalled();
     });
 
     it('Should call the TestProvider on/off method', () => {
@@ -134,5 +185,16 @@ describe('PlayerMethods - TestProvider - function call', () => {
 
         TestPlayer.off('play', cb);
         expect(TestProvider.prototype.off).toHaveBeenCalled();
+    });
+
+    it('should return all the Listeners in TestProvider', () => {
+        // We can't check if "listeners" property of class TestProvider is called (no spy, no mock on class properties
+        // We can only check if what is returned is equal to what we manually set
+        const listeners = {
+            play: [console.log],
+            pause: [() => {}]
+        };
+        TestPlayer.player.listeners = listeners;
+        expect(TestPlayer.getListeners()).toEqual(listeners);
     });
 });

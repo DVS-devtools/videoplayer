@@ -245,6 +245,14 @@ export default class TestProvider {
         }
     }
 
+    togglePlay() {
+        //
+    }
+
+    download() {
+        //
+    }
+
     setVolume(volumeLevel) {
         this.iframeContentWindow.postMessage(JSON.stringify({ command: 'setVolume', value: volumeLevel }), window.location.origin);
     }

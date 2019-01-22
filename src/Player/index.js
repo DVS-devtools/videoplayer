@@ -2,6 +2,7 @@ import TestProvider from '../Provider/testProvider';
 import DailymotionProvider from '../Provider/Dailymotion';
 import FlowplayerProvider from '../Provider/Flowplayer';
 import VimeoProvider from '../Provider/Vimeo';
+import { ValidateArg, ValidateObj } from '../Validation';
 
 /**
  * This class will provide you a player instance. An instance is independent
@@ -54,6 +55,18 @@ class Player {
     constructor(options, id) {
         this.id = id;
 
+        return this.createPlayer(options, id);
+    }
+
+    /**
+     * Creates the Player provider
+     * @param options
+     * @param {String} id Id of the player to associate inside the dom
+     * @return {Player}
+     */
+    @ValidateObj({ provider: 'string', domNode: 'string|object', videoId: 'string|number' }, 0, { videoId: 'url' })
+    @ValidateArg('string|number', 1)
+    createPlayer(options, id) {
         switch (options.provider) {
         case 'test':
             this.player = new TestProvider(options, id);
@@ -71,6 +84,7 @@ class Player {
             this.player = null;
             throw new Error(`Unsupported Provider ${options.provider}`);
         }
+        return this;
     }
 
     /**
@@ -89,6 +103,8 @@ class Player {
      * };
      * player.on('play', cb);
      */
+    @ValidateArg('string')
+    @ValidateArg('function', 1)
     on(event, cb) {
         return this.player.on(event, cb);
     }
@@ -102,6 +118,8 @@ class Player {
      * @example
      * player.off('play', cb);
      */
+    @ValidateArg('string')
+    @ValidateArg('function', 1)
     off(event, cb) {
         return this.player.off(event, cb);
     }
@@ -195,6 +213,7 @@ class Player {
      * player.setVolume(1); // Max volume
      * player.setVolume(0); // Muted
      */
+    @ValidateArg('number')
     setVolume(volumeLevel) {
         return this.player.setVolume(volumeLevel);
     }
@@ -207,6 +226,7 @@ class Player {
      * @example
      * player.forward(15);
      */
+    @ValidateArg('number')
     forward(seconds) {
         return this.player.forward(seconds);
     }
@@ -219,6 +239,7 @@ class Player {
      * @example
      * player.rewind(15);
      */
+    @ValidateArg('number')
     rewind(seconds) {
         return this.player.rewind(seconds);
     }
@@ -231,6 +252,7 @@ class Player {
      * @example
      * player.seek(45);
      */
+    @ValidateArg('number')
     seek(seconds) {
         return this.player.seek(seconds);
     }
@@ -272,7 +294,7 @@ class Player {
      *
      */
     getListeners() {
-        return this.player.listeners();
+        return this.player.listeners;
     }
 }
 
