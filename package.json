@@ -20,6 +20,7 @@
     "postversion": "git add docs/ && git commit -am \"Documentation ${npm_package_version}\" && git push --follow-tags"
   },
   "dependencies": {
+    "youtube-player": "^5.5.2",
     "@vimeo/player": "^2.6.7"
   },
   "devDependencies": {
