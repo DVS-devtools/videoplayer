@@ -1,3 +1,6 @@
+/**
+ * @ignore
+ */
 export default class TestProvider {
     id = null;
 
@@ -240,6 +243,14 @@ export default class TestProvider {
             this.isFullScreen = true;
             this.iframeContentWindow.postMessage(JSON.stringify({ command: 'enterFullScreen' }), window.location.origin);
         }
+    }
+
+    togglePlay() {
+        //
+    }
+
+    download() {
+        //
     }
 
     setVolume(volumeLevel) {

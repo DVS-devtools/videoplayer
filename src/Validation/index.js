@@ -83,7 +83,8 @@ export function ValidateArg(type, position = 0) {
             if (args.length < fn.length) {
                 throw new Error(`Expecting ${fn.length} argument${fn.length > 1 ? 's' : ''}, ${args.length} passed`);
             }
-            if (typeof args[position] !== type) {
+            const types = type.split('|');
+            if (!oneOfType(args[position], types)) {
                 throw new Error(`Invalid argument passed at index ${position}"
     Expecting: ${type}
     Received: ${typeof args[position]}`);

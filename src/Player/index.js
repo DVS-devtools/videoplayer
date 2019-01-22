@@ -2,6 +2,7 @@ import TestProvider from '../Provider/testProvider';
 import DailymotionProvider from '../Provider/Dailymotion';
 import FlowplayerProvider from '../Provider/Flowplayer';
 import VimeoProvider from '../Provider/Vimeo';
+import { ValidateArg, ValidateObj } from '../Validation';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
@@ -15,10 +16,8 @@ import VimeoProvider from '../Provider/Vimeo';
  *
  * You can read the full VideoPlayer documentation here: LINK_TO_VIDEOPLAYER_CLASS
  *
- * @export
- * @class Player
  */
-export default class Player {
+class Player {
     id = null;
 
     player = null;
@@ -27,11 +26,22 @@ export default class Player {
      * Creates an instance of Player.
      * @param {Object} options configuration options ( provider, videoId, url, domNode... )
      * @param {String} id Id of the player to associate inside the dom
-     * @memberof Player
      */
     constructor(options, id) {
         this.id = id;
 
+        return this.createPlayer(options, id);
+    }
+
+    /**
+     * Creates the Player provider
+     * @param options
+     * @param {String} id Id of the player to associate inside the dom
+     * @return {Player}
+     */
+    @ValidateObj({ provider: 'string', domNode: 'string|object', videoId: 'string|number' }, 0, { videoId: 'url' })
+    @ValidateArg('string|number', 1)
+    createPlayer(options, id) {
         switch (options.provider) {
         case 'test':
             this.player = new TestProvider(options, id);
@@ -49,6 +59,7 @@ export default class Player {
             this.player = null;
             throw new Error(`Unsupported Provider ${options.provider}`);
         }
+        return this;
     }
 
     /**
@@ -74,11 +85,13 @@ export default class Player {
      *
      * @param {String} event name of the event (see list of compatible listeners)
      * @param {Function} cb method to call when the event is fired
-     * @returns
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
+    @ValidateArg('string')
+    @ValidateArg('function', 1)
     on(event, cb) {
-        this.player.on(event, cb);
+        return this.player.on(event, cb);
     }
 
     /**
@@ -87,120 +100,141 @@ export default class Player {
      *
      * @param {String} event name of the event (see list of compatible listeners)
      * @param {Function} cb method to remove
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
+    @ValidateArg('string')
+    @ValidateArg('function', 1)
     off(event, cb) {
-        this.player.off(event, cb);
+        return this.player.off(event, cb);
     }
 
     /**
      * Play a video.
-     *
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
     play() {
-        this.player.play();
+        return this.player.play();
     }
 
     /**
      * Pause a video.
-     *
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
     pause() {
-        this.player.pause();
+        return this.player.pause();
     }
 
     /**
      * Stop the player (restarting from 0s).
-     *
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
     stop() {
-        this.player.stop();
+        return this.player.stop();
     }
 
     /**
      * Set the attribute muted to true.
-     *
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
     mute() {
-        this.player.mute();
+        return this.player.mute();
     }
 
     /**
      * Set the attribute muted to false
-     *
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
     unmute() {
-        this.player.unmute();
+        return this.player.unmute();
     }
 
     /**
      * Switch between muted and unmuted
-     *
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
     toggleMute() {
-        this.player.toggleMute();
+        return this.player.toggleMute();
     }
 
     /**
      * Enter/exit in fullscreen mode
-     *
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
     toggleFullScreen() {
-        this.player.toggleFullScreen();
+        return this.player.toggleFullScreen();
+    }
+
+    /**
+     * Play/Pause the video
+     * @return {Promise<void>}
+     * @memberOf Player
+     */
+    togglePlay() {
+        return this.player.togglePlay();
     }
 
     /**
      * Set the volume level to the given value.
      *
      * @param {Number} volumeLevel Value between 0 and 1, all other value are not accepted.
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
+    @ValidateArg('number')
     setVolume(volumeLevel) {
-        this.player.setVolume(volumeLevel);
+        return this.player.setVolume(volumeLevel);
     }
 
     /**
      * Go ahead in the video by the specified value (in seconds)
      *
      * @param {Number} seconds
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
+    @ValidateArg('number')
     forward(seconds) {
-        this.player.forward(seconds);
+        return this.player.forward(seconds);
     }
 
     /**
      * Go back in the video by the specified value (in seconds)
      *
      * @param {Number} seconds
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
+    @ValidateArg('number')
     rewind(seconds) {
-        this.player.rewind(seconds);
+        return this.player.rewind(seconds);
     }
 
     /**
      * Set the current time of the video at the specified value (in seconds)
      *
      * @param {*} seconds
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
+    @ValidateArg('number')
     seek(seconds) {
-        this.player.seek(seconds);
+        return this.player.seek(seconds);
     }
 
     /**
-     * Destroy the Player (it will remove the active instance of the palyer and the
-     *  iframe by the DOM).
+     * Destroy the Player (it will remove the active instance of the player and the
+     * player element in the DOM).
      *
-     * @memberof Player
+     * @return {Promise<void>}
+     * @memberOf Player
      */
     clear() {
         this.player.clear();
@@ -208,13 +242,23 @@ export default class Player {
     }
 
     /**
+     * Directly download the video or returns the video Url
+     * @return {Promise<void|string>}
+     */
+    download() {
+        return this.player.download();
+    }
+
+    /**
      * Get the list of all the active listeners on the player, with the
      *  added function
      *
-     * @returns
-     * @memberof Player
+     * @return {Object<string, Array<function>>}
+     * @memberOf Player
      */
     getListeners() {
-        return this.player.getListeners();
+        return this.player.listeners;
     }
 }
+
+export default Player;
