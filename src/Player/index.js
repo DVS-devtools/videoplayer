@@ -2,7 +2,7 @@ import TestProvider from '../Provider/testProvider';
 import DailymotionProvider from '../Provider/Dailymotion';
 import FlowplayerProvider from '../Provider/Flowplayer';
 import VimeoProvider from '../Provider/Vimeo';
-import { ValidateArg } from '../Validation';
+import { ValidateArg, ValidateObj } from '../Validation';
 
 /**
  * This class will provide you a player instance. An instance is indipendent
@@ -30,10 +30,18 @@ class Player {
     constructor(options, id) {
         this.id = id;
 
-        if (!options.provider || typeof options.provider !== 'string') {
-            throw new Error('Invalid Provider');
-        }
+        return this.createPlayer(options, id);
+    }
 
+    /**
+     * Creates the Player provider
+     * @param options
+     * @param {String} id Id of the player to associate inside the dom
+     * @return {Player}
+     */
+    @ValidateObj({ provider: 'string', domNode: 'string|object', videoId: 'string|number' }, 0, { videoId: 'url' })
+    @ValidateArg('string|number', 1)
+    createPlayer(options, id) {
         switch (options.provider) {
         case 'test':
             this.player = new TestProvider(options, id);
@@ -51,6 +59,7 @@ class Player {
             this.player = null;
             throw new Error(`Unsupported Provider ${options.provider}`);
         }
+        return this;
     }
 
     /**
@@ -248,7 +257,7 @@ class Player {
      * @memberOf Player
      */
     getListeners() {
-        return this.player.listeners();
+        return this.player.listeners;
     }
 }
 
