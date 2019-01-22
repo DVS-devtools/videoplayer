@@ -61,7 +61,7 @@ class VimeoProvider {
 
     /**
      * Get video Muted status
-     * @return {PromiseLike<boolean | never>}
+     * @return Promise
      */
     get isMuted() {
         return this.ready.then(() => this.vmPlayer.getVolume())
@@ -205,7 +205,7 @@ class VimeoProvider {
 
     /**
      * Remove the Vimeo Player DOM Node
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     clear() {
         return this.ready.then(() => {
@@ -224,7 +224,7 @@ class VimeoProvider {
      * @param event
      * @param cb
      * @param once
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     on(event, cb, once = false) {
         return this.ready.then(() => {
@@ -246,7 +246,7 @@ class VimeoProvider {
      * the listener will be fired only once
      * @param event
      * @param cb
-     * @return {PromiseLike<T|never>|Promise<T|never>}
+     * @return Promise
      */
     one(event, cb) {
         return this.on(event, cb, true);
@@ -258,7 +258,7 @@ class VimeoProvider {
      * remove also the relative Vimeo Player event listener
      * @param event
      * @param cb
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     off(event, cb) {
         return this.ready.then(() => {
@@ -276,7 +276,7 @@ class VimeoProvider {
 
     /**
      * When Vimeo Player is ready, send play command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     play() {
         return this.ready.then(() => this.vmPlayer.play());
@@ -284,7 +284,7 @@ class VimeoProvider {
 
     /**
      * When Vimeo Player is ready, send pause command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     pause() {
         return this.ready.then(() => this.vmPlayer.pause());
@@ -292,7 +292,7 @@ class VimeoProvider {
 
     /**
      * When Vimeo Player is ready, send unload command (restore the video at the initial state)
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     stop() {
         return this.ready.then(() => {
@@ -303,7 +303,7 @@ class VimeoProvider {
 
     /**
      * When Vimeo Player is ready, send setVolume to 0 command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     mute() {
         return this.ready.then(() => this.vmPlayer.setVolume(0));
@@ -311,7 +311,7 @@ class VimeoProvider {
 
     /**
      * When Vimeo Player is ready, send setVolume to 1 command
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     unmute() {
         return this.ready.then(() => this.vmPlayer.setVolume(1));
@@ -320,7 +320,7 @@ class VimeoProvider {
     /**
      * When Vimeo Player is ready,
      * check the current volume and send setVolume command with 1 or 0 to mute or unmute
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     toggleMute() {
         return this.ready
@@ -343,7 +343,7 @@ class VimeoProvider {
      * When Vimeo Player is ready, send setVolume command
      * volumeLevel can be a float from 0 to 1 or an integer from 0 to 100
      * @param volumeLevel
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     setVolume(volumeLevel) {
         if (volumeLevel > 1) {
@@ -355,7 +355,7 @@ class VimeoProvider {
     /**
      * When Vimeo Player is ready, send command to seek to the current time plus the given seconds
      * @param seconds
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     forward(seconds) {
         return this.ready
@@ -366,7 +366,7 @@ class VimeoProvider {
     /**
      * When Vimeo Player is ready, send command to seek to the current time minus the given seconds
      * @param seconds
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     rewind(seconds) {
         return this.ready
@@ -377,7 +377,7 @@ class VimeoProvider {
     /**
      * When Vimeo Player is ready, send command to seek to the given seconds
      * @param seconds
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     seek(seconds) {
         return this.ready.then(() => this.vmPlayer.setCurrentTime(seconds));
@@ -385,7 +385,7 @@ class VimeoProvider {
 
     /**
      * When Vimeo Player is ready, send command to get the video url
-     * @return {PromiseLike<T | never> | Promise<T | never>}
+     * @return Promise
      */
     download() {
         return this.ready.then(() => this.vmPlayer.getVideoUrl());

@@ -2,6 +2,7 @@ import TestProvider from '../Provider/testProvider';
 import DailymotionProvider from '../Provider/Dailymotion';
 import FlowplayerProvider from '../Provider/Flowplayer';
 import VimeoProvider from '../Provider/Vimeo';
+import YoutubeProvider from '../Provider/Youtube';
 import { ValidateArg, ValidateObj } from '../Validation';
 
 /**
@@ -80,6 +81,9 @@ class Player {
             break;
         case 'vimeo':
             this.player = new VimeoProvider(options, id);
+            break;
+        case 'youtube':
+            this.player = new YoutubeProvider(options, id);
             break;
         default:
             this.player = null;
