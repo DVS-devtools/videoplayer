@@ -59,6 +59,7 @@ class Player {
     }
 
     /**
+     * @ignore
      * Creates the Player provider
      * @param options
      * @param {String} id Id of the player to associate inside the dom
