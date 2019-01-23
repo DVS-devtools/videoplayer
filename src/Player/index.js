@@ -99,8 +99,24 @@ class Player {
      * Please remember to store the function inside a variable, in order to call the off method
      * to remove the listener on a precise event
      *
-     * @param {String} event name of the event (see list of compatible listeners)
-     * @param {Function} callback method to call when the event is fired
+     * Supported events:
+     * * **play**: fired when video starts playing
+     * * **pause**: fired when video stops playing
+     * * **end**: fired at the end of the playback
+     * * **playbackProgress**: fired every N ms (depends ont he provider) while the video is playing
+     * * **playbackProgress25**: fired when the video reach 25% of playback duration
+     * * **playbackProgress50**: fired when the video reach 50% of playback duration
+     * * **playbackProgress75**: fired when the video reach the 75% of playback duration
+     * * **loadProgress**: fired while the video data are downloading
+     * * **seek**: fired when the video seeks from the current time to another
+     * * **setVolume**: fired when the video changes volume
+     * * **buffering**: fired when the video starts buffering (an playback stops)
+     * * **firstPlay**: fired when the video starts to play for the first time
+     * (the stop() method reset the first play, the successive play() fires a firstPlay event )
+     *
+     * *The method supports also every Provider specific events (ex. VimeoProvider **bufferend**)*
+     * @param {String} event the Event name (see supported events)
+     * @param {Function} callback Function to call when the event is fired
      * @return {Promise<void>}
      * @example
      * const callback = (evt) => {
@@ -117,7 +133,7 @@ class Player {
     /**
      * Remove a listener from an event
      *
-     * @param {String} event name of the event (see list of compatible listeners)
+     * @param {String} event name of the event (see [on]{@link Player#on} supported events)
      * @param {Function} callback method to remove
      * @return {Promise<void>}
      * @example
@@ -226,7 +242,7 @@ class Player {
     /**
      * Go forward in the video by the specified value (in seconds)
      *
-     * @param {Number} seconds
+     * @param {Number} seconds seconds to forward
      * @return {Promise<void>}
      * @example
      * player.forward(15);
@@ -239,7 +255,7 @@ class Player {
     /**
      * Go back in the video by the specified value (in seconds)
      *
-     * @param {Number} seconds
+     * @param {Number} seconds seconds to rewind
      * @return {Promise<void>}
      * @example
      * player.rewind(15);
@@ -252,7 +268,7 @@ class Player {
     /**
      * Set the current time of the video at the specified value (in seconds)
      *
-     * @param {*} seconds
+     * @param {Number} seconds seconds to seek
      * @return {Promise<void>}
      * @example
      * player.seek(45);

@@ -21,8 +21,8 @@ class VideoPlayer {
     /**
      * @ignore
      * generate an unique id
-     * @param idOrUrl
-     * @param affix
+     * @param {String} idOrUrl fixed part of the id
+     * @param {Number} affix incremental counter to append at the end of the id
      * @return {string}
      */
     generateId(idOrUrl, affix = 1) {
@@ -90,7 +90,7 @@ class VideoPlayer {
 
     /**
      * Get a previously created Player instance from its id
-     * @param playerId
+     * @param {String} playerId the Player Id
      * @return {Player}
      * @example
      * const player = VideoPlayer.getPlayer('video_sdHg79_1');
@@ -130,9 +130,29 @@ class VideoPlayer {
 
     /**
      * Add an event listener callback called when the specified event is fired
-     * @param {String} playerId
-     * @param {String} event
-     * @param {Function} callback
+     *
+     * Please remember to store the function inside a variable,
+     * in order to call the off method to remove the listener on a precise event
+     *
+     * Supported events:
+     * * **play**: fired when video starts playing
+     * * **pause**: fired when video stops playing
+     * * **end**: fired at the end of the playback
+     * * **playbackProgress**: fired every N ms (depends ont he provider) while the video is playing
+     * * **playbackProgress25**: fired when the video reach 25% of playback duration
+     * * **playbackProgress50**: fired when the video reach 50% of playback duration
+     * * **playbackProgress75**: fired when the video reach the 75% of playback duration
+     * * **loadProgress**: fired while the video data are downloading
+     * * **seek**: fired when the video seeks from the current time to another
+     * * **setVolume**: fired when the video changes volume
+     * * **buffering**: fired when the video starts buffering (an playback stops)
+     * * **firstPlay**: fired when the video starts to play for the first time
+     * (the stop() method reset the first play, the successive play() fires a firstPlay event )
+     *
+     * *The method supports also every Provider specific events (ex. VimeoProvider **bufferend**)*
+     * @param {String} playerId the Player Id
+     * @param {String} event the Event name (see supported events)
+     * @param {Function} callback Function to call when the event is fired
      * @return {Promise<void>}
      * @example
      * const callback = (evt) => {
@@ -148,9 +168,10 @@ class VideoPlayer {
 
     /**
      * Remove a previously registered callback to an event
-     * @param {String} playerId
-     * @param {String} event
-     * @param {Function} callback
+     * @param {String} playerId the Player Id
+     * @param {String} event the Event name
+     * (see [addEventListener]{@link VideoPlayer#addEventListener} supported events)
+     * @param {Function} callback Function registered
      * @return {Promise<void>}
      * @example
      * VideoPlayer.removeEventListener('video_sdHg79_1', 'play', callback);
@@ -163,7 +184,7 @@ class VideoPlayer {
 
     /**
      * Destroys a Player instance
-     * @param playerId
+     * @param {String} playerId the Player Id
      * @return {Promise<void>}
      * @example
      * VideoPlayer.clear('video_sdHg79_1').then(() => {
@@ -194,7 +215,7 @@ class VideoPlayer {
 
     /**
      * Send [play]{@link Player#play} command to the Player
-     * @param playerId
+     * @param {String} playerId the Player Id
      * @return {Promise<void>}
      * @example
      * VideoPlayer.play('video_sdHg79_1').then(() => {
@@ -207,7 +228,7 @@ class VideoPlayer {
 
     /**
      * Send [pause]{@link Player#pause} command to the Player
-     * @param playerId
+     * @param {String} playerId the Player Id
      * @return {Promise<void>}
      * @example
      * VideoPlayer.pause('video_sdHg79_1').then(() => {
@@ -220,7 +241,7 @@ class VideoPlayer {
 
     /**
      * Send [stop]{@link Player#stop} command to the Player
-     * @param playerId
+     * @param {String} playerId the Player Id
      * @return {Promise<void>}
      * @example
      * VideoPlayer.stop('video_sdHg79_1').then(() => {
@@ -233,7 +254,7 @@ class VideoPlayer {
 
     /**
      * Send [mute]{@link Player#mute} command to the Player
-     * @param playerId
+     * @param {String} playerId the Player Id
      * @return {Promise<void>}
      * @example
      * VideoPlayer.mute('video_sdHg79_1').then(() => {
@@ -246,7 +267,7 @@ class VideoPlayer {
 
     /**
      * Send [unmute]{@link Player#unmute} command to the Player
-     * @param playerId
+     * @param {String} playerId the Player Id
      * @return {Promise<void>}
      * @example
      * VideoPlayer.unmute('video_sdHg79_1').then(() => {
@@ -259,7 +280,7 @@ class VideoPlayer {
 
     /**
      * Send [toggleMute]{@link Player#toggleMute} command to the Player
-     * @param playerId
+     * @param {String} playerId the Player Id
      * @return {Promise<void>}
      * @example
      * VideoPlayer.toggleMute('video_sdHg79_1').then(() => {
@@ -272,7 +293,7 @@ class VideoPlayer {
 
     /**
      * Send [toggleFullScreen]{@link Player#toggleFullScreen} command to the Player
-     * @param playerId
+     * @param {String} playerId the Player Id
      * @return {Promise<void>}
      * @example
      * VideoPlayer.toggleFullScreen('video_sdHg79_1').then(() => {
@@ -285,8 +306,8 @@ class VideoPlayer {
 
     /**
      * Send [setVolume]{@link Player#setVolume} command to the Player
-     * @param playerId
-     * @param volume
+     * @param {String} playerId the Player Id
+     * @param volume volume level to set, value between 0 and 1
      * @return {Promise<void>}
      * @example
      * VideoPlayer.setVolume('video_sdHg79_1', 0.5).then(() => {
@@ -300,8 +321,8 @@ class VideoPlayer {
 
     /**
      * Send [seek]{@link Player#seek} command to the Player
-     * @param playerId
-     * @param seconds
+     * @param {String} playerId the Player Id
+     * @param {Number} seconds seconds to seek
      * @return {Promise<void>}
      * @example
      * VideoPlayer.seek('video_sdHg79_1', 42).then(() => {
@@ -315,8 +336,8 @@ class VideoPlayer {
 
     /**
      * Send [forward]{@link Player#forward} command to the Player
-     * @param playerId
-     * @param seconds
+     * @param {String} playerId the Player Id
+     * @param {Number} seconds seconds to forward
      * @return {Promise<void>}
      * @example
      * VideoPlayer.forward('video_sdHg79_1', 10).then(() => {
@@ -330,8 +351,8 @@ class VideoPlayer {
 
     /**
      * Send [rewind]{@link Player#rewind} command to the Player
-     * @param playerId
-     * @param seconds
+     * @param {String} playerId the Player Id
+     * @param {Number} seconds seconds to rewind
      * @return {Promise<void>}
      * @example
      * VideoPlayer.rewind('video_sdHg79_1', 10).then(() => {
@@ -341,6 +362,19 @@ class VideoPlayer {
     @ValidateOptionalArg('number', 1)
     rewind(playerId, seconds) {
         return this.getPlayer(playerId).rewind(seconds || this.defaults.rewind);
+    }
+
+    /**
+     * Directly download the video or returns the video Url
+     * @param {String} playerId the Player Id
+     * @return {Promise<void|string>}
+     * @example
+     * VideoPlayer.download('video_sdHg79_1').then((url)) => {
+     *     // For providers that not download directly, url is the provider website url to the video
+     * };
+     */
+    download(playerId) {
+        return this.getPlayer(playerId).download();
     }
 }
 
