@@ -214,16 +214,16 @@ class YoutubeProvider {
      * When the Youtube Player fires the stateChange event with the event associated State,
      * all listeners associated with the event will be called
      * @param event
-     * @param cb
+     * @param callback
      * @param once
      * @return Promise
      */
-    on(event, cb, once = false) {
+    on(event, callback, once = false) {
         return this.ready.then(() => {
             if (typeof this.internalListeners[event] === 'undefined') {
                 this.internalListeners[event] = [];
             }
-            this.internalListeners[event].unshift({ callback: cb, once });
+            this.internalListeners[event].unshift({ callback, once });
         });
     }
 
@@ -231,23 +231,23 @@ class YoutubeProvider {
      * Add a listener to an event,
      * the listener will be fired only once
      * @param event
-     * @param cb
+     * @param callback
      * @return Promise
      */
-    one(event, cb) {
-        return this.on(event, cb, true);
+    one(event, callback) {
+        return this.on(event, callback, true);
     }
 
     /**
      * Remove a listener from an event
      * @param event
-     * @param cb
+     * @param callback
      * @return Promise
      */
-    off(event, cb) {
+    off(event, callback) {
         return this.ready.then(() => {
             if (this.internalListeners[event]) {
-                const index = this.internalListeners[event].findIndex(evt => evt.callback === cb);
+                const index = this.internalListeners[event].findIndex(evt => evt.callback === callback);
                 if (index > -1) {
                     this.internalListeners[event].splice(index, 1);
                 }

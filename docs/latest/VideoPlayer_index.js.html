@@ -1,4 +1,45 @@
-import Player from '../Player';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>VideoPlayer/index.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Player.html">Player</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#clear">clear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#download">download</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#forward">forward</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#getListeners">getListeners</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#mute">mute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#off">off</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#on">on</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#pause">pause</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#play">play</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#rewind">rewind</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#seek">seek</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#setVolume">setVolume</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#stop">stop</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#toggleFullScreen">toggleFullScreen</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#toggleMute">toggleMute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#togglePlay">togglePlay</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#unmute">unmute</a></span></li><li class="nav-heading">Namespaces</li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="VideoPlayer.html">VideoPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#addEventListener">addEventListener</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#clear">clear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#clearAll">clearAll</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#createPlayer">createPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#download">download</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#forward">forward</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#getPlayer">getPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#getPlayers">getPlayers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#getPlayersAsArray">getPlayersAsArray</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#mute">mute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#pause">pause</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#play">play</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#removeEventListener">removeEventListener</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#rewind">rewind</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#seek">seek</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#setVolume">setVolume</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#stop">stop</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#toggleFullScreen">toggleFullScreen</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#toggleMute">toggleMute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="VideoPlayer.html#unmute">unmute</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">VideoPlayer/index.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Player from '../Player';
 import { ValidateArg, ValidateObj, ValidateOptionalArg } from '../Validation';
 
 /**
@@ -14,7 +55,7 @@ class VideoPlayer {
 
     /**
      * @ignore
-     * @type {Object.<string, Player>}
+     * @type {Object.&lt;string, Player>}
      */
     playerInstances = {};
 
@@ -47,7 +88,7 @@ class VideoPlayer {
      * @param {String} [playerInitOptions.videoId] ID of the video,
      * passed to the provider to find the video
      * @param {String} [playerInitOptions.url] url of the video resource, passed to the provider
-     * @param {Object<any>}[playerInitOptions.providerOptions] provider init options,
+     * @param {Object&lt;any>}[playerInitOptions.providerOptions] provider init options,
      * see each provider doc to know what can be passed here:
      * * **Vimeo**: https://github.com/vimeo/player.js#embed-options
      * * **Dailymotion**: https://developer.dailymotion.com/player#player-parameters
@@ -80,7 +121,7 @@ class VideoPlayer {
         // Save the created Player by its id
         this.playerInstances[id] = player;
         // Register all passed events
-        if (playerInitOptions.events && Object.keys(playerInitOptions.events).length) {
+        if (playerInitOptions.events &amp;&amp; Object.keys(playerInitOptions.events).length) {
             Object.keys(playerInitOptions.events).forEach((eventName) => {
                 this.addEventListener(id, eventName, playerInitOptions.events[eventName]);
             });
@@ -111,7 +152,7 @@ class VideoPlayer {
      * //   video_sdHg79_1: Player
      * // }
      *
-     * @return {Object.<string, Player>}
+     * @return {Object.&lt;string, Player>}
      */
     getPlayers() {
         return this.playerInstances;
@@ -153,7 +194,7 @@ class VideoPlayer {
      * @param {String} playerId the Player Id
      * @param {String} event the Event name (see supported events)
      * @param {Function} callback Function to call when the event is fired
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * const callback = (evt) => {
      *     // Do stuff..
@@ -172,7 +213,7 @@ class VideoPlayer {
      * @param {String} event the Event name
      * (see [addEventListener]{@link VideoPlayer#addEventListener} supported events)
      * @param {Function} callback Function registered
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.removeEventListener('video_sdHg79_1', 'play', callback);
      */
@@ -185,7 +226,7 @@ class VideoPlayer {
     /**
      * Destroys a Player instance
      * @param {String} playerId the Player Id
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.clear('video_sdHg79_1').then(() => {
      *     // Player is cleared
@@ -199,7 +240,7 @@ class VideoPlayer {
 
     /**
      * Destroys all Player instances
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.clearAll().then(() => {
      *     // All players are cleared
@@ -216,7 +257,7 @@ class VideoPlayer {
     /**
      * Send [play]{@link Player#play} command to the Player
      * @param {String} playerId the Player Id
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.play('video_sdHg79_1').then(() => {
      *     // Player is played
@@ -229,7 +270,7 @@ class VideoPlayer {
     /**
      * Send [pause]{@link Player#pause} command to the Player
      * @param {String} playerId the Player Id
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.pause('video_sdHg79_1').then(() => {
      *     // Player is paused
@@ -242,7 +283,7 @@ class VideoPlayer {
     /**
      * Send [stop]{@link Player#stop} command to the Player
      * @param {String} playerId the Player Id
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.stop('video_sdHg79_1').then(() => {
      *     // Player is stopped
@@ -255,7 +296,7 @@ class VideoPlayer {
     /**
      * Send [mute]{@link Player#mute} command to the Player
      * @param {String} playerId the Player Id
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.mute('video_sdHg79_1').then(() => {
      *     // Player is muted
@@ -268,7 +309,7 @@ class VideoPlayer {
     /**
      * Send [unmute]{@link Player#unmute} command to the Player
      * @param {String} playerId the Player Id
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.unmute('video_sdHg79_1').then(() => {
      *     // Player is unmuted
@@ -281,7 +322,7 @@ class VideoPlayer {
     /**
      * Send [toggleMute]{@link Player#toggleMute} command to the Player
      * @param {String} playerId the Player Id
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.toggleMute('video_sdHg79_1').then(() => {
      *     // Mute is toggled
@@ -294,7 +335,7 @@ class VideoPlayer {
     /**
      * Send [toggleFullScreen]{@link Player#toggleFullScreen} command to the Player
      * @param {String} playerId the Player Id
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.toggleFullScreen('video_sdHg79_1').then(() => {
      *     // Full screen is toggled
@@ -308,7 +349,7 @@ class VideoPlayer {
      * Send [setVolume]{@link Player#setVolume} command to the Player
      * @param {String} playerId the Player Id
      * @param volume volume level to set, value between 0 and 1
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.setVolume('video_sdHg79_1', 0.5).then(() => {
      *     // Volume is set
@@ -323,7 +364,7 @@ class VideoPlayer {
      * Send [seek]{@link Player#seek} command to the Player
      * @param {String} playerId the Player Id
      * @param {Number} seconds seconds to seek
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.seek('video_sdHg79_1', 42).then(() => {
      *     // Player is seeked
@@ -338,7 +379,7 @@ class VideoPlayer {
      * Send [forward]{@link Player#forward} command to the Player
      * @param {String} playerId the Player Id
      * @param {Number} seconds seconds to forward
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.forward('video_sdHg79_1', 10).then(() => {
      *     // Player is forwarded
@@ -353,7 +394,7 @@ class VideoPlayer {
      * Send [rewind]{@link Player#rewind} command to the Player
      * @param {String} playerId the Player Id
      * @param {Number} seconds seconds to rewind
-     * @return {Promise<void>}
+     * @return {Promise&lt;void>}
      * @example
      * VideoPlayer.rewind('video_sdHg79_1', 10).then(() => {
      *     // Player is rewinded
@@ -367,7 +408,7 @@ class VideoPlayer {
     /**
      * Directly download the video or returns the video Url
      * @param {String} playerId the Player Id
-     * @return {Promise<void|string>}
+     * @return {Promise&lt;void|string>}
      * @example
      * VideoPlayer.download('video_sdHg79_1').then((url)) => {
      *     // For providers that not download directly, url is the provider website url to the video
@@ -379,3 +420,22 @@ class VideoPlayer {
 }
 
 export default new VideoPlayer();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 23 2019 12:21:44 GMT+0100 (Central European Standard Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
