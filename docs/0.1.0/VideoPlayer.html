@@ -122,14 +122,14 @@
 
     
 
-    <h4 class="name" id="addEventListener"><span class="type-signature"></span>addEventListener<span class="signature">(playerId, event, cb)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="addEventListener"><span class="type-signature"></span>addEventListener<span class="signature">(playerId, event, callback)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Add an event listener cb called when the specified event is fired</p>
+    <p>Add an event listener callback called when the specified event is fired</p>
 </div>
 
 
@@ -261,7 +261,7 @@
 
         <tr>
             
-                <td class="name"><code>cb</code></td>
+                <td class="name"><code>callback</code></td>
             
 
             <td class="type">
@@ -326,10 +326,10 @@
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>const cb = (evt) => {
+    <pre class="prettyprint"><code>const callback = (evt) => {
     // Do stuff..
 }
-VideoPlayer.addEventListener('video_sdHg79_1', 'play', cb);</code></pre>
+VideoPlayer.addEventListener('video_sdHg79_1', 'play', callback);</code></pre>
 
 </div>
 
@@ -383,7 +383,7 @@ VideoPlayer.addEventListener('video_sdHg79_1', 'play', cb);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line171">line 171</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line173">line 173</a>
     </li></ul></dd>
     
 
@@ -487,7 +487,9 @@ VideoPlayer.addEventListener('video_sdHg79_1', 'play', cb);</code></pre>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.clear('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.clear('video_sdHg79_1').then(() => {
+    // Player is cleared
+})</code></pre>
 
 </div>
 
@@ -541,7 +543,7 @@ VideoPlayer.addEventListener('video_sdHg79_1', 'play', cb);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line185">line 185</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line187">line 187</a>
     </li></ul></dd>
     
 
@@ -773,8 +775,8 @@ VideoPlayer.addEventListener('video_sdHg79_1', 'play', cb);</code></pre>
             <td class="description last">
                 <p>DOM element identifier,
 where to mount the player.</p>
-<p>Can be a DOM Node instance (ex: document.getElementById(id),
-a string representing the Node ID or a querySelector for a Node ID</p>
+<p>Can be a DOM Node instance (ex: document.getElementById(id)),
+a string representing the Node ID (ex: id) or a querySelector for a Node ID (ex: #id)</p>
                 
             </td>
         </tr>
@@ -983,8 +985,8 @@ see each provider doc to know what can be passed here:</p>
 
     <pre class="prettyprint"><code>const player = VideoPlayer.createPlayer({
     domNode: '#el',
-    videoId: 'sdHg79',
-    provider: 'vimeo'
+    provider: 'vimeo',
+    videoId: 'sdHg79'
 });</code></pre>
 
 </div>
@@ -1039,7 +1041,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line304">line 304</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line326">line 326</a>
     </li></ul></dd>
     
 
@@ -1164,7 +1166,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.forward('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.forward('video_sdHg79_1').then(() => {
+    // Player is forwarded
+})</code></pre>
 
 </div>
 
@@ -1602,7 +1606,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line233">line 233</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line243">line 243</a>
     </li></ul></dd>
     
 
@@ -1706,7 +1710,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.mute('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.mute('video_sdHg79_1').then(() => {
+    // Player is muted
+})</code></pre>
 
 </div>
 
@@ -1760,7 +1766,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line211">line 211</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line217">line 217</a>
     </li></ul></dd>
     
 
@@ -1864,7 +1870,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.pause('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.pause('video_sdHg79_1').then(() => {
+    // Player is paused
+})</code></pre>
 
 </div>
 
@@ -1918,7 +1926,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line200">line 200</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line204">line 204</a>
     </li></ul></dd>
     
 
@@ -2022,7 +2030,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.play('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.play('video_sdHg79_1').then(() => {
+    // Player is played
+})</code></pre>
 
 </div>
 
@@ -2033,14 +2043,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="removeEventListener"><span class="type-signature"></span>removeEventListener<span class="signature">(playerId, event, cb)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="removeEventListener"><span class="type-signature"></span>removeEventListener<span class="signature">(playerId, event, callback)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Remove a previously registered cb to an event</p>
+    <p>Remove a previously registered callback to an event</p>
 </div>
 
 
@@ -2172,7 +2182,7 @@ see each provider doc to know what can be passed here:</p>
 
         <tr>
             
-                <td class="name"><code>cb</code></td>
+                <td class="name"><code>callback</code></td>
             
 
             <td class="type">
@@ -2237,7 +2247,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.removeEventListener('video_sdHg79_1', 'play', cb);</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.removeEventListener('video_sdHg79_1', 'play', callback);</code></pre>
 
 </div>
 
@@ -2291,7 +2301,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line317">line 317</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line341">line 341</a>
     </li></ul></dd>
     
 
@@ -2416,7 +2426,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.rewind('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.rewind('video_sdHg79_1').then(() => {
+    // Player is rewinded
+})</code></pre>
 
 </div>
 
@@ -2470,7 +2482,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line291">line 291</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line311">line 311</a>
     </li></ul></dd>
     
 
@@ -2595,7 +2607,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.seek('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.seek('video_sdHg79_1').then(() => {
+    // Player is seeked
+})</code></pre>
 
 </div>
 
@@ -2649,7 +2663,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line278">line 278</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line296">line 296</a>
     </li></ul></dd>
     
 
@@ -2774,7 +2788,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.setVolume('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.setVolume('video_sdHg79_1').then(() => {
+    // Volume is set
+})</code></pre>
 
 </div>
 
@@ -2828,7 +2844,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line222">line 222</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line230">line 230</a>
     </li></ul></dd>
     
 
@@ -2932,7 +2948,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.stop('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.stop('video_sdHg79_1').then(() => {
+    // Player is stopped
+})</code></pre>
 
 </div>
 
@@ -2986,7 +3004,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line266">line 266</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line282">line 282</a>
     </li></ul></dd>
     
 
@@ -3090,7 +3108,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.toggleFullScreen('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.toggleFullScreen('video_sdHg79_1').then(() => {
+    // Full screen is toggled
+})</code></pre>
 
 </div>
 
@@ -3144,7 +3164,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line255">line 255</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line269">line 269</a>
     </li></ul></dd>
     
 
@@ -3248,7 +3268,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.toggleMute('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.toggleMute('video_sdHg79_1').then(() => {
+    // Mute is toggled
+})</code></pre>
 
 </div>
 
@@ -3302,7 +3324,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line244">line 244</a>
+        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line256">line 256</a>
     </li></ul></dd>
     
 
@@ -3406,7 +3428,9 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.unmute('video_sdHg79_1');</code></pre>
+    <pre class="prettyprint"><code>VideoPlayer.unmute('video_sdHg79_1').then(() => {
+    // Player is unmuted
+})</code></pre>
 
 </div>
 
@@ -3429,7 +3453,7 @@ see each provider doc to know what can be passed here:</p>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jan 22 2019 15:20:38 GMT+0100 (Central European Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 23 2019 11:02:01 GMT+0100 (CET) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

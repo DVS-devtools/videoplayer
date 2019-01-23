@@ -161,9 +161,9 @@ class DailymotionProvider {
      * @return {function(): void}
      */
     addDmListener(evt) {
-        const cb = () => this.fireEvent(evt);
-        this.dmListeners[evt] = cb;
-        return cb;
+        const callback = () => this.fireEvent(evt);
+        this.dmListeners[evt] = callback;
+        return callback;
     }
 
     /**
@@ -235,14 +235,14 @@ class DailymotionProvider {
      * Register the function in the internal this.internalListeners object
      * if there is no DM Player internalListeners for the requested event, register one
      * When the DM Player fires the event,
-     * the registered cb will call all internalListeners associated with the event
+     * the registered callback will call all internalListeners associated with the event
      *
      * @param event
-     * @param cb
+     * @param callback
      * @param once
      * @return {Promise<void>}
      */
-    on(event, cb, once = false) {
+    on(event, callback, once = false) {
         return this.ready.then(() => {
             const eventName = eventsNameMapping[event]
                 || Object.values(eventsNameMapping).find(e => e === event)
@@ -253,7 +253,7 @@ class DailymotionProvider {
                     this.dmPlayer.addEventListener(eventName, this.addDmListener(event));
                 }
             }
-            this.internalListeners[event].unshift({ callback: cb, once });
+            this.internalListeners[event].unshift({ callback, once });
         });
     }
 
@@ -262,11 +262,11 @@ class DailymotionProvider {
      * the listener will be fired only once
      *
      * @param event
-     * @param cb
+     * @param callback
      * @return {Promise<void>}
      */
-    one(event, cb) {
-        return this.on(event, cb, true);
+    one(event, callback) {
+        return this.on(event, callback, true);
     }
 
     /**
@@ -275,13 +275,13 @@ class DailymotionProvider {
      * remove also the relative DM Player event listener
      *
      * @param event
-     * @param cb
+     * @param callback
      * @return {Promise<void>}
      */
-    off(event, cb) {
+    off(event, callback) {
         return this.ready.then(() => {
             if (this.internalListeners[event]) {
-                const index = this.internalListeners[event].findIndex(evt => evt.callback === cb);
+                const index = this.internalListeners[event].findIndex(evt => evt.callback === callback);
                 if (index > -1) {
                     this.internalListeners[event].splice(index, 1);
                 }

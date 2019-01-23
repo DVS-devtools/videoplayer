@@ -38,8 +38,8 @@ class Player {
      * @param {String|Node} options.domNode DOM element identifier,
      * where to mount the player.
      *
-     * Can be a DOM Node instance (ex: document.getElementById(id),
-     * a string representing the Node ID or a querySelector for a Node ID
+     * Can be a DOM Node instance (ex: document.getElementById(id)),
+     * a string representing the Node ID (ex: id) or a querySelector for a Node ID (ex: #id)
      * @param {String} options.provider The provider to use,
      * one of: 'dailymotion', 'vimeo', 'youtube', 'flowplayer'
      * @param {String} [options.videoId] ID of the video, passed to the provider to find the video
@@ -100,33 +100,33 @@ class Player {
      * to remove the listener on a precise event
      *
      * @param {String} event name of the event (see list of compatible listeners)
-     * @param {Function} cb method to call when the event is fired
+     * @param {Function} callback method to call when the event is fired
      * @return {Promise<void>}
      * @example
-     * const cb = (evt) => {
+     * const callback = (evt) => {
      *     // Do stuff..
      * };
-     * player.on('play', cb);
+     * player.on('play', callback);
      */
     @ValidateArg('string')
     @ValidateArg('function', 1)
-    on(event, cb) {
-        return this.player.on(event, cb);
+    on(event, callback) {
+        return this.player.on(event, callback);
     }
 
     /**
      * Remove a listener from an event
      *
      * @param {String} event name of the event (see list of compatible listeners)
-     * @param {Function} cb method to remove
+     * @param {Function} callback method to remove
      * @return {Promise<void>}
      * @example
-     * player.off('play', cb);
+     * player.off('play', callback);
      */
     @ValidateArg('string')
     @ValidateArg('function', 1)
-    off(event, cb) {
-        return this.player.off(event, cb);
+    off(event, callback) {
+        return this.player.off(event, callback);
     }
 
     /**

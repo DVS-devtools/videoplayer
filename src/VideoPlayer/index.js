@@ -40,8 +40,8 @@ class VideoPlayer {
      * @param {String|Node} playerInitOptions.domNode DOM element identifier,
      * where to mount the player.
      *
-     * Can be a DOM Node instance (ex: document.getElementById(id),
-     * a string representing the Node ID or a querySelector for a Node ID
+     * Can be a DOM Node instance (ex: document.getElementById(id)),
+     * a string representing the Node ID (ex: id) or a querySelector for a Node ID (ex: #id)
      * @param {String} playerInitOptions.provider The provider to use,
      * one of: 'dailymotion', 'vimeo', 'youtube', 'flowplayer'
      * @param {String} [playerInitOptions.videoId] ID of the video,
@@ -56,8 +56,8 @@ class VideoPlayer {
      * @example
      * const player = VideoPlayer.createPlayer({
      *     domNode: '#el',
-     *     videoId: 'sdHg79',
-     *     provider: 'vimeo'
+     *     provider: 'vimeo',
+     *     videoId: 'sdHg79'
      * });
      * @return {Player}
      */
@@ -129,36 +129,36 @@ class VideoPlayer {
     }
 
     /**
-     * Add an event listener cb called when the specified event is fired
+     * Add an event listener callback called when the specified event is fired
      * @param {String} playerId
      * @param {String} event
-     * @param {Function} cb
+     * @param {Function} callback
      * @return {Promise<void>}
      * @example
-     * const cb = (evt) => {
+     * const callback = (evt) => {
      *     // Do stuff..
      * }
-     * VideoPlayer.addEventListener('video_sdHg79_1', 'play', cb);
+     * VideoPlayer.addEventListener('video_sdHg79_1', 'play', callback);
      */
     @ValidateArg('string', 1)
     @ValidateArg('function', 2)
-    addEventListener(playerId, event, cb) {
-        return this.getPlayer(playerId).on(event, cb);
+    addEventListener(playerId, event, callback) {
+        return this.getPlayer(playerId).on(event, callback);
     }
 
     /**
-     * Remove a previously registered cb to an event
+     * Remove a previously registered callback to an event
      * @param {String} playerId
      * @param {String} event
-     * @param {Function} cb
+     * @param {Function} callback
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.removeEventListener('video_sdHg79_1', 'play', cb);
+     * VideoPlayer.removeEventListener('video_sdHg79_1', 'play', callback);
      */
     @ValidateArg('string', 1)
     @ValidateArg('function', 2)
-    removeEventListener(playerId, event, cb) {
-        return this.getPlayer(playerId).off(event, cb);
+    removeEventListener(playerId, event, callback) {
+        return this.getPlayer(playerId).off(event, callback);
     }
 
     /**
@@ -166,7 +166,9 @@ class VideoPlayer {
      * @param playerId
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.clear('video_sdHg79_1');
+     * VideoPlayer.clear('video_sdHg79_1').then(() => {
+     *     // Player is cleared
+     * })
      */
     clear(playerId) {
         const player = this.getPlayer(playerId);
@@ -195,7 +197,9 @@ class VideoPlayer {
      * @param playerId
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.play('video_sdHg79_1');
+     * VideoPlayer.play('video_sdHg79_1').then(() => {
+     *     // Player is played
+     * })
      */
     play(playerId) {
         return this.getPlayer(playerId).play();
@@ -206,7 +210,9 @@ class VideoPlayer {
      * @param playerId
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.pause('video_sdHg79_1');
+     * VideoPlayer.pause('video_sdHg79_1').then(() => {
+     *     // Player is paused
+     * })
      */
     pause(playerId) {
         return this.getPlayer(playerId).pause();
@@ -217,7 +223,9 @@ class VideoPlayer {
      * @param playerId
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.stop('video_sdHg79_1');
+     * VideoPlayer.stop('video_sdHg79_1').then(() => {
+     *     // Player is stopped
+     * })
      */
     stop(playerId) {
         return this.getPlayer(playerId).stop();
@@ -228,7 +236,9 @@ class VideoPlayer {
      * @param playerId
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.mute('video_sdHg79_1');
+     * VideoPlayer.mute('video_sdHg79_1').then(() => {
+     *     // Player is muted
+     * })
      */
     mute(playerId) {
         return this.getPlayer(playerId).mute();
@@ -239,7 +249,9 @@ class VideoPlayer {
      * @param playerId
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.unmute('video_sdHg79_1');
+     * VideoPlayer.unmute('video_sdHg79_1').then(() => {
+     *     // Player is unmuted
+     * })
      */
     unmute(playerId) {
         return this.getPlayer(playerId).unmute();
@@ -250,7 +262,9 @@ class VideoPlayer {
      * @param playerId
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.toggleMute('video_sdHg79_1');
+     * VideoPlayer.toggleMute('video_sdHg79_1').then(() => {
+     *     // Mute is toggled
+     * })
      */
     toggleMute(playerId) {
         return this.getPlayer(playerId).toggleMute();
@@ -261,7 +275,9 @@ class VideoPlayer {
      * @param playerId
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.toggleFullScreen('video_sdHg79_1');
+     * VideoPlayer.toggleFullScreen('video_sdHg79_1').then(() => {
+     *     // Full screen is toggled
+     * })
      */
     toggleFullScreen(playerId) {
         return this.getPlayer(playerId).toggleFullScreen();
@@ -273,7 +289,9 @@ class VideoPlayer {
      * @param volume
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.setVolume('video_sdHg79_1');
+     * VideoPlayer.setVolume('video_sdHg79_1', 0.5).then(() => {
+     *     // Volume is set
+     * })
      */
     @ValidateArg('number', 1)
     setVolume(playerId, volume) {
@@ -286,7 +304,9 @@ class VideoPlayer {
      * @param seconds
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.seek('video_sdHg79_1');
+     * VideoPlayer.seek('video_sdHg79_1', 42).then(() => {
+     *     // Player is seeked
+     * })
      */
     @ValidateArg('number', 1)
     seek(playerId, seconds) {
@@ -299,7 +319,9 @@ class VideoPlayer {
      * @param seconds
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.forward('video_sdHg79_1');
+     * VideoPlayer.forward('video_sdHg79_1', 10).then(() => {
+     *     // Player is forwarded
+     * })
      */
     @ValidateOptionalArg('number', 1)
     forward(playerId, seconds) {
@@ -312,7 +334,9 @@ class VideoPlayer {
      * @param seconds
      * @return {Promise<void>}
      * @example
-     * VideoPlayer.rewind('video_sdHg79_1');
+     * VideoPlayer.rewind('video_sdHg79_1', 10).then(() => {
+     *     // Player is rewinded
+     * })
      */
     @ValidateOptionalArg('number', 1)
     rewind(playerId, seconds) {

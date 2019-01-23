@@ -139,9 +139,9 @@ class VimeoProvider {
      * @return {function(): void}
      */
     addVmListener(evt) {
-        const cb = (...data) => this.fireEvent(evt, ...data);
-        this.vmListeners[evt] = cb;
-        return cb;
+        const callback = (...data) => this.fireEvent(evt, ...data);
+        this.vmListeners[evt] = callback;
+        return callback;
     }
 
     /**
@@ -220,13 +220,13 @@ class VimeoProvider {
      * Register the function in the internal this.internalListeners object
      * if there is no Vimeo Player listeners for the requested event, register one
      * When the Vimeo Player fires the event,
-     * the registered cb will call all listeners associated with the event
+     * the registered callback will call all listeners associated with the event
      * @param event
-     * @param cb
+     * @param callback
      * @param once
      * @return Promise
      */
-    on(event, cb, once = false) {
+    on(event, callback, once = false) {
         return this.ready.then(() => {
             const eventName = eventsNameMapping[event]
                 || Object.values(eventsNameMapping).find(e => e === event)
@@ -237,7 +237,7 @@ class VimeoProvider {
                     this.vmPlayer.on(eventName, this.addVmListener(event));
                 }
             }
-            this.internalListeners[event].unshift({ callback: cb, once });
+            this.internalListeners[event].unshift({ callback: callback, once });
         });
     }
 
@@ -245,11 +245,11 @@ class VimeoProvider {
      * Add a listener to an event,
      * the listener will be fired only once
      * @param event
-     * @param cb
+     * @param callback
      * @return Promise
      */
-    one(event, cb) {
-        return this.on(event, cb, true);
+    one(event, callback) {
+        return this.on(event, callback, true);
     }
 
     /**
@@ -257,13 +257,13 @@ class VimeoProvider {
      * if the given listener is the last one for the given event
      * remove also the relative Vimeo Player event listener
      * @param event
-     * @param cb
+     * @param callback
      * @return Promise
      */
-    off(event, cb) {
+    off(event, callback) {
         return this.ready.then(() => {
             if (this.internalListeners[event]) {
-                const index = this.internalListeners[event].findIndex(evt => evt.callback === cb);
+                const index = this.internalListeners[event].findIndex(evt => evt.callback === callback);
                 if (index > -1) {
                     this.internalListeners[event].splice(index, 1);
                 }

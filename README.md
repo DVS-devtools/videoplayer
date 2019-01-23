@@ -93,7 +93,7 @@ const player = new Player({
     videoId: 'uxWvd',
     // ... Same options as VideoPlayer.createPlayer except for "events" (not supported here)
 });
-// You can still hae multiple Player instances, but they are not aware of each other
+// You can still have multiple Player instances, but they are not aware of each other
 const player2 = new Player({
     domNode: document.getElementById('video2'),
     provider: 'vimeo',

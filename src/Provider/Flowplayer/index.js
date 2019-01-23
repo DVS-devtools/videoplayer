@@ -225,9 +225,9 @@ export default class FlowPlayerProvider {
      * Store the callback in the this.fpListeners object
      */
     addFPListener(evt) {
-        const cb = () => this.fireEvent(evt);
-        this.fpListeners[evt] = cb;
-        return cb;
+        const callback = () => this.fireEvent(evt);
+        this.fpListeners[evt] = callback;
+        return callback;
     }
 
     /**
@@ -307,9 +307,9 @@ export default class FlowPlayerProvider {
      * Register the function in the internal this.internalListeners object
      * if there is no Flowplayer Player internalListeners for the requested event, register one
      * When the Flowplayer Player fires the event,
-     * the registered cb will call all internalListeners associated with the event
+     * the registered callback will call all internalListeners associated with the event
      */
-    on(event, cb, once = false) {
+    on(event, callback, once = false) {
         return this.ready.then(() => {
             const eventName = eventsNameMapping[event] || Object.values(eventsNameMapping).find(e => e === 'event') || event;
 
@@ -321,7 +321,7 @@ export default class FlowPlayerProvider {
                 }
             }
 
-            this.internalListeners[event].unshift({ callback: cb, once });
+            this.internalListeners[event].unshift({ callback, once });
         });
     }
 
@@ -329,8 +329,8 @@ export default class FlowPlayerProvider {
      * Add a listener to an event,
      * the listener will be fired only once
      */
-    one(event, cb) {
-        return this.on(event, cb, true);
+    one(event, callback) {
+        return this.on(event, callback, true);
     }
 
     /**
@@ -338,10 +338,10 @@ export default class FlowPlayerProvider {
      * if the given listener is the last one for the given event
      * remove also the relative Flowplayer Player event listener
      */
-    off(event, cb) {
+    off(event, callback) {
         return this.ready.then(() => {
             if (this.internalListeners[event]) {
-                const index = this.internalListeners[event].findIndex(evt => evt.callback === cb);
+                const index = this.internalListeners[event].findIndex(evt => evt.callback === callback);
                 if (index > -1) {
                     this.internalListeners[event].splice(index, 1);
                 }
