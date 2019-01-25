@@ -9,7 +9,8 @@ module.exports = {
         filename: 'index.js',
         library: 'VideoPlayer',
         libraryTarget: 'umd',
-        umdNamedDefine: true
+        umdNamedDefine: true,
+        chunkFilename: commonPaths.chunkFilename,
     },
     module: {
         rules: [

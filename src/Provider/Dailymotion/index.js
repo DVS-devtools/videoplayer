@@ -281,7 +281,8 @@ class DailymotionProvider {
     off(event, callback) {
         return this.ready.then(() => {
             if (this.internalListeners[event]) {
-                const index = this.internalListeners[event].findIndex(evt => evt.callback === callback);
+                const index = this.internalListeners[event]
+                    .findIndex(evt => evt.callback === callback);
                 if (index > -1) {
                     this.internalListeners[event].splice(index, 1);
                 }
