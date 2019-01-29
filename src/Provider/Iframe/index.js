@@ -1,4 +1,4 @@
-import { getDomNode, Unsupported } from '../../lib';
+import { getDomNode } from '../../lib';
 
 const eventsNameMapping = {
     end: 'finish',
