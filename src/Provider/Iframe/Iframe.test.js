@@ -8,7 +8,7 @@ document.body.innerHTML = '<div id="iframe-video"></div>';
 
 const id = 'fpVideo';
 const videourl = 'http://www.pocoyohouse.com/it/bvideoplayer?id=d2694a85c54e5b5ef6074224f8a01179&videoid=VO990047713&autoplay=1&apienabled=1&debugjs=0&playerId=bcacd70d_0b9f_8386_ec04_33160307b7db&&language=it&w=1440&h=900&streamingkey=PYSE_158AA1_FM1X_FF_YH';
-const domNode = 'iframe-video';
+const domNode = '#iframe-video';
 
 const options = {
     domNode,
@@ -16,16 +16,15 @@ const options = {
     url: videourl
 };
 
-
 describe('IframeProvider Initialization', () => {
     beforeEach(() => {
-        document.getElementById(domNode).innerHTML = '';
+        document.querySelector(domNode).innerHTML = '';
     });
 
     it('should correctly create an iframe node with the correct src', () => {
         new IframeProvider(options, id);
-        expect(document.getElementById(domNode).children.length).toBe(1);
-        const iframe = document.getElementById(domNode).children[0];
+        expect(document.querySelector(domNode).children.length).toBe(1);
+        const iframe = document.querySelector(domNode).children[0];
         expect(iframe).toBeInstanceOf(HTMLIFrameElement);
         expect(iframe.src).toEqual(videourl);
         expect(iframe.id).toEqual(id);
@@ -56,7 +55,7 @@ describe('IframeProvider API', () => {
     let Instance;
 
     beforeEach(() => {
-        document.getElementById(domNode).innerHTML = '';
+        document.querySelector(domNode).innerHTML = '';
         Instance = new IframeProvider(options, id);
         Instance.ready = Promise.resolve(); // Skip wait for iframe ready event
     });
@@ -185,7 +184,7 @@ describe('IframeProvider API', () => {
 describe('IframeProvider getters and cleanup', () => {
     let Instance ;
     beforeEach(() => {
-        document.getElementById(domNode).innerHTML = '';
+        document.querySelector(domNode).innerHTML = '';
         Instance = new IframeProvider(options, id);
         Instance.ready = Promise.resolve(); // Skip wait for iframe ready event
     });
@@ -210,9 +209,9 @@ describe('IframeProvider getters and cleanup', () => {
     });
 
     it('should remove the DOM element on clear()', async () => {
-        expect(Array.from(document.getElementById(options.domNode).querySelectorAll('iframe')).length).toBe(1);
+        expect(Array.from(document.querySelector(options.domNode).querySelectorAll('iframe')).length).toBe(1);
         await Instance.clear();
-        expect(Array.from(document.getElementById(options.domNode).querySelectorAll('iframe')).length).toBe(0);
+        expect(Array.from(document.querySelector(options.domNode).querySelectorAll('iframe')).length).toBe(0);
     });
 });
 
@@ -220,7 +219,7 @@ describe('IframeProvider event on - off - one', () => {
     let Instance;
     let cb;
     beforeEach(() => {
-        document.getElementById(domNode).innerHTML = '';
+        document.querySelector(domNode).innerHTML = '';
         Instance = new IframeProvider(options, id);
         Instance.ready = Promise.resolve(); // Skip wait for iframe ready event
         Instance.isThisIframe = () => true; // message event source is null
