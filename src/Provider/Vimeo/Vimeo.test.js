@@ -66,7 +66,7 @@ document.body.innerHTML = `
 `;
 const id = '123';
 const options = {
-    domNode: 'video',
+    domNode: '#video',
     videoId: '123'
 };
 
@@ -92,7 +92,7 @@ describe('VimeoProvider initialization', () => {
         await flushPromises();
         expect(Instance.vmPlayer instanceof Player ).toBe(false);
         expect(Instance.vmPlayer instanceof MockPlayer).toBe(true);
-        expect(JestMockPlayer).toHaveBeenCalledWith(document.getElementById(options.domNode), {id: options.videoId});
+        expect(JestMockPlayer).toHaveBeenCalledWith(document.querySelector(options.domNode), {id: options.videoId});
     });
 });
 
