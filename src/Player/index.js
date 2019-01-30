@@ -39,10 +39,10 @@ class Player {
      * @param {String|Node} options.domNode DOM element identifier,
      * where to mount the player.
      *
-     * Can be a DOM Node instance (ex: document.getElementById(id)),
-     * a string representing the Node ID (ex: id) or a querySelector for a Node ID (ex: #id)
+     * Can be a DOM Node instance (ex: document.getElementById(id))
+     * or a querySelector for a Node ID (ex: #id)
      * @param {String} options.provider The provider to use,
-     * one of: 'dailymotion', 'vimeo', 'youtube', 'flowplayer'
+     * one of: 'dailymotion', 'vimeo', 'youtube', 'flowplayer' | 'iframe'
      * @param {String} [options.videoId] ID of the video, passed to the provider to find the video
      * @param {String} [options.url] url of the video resource, passed to the provider
      * @param {Object<any>}[options.providerOptions] provider init options,
