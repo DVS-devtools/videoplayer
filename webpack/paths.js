@@ -8,6 +8,7 @@ module.exports = {
         html: path.resolve(__dirname, '../', 'example/index.html'),
         js: path.resolve(__dirname, '../', 'example/index.js'),
     },
+    chunkFilename: '[name].chunk.[chunkhash:8].js',
     cssFolder: 'css',
     jsFolder: 'js',
 };

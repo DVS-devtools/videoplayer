@@ -9,6 +9,7 @@ It can manage multiple video instances with multiple video Provider:
 * Dailymotion
 * Youtube
 * Flowplayer (internal player, just pass a video source url)
+* Iframe
 
 ## Usage
 ```javascript
@@ -18,7 +19,7 @@ import VideoPlayer from 'video-player';
 
 const player = VideoPlayer.createPlayer({
     domNode: document.getElementById('video'),
-    provider: 'dailymotion', // | 'vimeo' | 'youtube' | 'flowplayer'
+    provider: 'dailymotion', // | 'vimeo' | 'youtube' | 'flowplayer' | 'iframe'
     videoId: 'uxWvd',
     providerOptions: {
         // See each provider init options
@@ -55,7 +56,7 @@ VideoPlayer.removeEventListener(id, 'play', callback);
 ##### Create a new Player passing the DOM id instead of the DOM Node
 ```javascript
 VideoPlayer.createPlayer({
-    domNode: 'video', // Accepted also Css selector: #video, MUST BE an ID
+    domNode: '#video', // Accepted also the DOM node (document.getElementByID('video'))
     provider: 'dailymotion',
     videoId: 'uxWvd',
     //...
