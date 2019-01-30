@@ -53,7 +53,7 @@ document.body.innerHTML = `
 `;
 const id = '123';
 const options = {
-    domNode: 'video',
+    domNode: '#video',
     videoId: '123'
 };
 const sdkUrl = 'https://api.dmcdn.net/all.js';
@@ -228,9 +228,9 @@ describe('DailymotionProvider getters and cleanup', () => {
     });
 
     it('should remove the DOM element on clear', async () => {
-        expect(Array.from(document.getElementById(options.domNode).querySelectorAll('iframe')).length).toBe(1);
+        expect(Array.from(document.querySelector(options.domNode).querySelectorAll('iframe')).length).toBe(1);
         await Instance.clear();
-        expect(Array.from(document.getElementById(options.domNode).querySelectorAll('iframe')).length).toBe(0);
+        expect(Array.from(document.querySelector(options.domNode).querySelectorAll('iframe')).length).toBe(0);
     });
 });
 

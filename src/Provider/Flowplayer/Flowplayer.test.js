@@ -45,7 +45,7 @@ const id = 'fpVideo';
 const videourl = 'myvideourl';
 
 const options = {
-    domNode: 'fp-video',
+    domNode: '#fp-video',
     videoId: id,
     url: videourl
 };
@@ -172,7 +172,7 @@ describe('FlowplayerProvider API', () => {
         await Instance.seek(5);
         expect(spies.seek).toHaveBeenCalledWith(5);
     });
-}); 
+});
 
 describe('Flowplayer getters and cleanup', () => {
     let Instance ;
@@ -217,9 +217,9 @@ describe('Flowplayer getters and cleanup', () => {
     });
 
     it('should remove the DOM element on clear()', async () => {
-        expect(Array.from(document.getElementById(options.domNode).querySelectorAll('div')).length).toBe(1);
+        expect(Array.from(document.querySelector(options.domNode).querySelectorAll('div')).length).toBe(1);
         await Instance.clear();
-        expect(Array.from(document.getElementById(options.domNode).querySelectorAll('div')).length).toBe(0);
+        expect(Array.from(document.querySelector(options.domNode).querySelectorAll('div')).length).toBe(0);
     });
 });
 
@@ -327,7 +327,7 @@ describe('It should throw an error', () => {
 
         window.flowplayer = () => new MockedPlayer;
         const spies = {
-            resume: jest.spyOn(MockedPlayer.prototype, 'resume') 
+            resume: jest.spyOn(MockedPlayer.prototype, 'resume')
         };
         Instance.play();
         expect(spies.resume).not.toHaveBeenCalled();

@@ -74,7 +74,7 @@ document.body.innerHTML = `
 `;
 const id = '123';
 const options = {
-    domNode: 'video',
+    domNode: '#video',
     videoId: '123'
 };
 
@@ -90,7 +90,7 @@ describe('YoutubeProvider initialization', () => {
     it('should correctly load the youtube-player module', async () => {
         const Instance = new YoutubeProvider(options, id);
         await flushPromises();
-        const YTPlayer = new Player(options.domNode);
+        const YTPlayer = new Player(document.querySelector(options.domNode));
         // Is there a better way?
         expect(Object.keys(Instance.ytPlayer)).toEqual(Object.keys(YTPlayer));
     });
@@ -103,10 +103,10 @@ describe('YoutubeProvider initialization', () => {
         };
         const Instance = new YoutubeProvider(options, id);
         await flushPromises();
-        const YTPlayer = new Player(options.domNode);
+        const YTPlayer = new Player(document.querySelector(options.domNode));
         expect(Object.keys(Instance.ytPlayer)).not.toEqual(Object.keys(YTPlayer));
         expect(Instance.ytPlayer instanceof MockPlayer).toBe(true);
-        expect(JestMockPlayer).toHaveBeenCalledWith(document.getElementById(options.domNode), {videoId: options.videoId});
+        expect(JestMockPlayer).toHaveBeenCalledWith(document.querySelector(options.domNode), {videoId: options.videoId});
     });
 
     it('should create an interval timer to simulate playback progress', async () => {
