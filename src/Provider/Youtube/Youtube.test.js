@@ -423,18 +423,13 @@ describe('YoutubeProvider Errors', () => {
         jest.resetModules();
     });
 
-    it('should catch an error while loading the sdk', () => {
-        jest.mock('youtube-player', () => {
-            throw new Error('Test Error');
-        });
-        const Instance = new YoutubeProvider(options, id);
-        return expect(Instance.ready).rejects.toEqual(new Error('Test Error'));
-    });
 
     it('should catch an error while creating the player', () =>  {
-        jest.mock('youtube-player', () => () => {
-            throw new Error('Player Test Error');
-        });
+        window.AYT = {
+            Player: () => {
+                throw new Error('Player Test Error');
+            },
+        };
         const Instance = new YoutubeProvider(options, id);
         return expect(Instance.ready).rejects.toEqual(new Error('Player Test Error'));
     });
