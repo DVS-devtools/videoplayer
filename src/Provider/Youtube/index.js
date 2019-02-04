@@ -33,6 +33,8 @@ class YoutubeProvider {
      */
     ytPlayer = null;
 
+    domNodeId = null;
+
     /**
      * All registered listeners grouped by event:
      * {
@@ -123,7 +125,13 @@ class YoutubeProvider {
         return new Promise((resolve, reject) => {
             this.loadSDK().then((Player) => {
                 domNode = getDomNode(domNode);
-                this.ytPlayer = Player(domNode, options);
+                const divElement = document.createElement('div');
+                divElement.setAttribute('id', this.id);
+                domNode.innerHTML = '';
+                domNode.appendChild(divElement);
+
+                this.domNodeId = divElement.id;
+                this.ytPlayer = Player(divElement, options);
                 this.registerDefaultListeners();
                 this.addProgressFakeListener();
                 resolve();
@@ -265,7 +273,9 @@ class YoutubeProvider {
         return this.ready.then(() => {
             clearInterval(this.fakeProgressListener);
             this.fakeProgressListener = null;
-            return this.ytPlayer.destroy();
+            return this.ytPlayer.destroy().then(() => {
+                document.getElementById(this.domNodeId).remove();
+            });
         });
     }
 

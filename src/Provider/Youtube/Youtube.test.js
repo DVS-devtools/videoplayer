@@ -20,10 +20,10 @@ class MockPlayer {
     state = 2;
 
     constructor(dom, opts) {
-        const parent = document.getElementById(dom);
-        if (parent) {
+        const el = document.getElementById(dom);
+        if (el) {
             const iframe = document.createElement('iframe');
-            parent.appendChild(iframe);
+            el.parentNode.replaceChild(iframe, el);
         }
     }
 
@@ -60,7 +60,9 @@ class MockPlayer {
     unMute() {}
     setVolume(lvl) {}
     seekTo() {}
-    destroy() {}
+    destroy() {
+        return Promise.resolve();
+    }
     getVideoUrl() {
         return Promise.resolve('http://test.com');
     }
@@ -106,7 +108,9 @@ describe('YoutubeProvider initialization', () => {
         const YTPlayer = new Player(document.querySelector(options.domNode));
         expect(Object.keys(Instance.ytPlayer)).not.toEqual(Object.keys(YTPlayer));
         expect(Instance.ytPlayer instanceof MockPlayer).toBe(true);
-        expect(JestMockPlayer).toHaveBeenCalledWith(document.querySelector(options.domNode), {videoId: options.videoId});
+        const called = document.createElement('div');
+        called.id = options.videoId;
+        expect(JestMockPlayer).toHaveBeenCalledWith(called, {videoId: options.videoId});
     });
 
     it('should create an interval timer to simulate playback progress', async () => {
