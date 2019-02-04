@@ -202,10 +202,10 @@ export default class FlowPlayerProvider {
         return new Promise((resolve, reject) => {
             this.loadSDK().then((FP) => {
                 if (typeof FP === 'function') {
-                    const divElement = document.createElement('div');
-
                     domNode = getDomNode(domNode);
+                    const divElement = document.createElement('div');
                     divElement.setAttribute('id', this.id);
+                    domNode.innerHTML = '';
                     domNode.appendChild(divElement);
 
                     this.domNodeId = divElement.id;
@@ -214,7 +214,7 @@ export default class FlowPlayerProvider {
 
                     this.registerDefaultListeners();
                 } else {
-                    throw new Error('Unable to laod flowplayer');
+                    throw new Error('Unable to load flowplayer');
                 }
             }).catch(err => reject(err));
         });

@@ -126,6 +126,7 @@ class VimeoProvider {
         return new Promise((resolve, reject) => {
             this.loadSdk().then((Player) => {
                 domNode = getDomNode(domNode);
+                domNode.innerHTML = '';
                 this.vmPlayer = new Player(domNode, options);
                 this.registerDefaultListeners();
                 resolve();
