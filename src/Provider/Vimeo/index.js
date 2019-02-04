@@ -1,3 +1,4 @@
+import VimeoPlayer from '@vimeo/player';
 import getDomNode from '../../lib/getDomNode';
 import Unsupported from '../../lib/unsupported';
 import global from '../../global';
@@ -103,9 +104,9 @@ class VimeoProvider {
             if (typeof window.Vimeo === 'object' && typeof window.Vimeo.Player === 'function') {
                 global.VMSDK = Promise.resolve(window.Vimeo.Player);
             } else {
-                global.VMSDK = import(/* webpackChunkName: 'Vimeo' */'@vimeo/player').then((mod) => {
+                global.VMSDK = Promise.resolve(VimeoPlayer).then((p) => {
                     window.Vimeo = {
-                        Player: mod.default,
+                        Player: p,
                     };
                     return window.Vimeo.Player;
                 });

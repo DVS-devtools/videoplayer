@@ -1,3 +1,4 @@
+import YTPlayer from 'youtube-player';
 import { getDomNode, Unsupported } from '../../lib';
 import global from '../../global';
 
@@ -100,9 +101,9 @@ class YoutubeProvider {
             if (typeof window.AYT === 'object' && typeof window.AYT.Player === 'function') {
                 global.YTSDK = Promise.resolve(window.AYT.Player);
             } else {
-                global.YTSDK = import(/* webpackChunkName: 'Youtube' */'youtube-player').then((mod) => {
+                global.YTSDK = Promise.resolve(YTPlayer).then((p) => {
                     window.AYT = {
-                        Player: mod.default,
+                        Player: p,
                     };
                     return window.AYT.Player;
                 });

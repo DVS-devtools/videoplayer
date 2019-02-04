@@ -3,11 +3,15 @@ import TestProvider from '../Provider/testProvider';
 import DailymotionProvider from '../Provider/Dailymotion';
 import VimeoProvider from '../Provider/Vimeo';
 import FlowplayerProvider from '../Provider/Flowplayer';
+import YoutubeProvider from '../Provider/Youtube';
+import IframeProvider from '../Provider/Iframe';
 
 jest.mock('../Provider/testProvider');
 jest.mock('../Provider/Dailymotion');
 jest.mock('../Provider/Vimeo');
 jest.mock('../Provider/Flowplayer');
+jest.mock('../Provider/Youtube');
+jest.mock('../Provider/Iframe');
 
 let TestPlayer = null;
 
@@ -16,6 +20,8 @@ beforeEach(() => {
     DailymotionProvider.mockClear();
     VimeoProvider.mockClear();
     FlowplayerProvider.mockClear();
+    YoutubeProvider.mockClear();
+    IframeProvider.mockClear();
     TestPlayer = null;
 });
 
@@ -67,7 +73,7 @@ describe('Player - TestProvider - Create a test player instance with div id', ()
 describe('Player - Different Providers - Create a Player instance', () => {
     it('should create a Player with the Dailymotion Provider', () => {
         TestPlayer = new Player({
-            domNode: 'video1',
+            domNode: '#video1',
             provider: 'dailymotion',
             videoId: '123',
         }, '123');
@@ -77,7 +83,7 @@ describe('Player - Different Providers - Create a Player instance', () => {
 
     it('should create a Player with the Vimeo Provider', () => {
         TestPlayer = new Player({
-            domNode: 'video1',
+            domNode: '#video1',
             provider: 'vimeo',
             videoId: '123',
         }, '123');
@@ -87,12 +93,32 @@ describe('Player - Different Providers - Create a Player instance', () => {
 
     it('should create a Player with the Flowplayer Provider', () => {
         TestPlayer = new Player({
-            domNode: 'video1',
+            domNode: '#video1',
             provider: 'flowplayer',
             videoId: '123',
         }, '123');
 
         expect(FlowplayerProvider).toHaveBeenCalled();
+    });
+
+    it('should create a Player with the Youtube Provider', () => {
+        TestPlayer = new Player({
+            domNode: '#video1',
+            provider: 'youtube',
+            videoId: '123',
+        }, '123');
+
+        expect(YoutubeProvider).toHaveBeenCalled();
+    });
+
+    it('should create a Player with the Iframe Provider', () => {
+        TestPlayer = new Player({
+            domNode: '#video1',
+            provider: 'iframe',
+            videoId: '123',
+        }, '123');
+
+        expect(IframeProvider).toHaveBeenCalled();
     });
 });
 
