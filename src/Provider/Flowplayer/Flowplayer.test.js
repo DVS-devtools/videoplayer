@@ -55,6 +55,7 @@ const fpCSSUrl = 'https://releases.flowplayer.org/7.2.7/skin/skin.css';
 const jqueryUrl = 'https://code.jquery.com/jquery-1.12.4.min.js';
 
 const fpUrl = 'https://releases.flowplayer.org/7.2.7/flowplayer.min.js';
+const fpCommercialUrl = 'https://releases.flowplayer.org/7.2.7/commercial/flowplayer.min.js';
 
 
 describe('Flowplayer Provider Initialization', () => {
@@ -67,6 +68,8 @@ describe('Flowplayer Provider Initialization', () => {
         Array.from(document.head.getElementsByTagName('link')).forEach((l) => {
             l.remove();
         });
+
+        global.FPSDK = null;
     });
 
     it('Should correctly load only one time assets even if multiple instance are defined', () => {
@@ -79,6 +82,22 @@ describe('Flowplayer Provider Initialization', () => {
 
         expect(document.head.getElementsByTagName('link').length).toBe(1);
         expect(document.head.getElementsByTagName('link')[0].href).toEqual(fpCSSUrl);
+    });
+
+    it('Should load commercial url', () => {
+        expect(document.head.getElementsByTagName('script').length).toBe(0);
+
+        const commercialOptions = {
+            domNode: '#fp-video',
+            videoId: id,
+            url: videourl,
+            providerOptions: { key: 'abcd' }
+        };
+
+        new FlowplayerProvider(commercialOptions, id);
+        expect(document.head.getElementsByTagName('script').length).toBe(2);
+        expect(document.head.getElementsByTagName('script')[0].src).toEqual(jqueryUrl);
+        expect(document.head.getElementsByTagName('script')[1].src).toEqual(fpCommercialUrl);
     });
 });
 
