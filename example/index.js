@@ -23,12 +23,13 @@ Array.from((new Array(7))).forEach((n, i) => {
             options.provider = 'flowplayer';
             options.videoId = 'VO990047713';
             options.url =  'http://video.kidzinmind.com/cmsp/2017/11/13/15/59/75c34439-e2c5-483d-a9b2-1efdb859f9ba.mp4';
+            options.providerOptions = {key: 'abbcd'};
     }
     const div = document.createElement('div');
     div.id = `video${i}`;
     document.body.appendChild(div);
     window[`player${i}`] = VideoPlayer.createPlayer(Object.assign({}, options, {
-        domNode: div.id,
+        domNode: `#${div.id}`,
         events: {
             play: cb,
             playbackProgress25: cb,
@@ -37,7 +38,6 @@ Array.from((new Array(7))).forEach((n, i) => {
 });
 
 player0.on('firstPlay', () => console.log('first play'));
-
 
 console.log(VideoPlayer.getPlayers())
 
