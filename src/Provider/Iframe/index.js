@@ -42,6 +42,7 @@ class IframeProvider {
             this.iframeElement.src = videoUrl;
             this.iframeElement.id = this.id;
             this.parent = getDomNode(domNode);
+            this.parent.innerHtml = '';
             this.parent.appendChild(this.iframeElement);
             this.iframeWindow = this.iframeElement.contentWindow;
 
