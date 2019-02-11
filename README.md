@@ -104,4 +104,5 @@ const player2 = new Player({
 
 ## Documentation
 To read the documentation, go to:
- 
+
+[https://docomodigital.github.io/videoplayer/latest](https://docomodigital.github.io/videoplayer/latest)
