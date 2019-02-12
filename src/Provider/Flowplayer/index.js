@@ -102,9 +102,19 @@ export default class FlowPlayerProvider {
     fpUrl = 'https://releases.flowplayer.org/7.2.7/flowplayer.min.js';
 
     /**
+     * Flowplayer JS Commercial Url
+     */
+    fpCommercialUrl = 'https://releases.flowplayer.org/7.2.7/commercial/flowplayer.min.js';
+
+    /**
      * The Flowplayer Player instance
      */
     fpPlayer = null;
+
+    /**
+    * Flowplayer JS Commercial key
+    */
+    commercialKey = null;
 
     /**
      * Keep track of playback progress percentage, used to fire playback percentage events
@@ -152,6 +162,10 @@ export default class FlowPlayerProvider {
             // GENERATE URL
         }
 
+        if (options.providerOptions && typeof options.providerOptions.key === 'string') {
+            this.commercialKey = options.providerOptions.key;
+        }
+
         this.ready = this.createFP(options.domNode,
             Object.assign({}, {
                 clip: {
@@ -174,7 +188,8 @@ export default class FlowPlayerProvider {
         if (!global.FPSDK) {
             const jqueryPromise = loadScript(this.jqueryUrl);
 
-            const fpPromise = loadScript(this.fpUrl);
+            const fpPromise = this.commercialKey ? loadScript(this.fpCommercialUrl)
+                : loadScript(this.fpUrl);
 
             const fpCSSPromise = loadStyle(this.fpCSSUrl);
 
@@ -202,10 +217,10 @@ export default class FlowPlayerProvider {
         return new Promise((resolve, reject) => {
             this.loadSDK().then((FP) => {
                 if (typeof FP === 'function') {
-                    const divElement = document.createElement('div');
-
                     domNode = getDomNode(domNode);
+                    const divElement = document.createElement('div');
                     divElement.setAttribute('id', this.id);
+                    domNode.innerHTML = '';
                     domNode.appendChild(divElement);
 
                     this.domNodeId = divElement.id;
@@ -214,7 +229,7 @@ export default class FlowPlayerProvider {
 
                     this.registerDefaultListeners();
                 } else {
-                    throw new Error('Unable to laod flowplayer');
+                    throw new Error('Unable to load flowplayer');
                 }
             }).catch(err => reject(err));
         });

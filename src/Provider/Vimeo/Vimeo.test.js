@@ -369,18 +369,12 @@ describe('VimeoProvider Errors', () => {
         jest.resetModules();
     });
 
-    it('should catch an error while loading the sdk', () => {
-        jest.mock('@vimeo/player', () => {
-            throw new Error('Test Error');
-        });
-        const Instance = new VimeoProvider(options, id);
-        return expect(Instance.ready).rejects.toEqual(new Error('Test Error'));
-    });
-
     it('should catch an error while creating the player', () =>  {
-        jest.mock('@vimeo/player', () => () => {
-            throw new Error('Player Test Error');
-        });
+        window.Vimeo = {
+            Player: () => {
+                throw new Error('Player Test Error');
+            },
+        };
         const Instance = new VimeoProvider(options, id);
         return expect(Instance.ready).rejects.toEqual(new Error('Player Test Error'));
     });

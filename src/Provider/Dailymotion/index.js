@@ -144,7 +144,9 @@ class DailymotionProvider {
                 domNode = getDomNode(domNode);
                 const iframe = document.createElement('iframe');
                 iframe.setAttribute('id', this.id);
+                domNode.innerHTML = '';
                 domNode.appendChild(iframe);
+
                 this.domNodeId = iframe.id;
                 this.dmPlayer = DM.player(iframe, options);
                 this.dmPlayer.addEventListener('apiready', () => resolve());

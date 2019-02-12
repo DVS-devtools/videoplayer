@@ -1,3 +1,4 @@
+import YTPlayer from 'youtube-player';
 import { getDomNode, Unsupported } from '../../lib';
 import global from '../../global';
 
@@ -31,6 +32,8 @@ class YoutubeProvider {
      * The Youtube Player instance
      */
     ytPlayer = null;
+
+    domNodeId = null;
 
     /**
      * All registered listeners grouped by event:
@@ -100,9 +103,9 @@ class YoutubeProvider {
             if (typeof window.AYT === 'object' && typeof window.AYT.Player === 'function') {
                 global.YTSDK = Promise.resolve(window.AYT.Player);
             } else {
-                global.YTSDK = import(/* webpackChunkName: 'Youtube' */'youtube-player').then((mod) => {
+                global.YTSDK = Promise.resolve(YTPlayer).then((p) => {
                     window.AYT = {
-                        Player: mod.default,
+                        Player: p,
                     };
                     return window.AYT.Player;
                 });
@@ -122,7 +125,13 @@ class YoutubeProvider {
         return new Promise((resolve, reject) => {
             this.loadSDK().then((Player) => {
                 domNode = getDomNode(domNode);
-                this.ytPlayer = Player(domNode, options);
+                const divElement = document.createElement('div');
+                divElement.setAttribute('id', this.id);
+                domNode.innerHTML = '';
+                domNode.appendChild(divElement);
+
+                this.domNodeId = divElement.id;
+                this.ytPlayer = Player(divElement, options);
                 this.registerDefaultListeners();
                 this.addProgressFakeListener();
                 resolve();
@@ -264,7 +273,9 @@ class YoutubeProvider {
         return this.ready.then(() => {
             clearInterval(this.fakeProgressListener);
             this.fakeProgressListener = null;
-            return this.ytPlayer.destroy();
+            return this.ytPlayer.destroy().then(() => {
+                document.getElementById(this.domNodeId).remove();
+            });
         });
     }
 
