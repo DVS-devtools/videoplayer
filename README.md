@@ -13,6 +13,19 @@ It can manage multiple video instances with multiple video Provider:
 * Flowplayer (internal player, just pass a video source url)
 * Iframe
 
+## Install
+
+With NPM:
+
+```javascript
+npm install --save @docomodigital/videoplayer
+```
+or with Yarn:
+
+```javascript
+yarn add @docomodigital/videoplayer
+```
+
 ## Usage
 ```javascript
 import VideoPlayer from 'video-player';
