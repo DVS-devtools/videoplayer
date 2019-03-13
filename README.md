@@ -31,7 +31,7 @@ yarn add @docomodigital/videoplayer
 
 ## Usage
 ```javascript
-import VideoPlayer from '@docomodigital/video-player';
+import VideoPlayer from '@docomodigital/videoplayer';
 
 // VideoPlayer is already an instance, no need to create a new one
 
