@@ -1,5 +1,8 @@
 ## VideoPlayer
 
+[![Build Status](https://travis-ci.com/docomodigital/videoplayer.svg?branch=master)](https://travis-ci.com/docomodigital/videoplayer)
+[![Coverage Status](https://coveralls.io/repos/github/docomodigital/videoplayer/badge.svg?branch=master)](https://coveralls.io/github/docomodigital/videoplayer?branch=master)
+[![npm version](https://badge.fury.io/js/%40docomodigital%2Fvideoplayer.svg)](https://badge.fury.io/js/%40docomodigital%2Fvideoplayer)
 [![Greenkeeper badge](https://badges.greenkeeper.io/docomodigital/videoplayer.svg)](https://greenkeeper.io/)
 
 VideoPlayer is a Manager for all the videos displayed in a web page.
