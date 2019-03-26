@@ -311,7 +311,10 @@ export default class FlowPlayerProvider {
      */
     clear() {
         return this.ready.then(() => {
-            document.getElementById(this.domNodeId).remove();
+            const elem = document.getElementById(this.domNodeId);
+            if (elem) {
+                elem.remove();
+            }
             this.fpListeners = {};
             this.internalListeners = {};
         });
