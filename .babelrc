@@ -1,7 +1,6 @@
 {
     "presets": ["@babel/preset-env"],
     "plugins": [
-        "@babel/plugin-transform-runtime",
 
         ["@babel/plugin-proposal-decorators", { "legacy": true }],
         "@babel/plugin-proposal-export-namespace-from",
@@ -11,7 +10,10 @@
     ],
     "env": {
         "test": {
-            "plugins": ["dynamic-import-node"]
+            "plugins": [
+                "dynamic-import-node",
+                "@babel/plugin-transform-runtime"
+            ]
         }
     }
 }
