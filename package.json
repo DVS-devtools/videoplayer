@@ -3,12 +3,14 @@
   "version": "1.0.1",
   "description": "",
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
   "license": "MIT",
   "scripts": {
-    "build": "rimraf ./dist && cross-env NODE_ENV=production webpack",
+    "build": "rimraf ./dist && rollup -c",
     "doc": "rimraf ./docs/${npm_package_version} && jsdoc -c .jsdoc.json -d ./docs/${npm_package_version}/",
     "doc:latest": "rimraf ./docs/latest && jsdoc -c .jsdoc.json -d ./docs/latest/",
     "doc:open": "npm run doc && open docs/${npm_package_version}/index.html",
@@ -23,8 +25,8 @@
     "postversion": "git add docs/ && git commit -am \"Documentation ${npm_package_version}\" && git push --follow-tags"
   },
   "dependencies": {
-    "youtube-player": "^5.5.2",
-    "@vimeo/player": "^2.6.7"
+    "@vimeo/player": "^2.6.7",
+    "youtube-player": "^5.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.1.5",
@@ -55,12 +57,18 @@
     "minami": "^1.2.3",
     "mini-css-extract-plugin": "^0.5.0",
     "rimraf": "^2.6.2",
+    "rollup": "^1.7.3",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.2.2",
+    "rollup-plugin-copy": "^0.2.3",
+    "rollup-plugin-ignore": "^1.0.5",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-terser": "^4.0.4",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
     "webpack": "^4.28.1",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-merge": "^4.1.5"
+    "webpack-dev-server": "^3.1.14"
   }
 }
