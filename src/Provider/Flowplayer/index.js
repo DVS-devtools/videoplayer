@@ -319,6 +319,8 @@ export default class FlowPlayerProvider {
             this.internalListeners = {};
 
             if (this.fpPlayer) {
+                this.fpPlayer.mute();
+
                 setTimeout(() => {
                     this.fpPlayer.stop();
                     this.fpPlayer.unload();
