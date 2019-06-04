@@ -323,7 +323,7 @@ export default class FlowPlayerProvider {
                     this.fpPlayer.stop();
                     this.fpPlayer.unload();
                     this.fpPlayer.shutdown();
-                });
+                }, 1500);
             }
         });
     }
