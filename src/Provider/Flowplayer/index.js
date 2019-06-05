@@ -317,6 +317,16 @@ export default class FlowPlayerProvider {
             }
             this.fpListeners = {};
             this.internalListeners = {};
+
+            if (this.fpPlayer) {
+                this.fpPlayer.mute();
+
+                setTimeout(() => {
+                    this.fpPlayer.stop();
+                    this.fpPlayer.unload();
+                    this.fpPlayer.shutdown();
+                }, 1500);
+            }
         });
     }
 

@@ -37,6 +37,8 @@ class MockedPlayer {
     fullscreen() { this.isFullscreen = !this.isFullscreen};
     volume() {};
     seek() {};
+    unload() {};
+    shutdown() {};
 }
 
 document.body.innerHTML = '<div id="fp-video"></div>';
