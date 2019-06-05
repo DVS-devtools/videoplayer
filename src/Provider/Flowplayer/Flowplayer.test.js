@@ -7,7 +7,7 @@ const flushPromises = () => {
 
 class MockedPlayer {
     _events = {};
-    muted = false;
+    muted = false;  
     isFullscreen = false;
     video = {
         time: 4,
@@ -120,7 +120,7 @@ describe('FlowplayerProvider API', () => {
             mute: jest.spyOn(MockedPlayer.prototype, 'mute'),
             fullscreen: jest.spyOn(MockedPlayer.prototype, 'fullscreen'),
             volume: jest.spyOn(MockedPlayer.prototype, 'volume'),
-            seek: jest.spyOn(MockedPlayer.prototype, 'seek'),
+            seek: jest.spyOn(MockedPlayer.prototype, 'seek')
         }
     });
 
@@ -197,6 +197,8 @@ describe('FlowplayerProvider API', () => {
 
 describe('Flowplayer getters and cleanup', () => {
     let Instance ;
+    let spies;
+
     beforeEach(() => {
         global.FPSDK = null;
         window.flowplayer = () => new MockedPlayer();
@@ -239,8 +241,26 @@ describe('Flowplayer getters and cleanup', () => {
 
     it('should remove the DOM element on clear()', async () => {
         expect(Array.from(document.querySelector(options.domNode).querySelectorAll('div')).length).toBe(1);
+        
+        spies = {
+            stop: jest.spyOn(Instance.fpPlayer, 'stop'),
+            unload: jest.spyOn(Instance.fpPlayer, 'unload'),
+            shutdown: jest.spyOn(Instance.fpPlayer, 'shutdown'),
+            mute: jest.spyOn(Instance.fpPlayer, 'mute')
+        }
+
         await Instance.clear();
-        expect(Array.from(document.querySelector(options.domNode).querySelectorAll('div')).length).toBe(0);
+
+        expect(spies.mute).toHaveBeenCalled();
+
+        setTimeout(() => {
+            expect(spies.stop).toHaveBeenCalled();
+            expect(spies.unload).toHaveBeenCalled();
+            expect(spies.shutdown).toHaveBeenCalled();
+            expect(Array.from(document.querySelector(options.domNode).querySelectorAll('div')).length).toBe(0);
+            done();
+        }, 1600);
+        
     });
 });
 
