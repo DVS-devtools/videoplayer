@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Player/index.js - Documentation</title>
+    <title>VideoPlayer/index.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Player/index.js</h1>
+    <h1 class="page-title">VideoPlayer/index.js</h1>
     
 
     
@@ -39,110 +39,141 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import TestProvider from '../Provider/testProvider';
-import DailymotionProvider from '../Provider/Dailymotion';
-import FlowplayerProvider from '../Provider/Flowplayer';
-import VimeoProvider from '../Provider/Vimeo';
-import YoutubeProvider from '../Provider/Youtube';
-import IframeProvider from '../Provider/Iframe';
-import { ValidateArg, ValidateObj } from '../Validation';
+            <pre class="prettyprint source linenums"><code>import Player from '../Player';
+import { ValidateArg, ValidateObj, ValidateOptionalArg } from '../Validation';
 
 /**
- * This class will provide you a player instance. An instance is independent
- * to all the other player instances, this means that you can have more
- * players inside a single page, all managed independently.
- * How to manage the instances is your own choice.
- * You can use your own players manager, creating your interface and manage it in
- * the way you want, or you can use the {@link VideoPlayer} interface,
- * that provides you a faster and easier way to manage more players in a single page. Please
- * remember that if you are using the VideoPlayer class you need to interact directly with that.
- * @example
- * const options = {
- *     domNode: document.getElementById('player'),
- *     provider: 'dailymotion',
- *     videoId: 'xwr14q',
- *     providerOptions: {
- *        params: {
- *            quality: 720,
- *        },
- *     },
- * };
- * const player = new Player(options, 'player_1');
+ * @namespace VideoPlayer
  */
-class Player {
-    id = null;
-
-    player = null;
+class VideoPlayer {
+    defaults = {
+        idPrefix: 'video_',
+        provider: null,
+        forward: 15,
+        rewind: 15,
+    };
 
     /**
-     * Creates an instance of Player.
-     * @param {Object} options configuration options ( provider, videoId, url, domNode... )
-     * @param {String|Node} options.domNode DOM element identifier,
+     * @ignore
+     * @type {Object.&lt;string, Player>}
+     */
+    playerInstances = {};
+
+    /**
+     * @ignore
+     * generate an unique id
+     * @param {String} idOrUrl fixed part of the id
+     * @param {Number} affix incremental counter to append at the end of the id
+     * @return {string}
+     */
+    generateId(idOrUrl, affix = 1) {
+        const { idPrefix } = this.defaults;
+        const id = `${idPrefix}${idOrUrl}_${affix}`;
+        if (Object.keys(this.playerInstances).includes(id)) {
+            return this.generateId(idOrUrl, affix + 1);
+        }
+        return id;
+    }
+
+    /**
+     * Create a new {@link Player} instance
+     * @param {Object} playerInitOptions configuration options (provider, videoId, url, domNode...)
+     * @param {String|Node} playerInitOptions.domNode DOM element identifier,
      * where to mount the player.
      *
      * Can be a DOM Node instance (ex: document.getElementById(id))
      * or a querySelector for a Node ID (ex: #id)
-     * @param {String} options.provider The provider to use,
+     * @param {String} playerInitOptions.provider The provider to use,
      * one of: 'dailymotion', 'vimeo', 'youtube', 'flowplayer' | 'iframe'
-     * @param {String} [options.videoId] ID of the video, passed to the provider to find the video
-     * @param {String} [options.url] url of the video resource, passed to the provider
-     * @param {Object&lt;any>}[options.providerOptions] provider init options,
+     * @param {String} [playerInitOptions.videoId] ID of the video,
+     * passed to the provider to find the video
+     * @param {String} [playerInitOptions.url] url of the video resource, passed to the provider
+     * @param {Object&lt;any>}[playerInitOptions.providerOptions] provider init options,
      * see each provider doc to know what can be passed here:
      * * **Vimeo**: https://github.com/vimeo/player.js#embed-options
      * * **Dailymotion**: https://developer.dailymotion.com/player#player-parameters
      * * **Youtube**: https://developers.google.com/youtube/player_parameters?playerVersion=HTML5#Parameters
      * * **Flowplayer**: https://flowplayer.com/help/developers/flowplayer-7/setup#player-options
-     * @param {String} [id] Id of the player,
-     * it is used by {@link VideoPlayer} to manage multiple Player instances
-     */
-    constructor(options, id) {
-        this.id = id;
-
-        return this.createPlayer(options, id);
-    }
-
-    /**
-     * @ignore
-     * Creates the Player provider
-     * @param options
-     * @param {String} id Id of the player to associate inside the dom
+     * @example
+     * const player = VideoPlayer.createPlayer({
+     *     domNode: '#el',
+     *     provider: 'vimeo',
+     *     videoId: 'sdHg79'
+     * });
      * @return {Player}
      */
-    @ValidateObj({ provider: 'string', domNode: 'string|object', videoId: 'string|number' }, 0, { videoId: 'url' })
-    @ValidateArg('string|number', 1)
-    createPlayer(options, id) {
-        switch (options.provider) {
-        case 'test':
-            this.player = new TestProvider(options, id);
-            break;
-        case 'dailymotion':
-            this.player = new DailymotionProvider(options, id);
-            break;
-        case 'flowplayer':
-            this.player = new FlowplayerProvider(options, id);
-            break;
-        case 'vimeo':
-            this.player = new VimeoProvider(options, id);
-            break;
-        case 'youtube':
-            this.player = new YoutubeProvider(options, id);
-            break;
-        case 'iframe':
-            this.player = new IframeProvider(options, id);
-            break;
-        default:
-            this.player = null;
-            throw new Error(`Unsupported Provider ${options.provider}`);
+    @ValidateObj({ domNode: 'string|object', videoId: 'string|number' }, 0, { videoId: 'url' })
+    createPlayer(playerInitOptions) {
+        // Get the requested provider
+        const provider = playerInitOptions.provider || this.defaults.provider;
+        if (!provider) {
+            throw new Error('cannot create player: provider or VideoPlayer.default.provider is required!');
         }
-        return this;
+        // Filter the given options, remove "events", they are registered after
+        const playerOptions = Object.assign({}, Object.keys(playerInitOptions).filter(k => k !== 'events').reduce((o, k) => {
+            o[k] = playerInitOptions[k];
+            return o;
+        }, {}), { provider });
+        // Generate the unique id of the Player
+        const id = this.generateId(playerInitOptions.videoId || playerInitOptions.url);
+        // Create the Player
+        const player = new Player(playerOptions, id);
+        // Save the created Player by its id
+        this.playerInstances[id] = player;
+        // Register all passed events
+        if (playerInitOptions.events &amp;&amp; Object.keys(playerInitOptions.events).length) {
+            Object.keys(playerInitOptions.events).forEach((eventName) => {
+                this.addEventListener(id, eventName, playerInitOptions.events[eventName]);
+            });
+        }
+        return player;
     }
 
     /**
-     * Add a listener callback to an event.
-     * Note that the same event can manage more listeners.
+     * Get a previously created Player instance from its id
+     * @param {String} playerId the Player Id
+     * @return {Player}
+     * @example
+     * const player = VideoPlayer.getPlayer('video_sdHg79_1');
+     */
+    @ValidateArg('string')
+    getPlayer(playerId) {
+        if (!Object.keys(this.playerInstances).includes(playerId)) {
+            throw new Error(`Player with id ${playerId} not found`);
+        }
+        return this.playerInstances[playerId];
+    }
+
+    /**
+     * Get all created Player instances keyed by their id
+     * @example
+     * VideoPlayer.getPlayers()
+     * // {
+     * //   video_sdHg79_1: Player
+     * // }
      *
-     * Please remember to store the function inside a variable, in order to call the off method
-     * to remove the listener on a precise event
+     * @return {Object.&lt;string, Player>}
+     */
+    getPlayers() {
+        return this.playerInstances;
+    }
+
+    /**
+     * Get an array of all created Player
+     * @example
+     * VideoPlayer.getPlayersAsArray()
+     * // [Player]
+     * @return {Player[]}
+     */
+    getPlayersAsArray() {
+        return Object.values(this.playerInstances);
+    }
+
+    /**
+     * Add an event listener callback called when the specified event is fired
+     *
+     * Please remember to store the function inside a variable,
+     * in order to call the off method to remove the listener on a precise event
      *
      * Supported events:
      * * **play**: fired when video starts playing
@@ -160,211 +191,235 @@ class Player {
      * (the stop() method reset the first play, the successive play() fires a firstPlay event )
      *
      * *The method supports also every Provider specific events (ex. VimeoProvider **bufferend**)*
+     * @param {String} playerId the Player Id
      * @param {String} event the Event name (see supported events)
      * @param {Function} callback Function to call when the event is fired
      * @return {Promise&lt;void>}
      * @example
      * const callback = (evt) => {
      *     // Do stuff..
-     * };
-     * player.on('play', callback);
+     * }
+     * VideoPlayer.addEventListener('video_sdHg79_1', 'play', callback);
      */
-    @ValidateArg('string')
-    @ValidateArg('function', 1)
-    on(event, callback) {
-        return this.player.on(event, callback);
+    @ValidateArg('string', 1)
+    @ValidateArg('function', 2)
+    addEventListener(playerId, event, callback) {
+        return this.getPlayer(playerId).on(event, callback);
     }
 
     /**
-     * Remove a listener from an event
-     *
-     * @param {String} event name of the event (see [on]{@link Player#on} supported events)
-     * @param {Function} callback method to remove
+     * Remove a previously registered callback to an event
+     * @param {String} playerId the Player Id
+     * @param {String} event the Event name
+     * (see [addEventListener]{@link VideoPlayer#addEventListener} supported events)
+     * @param {Function} callback Function registered
      * @return {Promise&lt;void>}
      * @example
-     * player.off('play', callback);
+     * VideoPlayer.removeEventListener('video_sdHg79_1', 'play', callback);
      */
-    @ValidateArg('string')
-    @ValidateArg('function', 1)
-    off(event, callback) {
-        return this.player.off(event, callback);
+    @ValidateArg('string', 1)
+    @ValidateArg('function', 2)
+    removeEventListener(playerId, event, callback) {
+        return this.getPlayer(playerId).off(event, callback);
     }
 
     /**
-     * Play the video.
+     * Destroys a Player instance
+     * @param {String} playerId the Player Id
      * @return {Promise&lt;void>}
      * @example
-     * player.play();
+     * VideoPlayer.clear('video_sdHg79_1').then(() => {
+     *     // Player is cleared
+     * })
      */
-    play() {
-        return this.player.play();
+    clear(playerId) {
+        const player = this.getPlayer(playerId);
+        delete this.playerInstances[playerId];
+        return player.clear();
     }
 
     /**
-     * Pause the video
+     * Destroys all Player instances
      * @return {Promise&lt;void>}
      * @example
-     * player.pause();
+     * VideoPlayer.clearAll().then(() => {
+     *     // All players are cleared
+     * })
      */
-    pause() {
-        return this.player.pause();
+    clearAll() {
+        const clearPromises = Object.keys(this.playerInstances)
+            .map(playerId => this.clear(playerId));
+        return Promise.all(clearPromises).then(() => {
+            this.playerInstances = {};
+        });
     }
 
     /**
-     * Stop the video (restarting from 0s)
+     * Send [play]{@link Player#play} command to the Player
+     * @param {String} playerId the Player Id
      * @return {Promise&lt;void>}
      * @example
-     * player.stop();
+     * VideoPlayer.play('video_sdHg79_1').then(() => {
+     *     // Player is played
+     * })
      */
-    stop() {
-        return this.player.stop();
+    play(playerId) {
+        return this.getPlayer(playerId).play();
     }
 
     /**
-     * Mute the video
+     * Send [pause]{@link Player#pause} command to the Player
+     * @param {String} playerId the Player Id
      * @return {Promise&lt;void>}
      * @example
-     * player.mute();
+     * VideoPlayer.pause('video_sdHg79_1').then(() => {
+     *     // Player is paused
+     * })
      */
-    mute() {
-        return this.player.mute();
+    pause(playerId) {
+        return this.getPlayer(playerId).pause();
     }
 
     /**
-     * Unmute the video
+     * Send [stop]{@link Player#stop} command to the Player
+     * @param {String} playerId the Player Id
      * @return {Promise&lt;void>}
      * @example
-     * player.unmute();
+     * VideoPlayer.stop('video_sdHg79_1').then(() => {
+     *     // Player is stopped
+     * })
      */
-    unmute() {
-        return this.player.unmute();
+    stop(playerId) {
+        return this.getPlayer(playerId).stop();
     }
 
     /**
-     * Switch between muted and unmuted
+     * Send [mute]{@link Player#mute} command to the Player
+     * @param {String} playerId the Player Id
      * @return {Promise&lt;void>}
      * @example
-     * player.toggleMute();
+     * VideoPlayer.mute('video_sdHg79_1').then(() => {
+     *     // Player is muted
+     * })
      */
-    toggleMute() {
-        return this.player.toggleMute();
+    mute(playerId) {
+        return this.getPlayer(playerId).mute();
     }
 
     /**
-     * Enter/exit in fullscreen mode
+     * Send [unmute]{@link Player#unmute} command to the Player
+     * @param {String} playerId the Player Id
      * @return {Promise&lt;void>}
      * @example
-     * player.toggleFullScreen();
+     * VideoPlayer.unmute('video_sdHg79_1').then(() => {
+     *     // Player is unmuted
+     * })
      */
-    toggleFullScreen() {
-        return this.player.toggleFullScreen();
+    unmute(playerId) {
+        return this.getPlayer(playerId).unmute();
     }
 
     /**
-     * Play/Pause the video
+     * Send [toggleMute]{@link Player#toggleMute} command to the Player
+     * @param {String} playerId the Player Id
      * @return {Promise&lt;void>}
      * @example
-     * player.togglePlay();
+     * VideoPlayer.toggleMute('video_sdHg79_1').then(() => {
+     *     // Mute is toggled
+     * })
      */
-    togglePlay() {
-        return this.player.togglePlay();
+    toggleMute(playerId) {
+        return this.getPlayer(playerId).toggleMute();
     }
 
     /**
-     * Set the volume level to the given value.
-     *
-     * @param {Number} volumeLevel Value between 0 and 1.
+     * Send [toggleFullScreen]{@link Player#toggleFullScreen} command to the Player
+     * @param {String} playerId the Player Id
      * @return {Promise&lt;void>}
      * @example
-     * player.setVolume(1); // Max volume
-     * player.setVolume(0); // Muted
+     * VideoPlayer.toggleFullScreen('video_sdHg79_1').then(() => {
+     *     // Full screen is toggled
+     * })
      */
-    @ValidateArg('number')
-    setVolume(volumeLevel) {
-        return this.player.setVolume(volumeLevel);
+    toggleFullScreen(playerId) {
+        return this.getPlayer(playerId).toggleFullScreen();
     }
 
     /**
-     * Go forward in the video by the specified value (in seconds)
-     *
-     * @param {Number} seconds seconds to forward
+     * Send [setVolume]{@link Player#setVolume} command to the Player
+     * @param {String} playerId the Player Id
+     * @param volume volume level to set, value between 0 and 1
      * @return {Promise&lt;void>}
      * @example
-     * player.forward(15);
+     * VideoPlayer.setVolume('video_sdHg79_1', 0.5).then(() => {
+     *     // Volume is set
+     * })
      */
-    @ValidateArg('number')
-    forward(seconds) {
-        return this.player.forward(seconds);
+    @ValidateArg('number', 1)
+    setVolume(playerId, volume) {
+        return this.getPlayer(playerId).setVolume(volume);
     }
 
     /**
-     * Go back in the video by the specified value (in seconds)
-     *
-     * @param {Number} seconds seconds to rewind
-     * @return {Promise&lt;void>}
-     * @example
-     * player.rewind(15);
-     */
-    @ValidateArg('number')
-    rewind(seconds) {
-        return this.player.rewind(seconds);
-    }
-
-    /**
-     * Set the current time of the video at the specified value (in seconds)
-     *
+     * Send [seek]{@link Player#seek} command to the Player
+     * @param {String} playerId the Player Id
      * @param {Number} seconds seconds to seek
      * @return {Promise&lt;void>}
      * @example
-     * player.seek(45);
+     * VideoPlayer.seek('video_sdHg79_1', 42).then(() => {
+     *     // Player is seeked
+     * })
      */
-    @ValidateArg('number')
-    seek(seconds) {
-        return this.player.seek(seconds);
+    @ValidateArg('number', 1)
+    seek(playerId, seconds) {
+        return this.getPlayer(playerId).seek(seconds);
     }
 
     /**
-     * Destroy the Player (it will remove the active instance of the player and the
-     * player element in the DOM).
-     *
+     * Send [forward]{@link Player#forward} command to the Player
+     * @param {String} playerId the Player Id
+     * @param {Number} seconds seconds to forward
      * @return {Promise&lt;void>}
      * @example
-     * player.clear();
+     * VideoPlayer.forward('video_sdHg79_1', 10).then(() => {
+     *     // Player is forwarded
+     * })
      */
-    clear() {
-        this.player.clear();
-        this.player = null;
+    @ValidateOptionalArg('number', 1)
+    forward(playerId, seconds) {
+        return this.getPlayer(playerId).forward(seconds || this.defaults.forward);
+    }
+
+    /**
+     * Send [rewind]{@link Player#rewind} command to the Player
+     * @param {String} playerId the Player Id
+     * @param {Number} seconds seconds to rewind
+     * @return {Promise&lt;void>}
+     * @example
+     * VideoPlayer.rewind('video_sdHg79_1', 10).then(() => {
+     *     // Player is rewinded
+     * })
+     */
+    @ValidateOptionalArg('number', 1)
+    rewind(playerId, seconds) {
+        return this.getPlayer(playerId).rewind(seconds || this.defaults.rewind);
     }
 
     /**
      * Directly download the video or returns the video Url
+     * @param {String} playerId the Player Id
      * @return {Promise&lt;void|string>}
      * @example
-     * player.download();
+     * VideoPlayer.download('video_sdHg79_1').then((url)) => {
+     *     // For providers that not download directly, url is the provider website url to the video
+     * };
      */
-    download() {
-        return this.player.download();
-    }
-
-    /**
-     * Get the list of all the active listeners on the player, with the
-     *  added functions
-     *
-     * @return {Object&lt;string, Array&lt;function>>}
-     * @example
-     * player.getListeners();
-     * /* {
-     * *    play: [Function, Function, ...],
-     * *    pause: [Function, ...],
-     * *  }
-     *
-     */
-    getListeners() {
-        return this.player.listeners;
+    download(playerId) {
+        return this.getPlayer(playerId).download();
     }
 }
 
-export default Player;
+export default new VideoPlayer();
 </code></pre>
         </article>
     </section>
@@ -377,7 +432,7 @@ export default Player;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jun 10 2019 11:39:33 GMT+0200 (Central European Summer Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jun 10 2019 11:39:32 GMT+0200 (Central European Summer Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
