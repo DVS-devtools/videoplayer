@@ -312,8 +312,6 @@ export default class FlowPlayerProvider {
     clear() {
         return this.ready.then(() => {
             if (document.getElementById(this.domNodeId)) {
-                console.log('destroying flowplayer with domNodeId: ', this.domNodeId);
-
                 const elem = document.getElementById(this.domNodeId);
 
                 if (elem) {
@@ -330,8 +328,6 @@ export default class FlowPlayerProvider {
                 }
             } else {
                 this.fpPlayer.on('resume', () => {
-                    console.log('destroying flowplayer without domNodeId');
-
                     if (this.fpPlayer) {
                         this.fpPlayer.stop();
                         this.fpPlayer.unload();
