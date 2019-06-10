@@ -1,6 +1,5 @@
 import { loadScript, loadStyle, getDomNode } from '../../lib';
 import global from '../../global';
-import { S_IFREG } from 'constants';
 
 /*
     ACCEPTED PROVIDER OPTIONS:
