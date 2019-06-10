@@ -262,6 +262,37 @@ describe('Flowplayer getters and cleanup', () => {
         }, 1600);
         
     });
+
+    it('should remove the DOM element on clear()', async () => {
+        const el = document.querySelector(options.domNode).querySelectorAll('div');
+    
+        expect(Array.from(el).length).toBe(1);
+    
+        document.querySelector(options.domNode).remove();
+    
+        expect(document.querySelector(options.domNode)).toBe(null);
+    
+        spies = {
+            stop: jest.spyOn(Instance.fpPlayer, 'stop'),
+            unload: jest.spyOn(Instance.fpPlayer, 'unload'),
+            shutdown: jest.spyOn(Instance.fpPlayer, 'shutdown')
+        }
+        
+        await Instance.clear();
+        Instance.fpPlayer.fireEvent('resume');
+
+        
+        //wait promise to finish
+        setTimeout(() => {
+            expect(spies.stop).toHaveBeenCalled();
+            expect(spies.unload).toHaveBeenCalled();
+            expect(spies.shutdown).toHaveBeenCalled();
+            expect(Array.from(document.querySelector(options.domNode).querySelectorAll('div')).length).toBe(0);
+            done();
+        }, 200);
+        
+    });
+    
 });
 
 describe('Flowplayer providers event on - off - one', () => {

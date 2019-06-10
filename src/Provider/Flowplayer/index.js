@@ -311,21 +311,32 @@ export default class FlowPlayerProvider {
      */
     clear() {
         return this.ready.then(() => {
-            const elem = document.getElementById(this.domNodeId);
-            if (elem) {
-                elem.remove();
-            }
-            this.fpListeners = {};
-            this.internalListeners = {};
+            if (document.getElementById(this.domNodeId)) {
+                const elem = document.getElementById(this.domNodeId);
 
-            if (this.fpPlayer) {
-                this.fpPlayer.mute();
+                if (elem) {
+                    elem.remove();
+                }
 
-                setTimeout(() => {
+                this.fpListeners = {};
+                this.internalListeners = {};
+
+                if (this.fpPlayer) {
                     this.fpPlayer.stop();
                     this.fpPlayer.unload();
                     this.fpPlayer.shutdown();
-                }, 1500);
+                }
+            } else {
+                this.fpPlayer.on('resume', () => {
+                    if (this.fpPlayer) {
+                        this.fpPlayer.stop();
+                        this.fpPlayer.unload();
+                        this.fpPlayer.shutdown();
+                    }
+
+                    this.fpListeners = {};
+                    this.internalListeners = {};
+                });
             }
         });
     }
