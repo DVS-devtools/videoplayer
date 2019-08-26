@@ -68,7 +68,12 @@ export default [
         plugins: [
             ...plugins,
             copy({
-                [path.join(srcDir, 'index.d.ts')]: path.join(distDir, 'index.d.ts'),
+                targets: [
+                    {
+                        src: path.join(srcDir, 'index.d.ts'),
+                        dest: path.join(distDir),
+                    },
+                ],
             })
         ]
     }
