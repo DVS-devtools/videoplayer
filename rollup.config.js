@@ -33,10 +33,12 @@ const plugins = [
         debug: 'export default () => () => undefined',
     }),
     nodeResolve({
-        jsnext: true,
-        main: true,
-        browser: true,
-        preferBuiltins: false,
+        mainFields: [
+            'jsnext',
+            'module',
+            'main',
+            'browser'
+        ],
     }),
     commonjs({
         exclude: ['node_modules/debug/**'],
@@ -76,7 +78,12 @@ export default [
         plugins: [
             ...plugins,
             copy({
-                [path.join(srcDir, 'index.d.ts')]: path.join(distDir, 'index.d.ts'),
+                targets: [
+                    {
+                        src: path.join(srcDir, 'index.d.ts'),
+                        dest: path.join(distDir),
+                    },
+                ],
             })
         ]
     }
