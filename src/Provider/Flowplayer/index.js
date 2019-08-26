@@ -166,17 +166,16 @@ export default class FlowPlayerProvider {
             this.commercialKey = options.providerOptions.key;
         }
 
-        this.ready = this.createFP(options.domNode,
-            Object.assign({}, {
-                clip: {
-                    videoId: options.videoId,
-                    sources: [{
-                        type: 'video/mp4',
-                        src: this.videoUrl
-                    }]
-                }
+        this.ready = this.createFP(options.domNode, {
+            clip: {
+                videoId: options.videoId,
+                sources: [{
+                    type: 'video/mp4',
+                    src: this.videoUrl
+                }]
             },
-            options.providerOptions || {}));
+            ...(options.providerOptions || {}),
+        });
     }
 
     /**
@@ -198,7 +197,7 @@ export default class FlowPlayerProvider {
             } else {
                 global.FPSDK = Promise.all([jqueryPromise, fpPromise, fpCSSPromise])
                     .then(() => window.flowplayer)
-                    .catch((err) => {
+                    .catch(err => {
                         throw err;
                     });
             }
@@ -215,7 +214,7 @@ export default class FlowPlayerProvider {
      */
     createFP(domNode, options) {
         return new Promise((resolve, reject) => {
-            this.loadSDK().then((FP) => {
+            this.loadSDK().then(FP => {
                 if (typeof FP === 'function') {
                     domNode = getDomNode(domNode);
                     const divElement = document.createElement('div');
@@ -252,7 +251,7 @@ export default class FlowPlayerProvider {
      */
     fireEvent(evt, params) {
         if (typeof this.internalListeners[evt] !== 'undefined') {
-            this.internalListeners[evt].forEach((event) => {
+            this.internalListeners[evt].forEach(event => {
                 if (typeof event.callback === 'function') {
                     event.callback(params);
                 }

@@ -46,7 +46,7 @@ class IframeProvider {
             this.parent.appendChild(this.iframeElement);
             this.iframeWindow = this.iframeElement.contentWindow;
 
-            window.addEventListener('message', (payload) => {
+            window.addEventListener('message', payload => {
                 try {
                     if (this.isThisIframe(payload.source)) {
                         const data = JSON.parse(payload.data);
@@ -65,7 +65,7 @@ class IframeProvider {
 
     fireEvent(evt, ...data) {
         if (typeof this.internalListeners[evt] !== 'undefined') {
-            this.internalListeners[evt].forEach((event) => {
+            this.internalListeners[evt].forEach(event => {
                 if (typeof event.callback === 'function') {
                     event.callback(...data);
                 }

@@ -10,7 +10,7 @@
     "eol-last": "off",
     "no-param-reassign": "off",
     "class-methods-use-this": "off",
-
+    "arrow-parens": ["error", "as-needed"],
     "no-console": "off"
   },
   "parserOptions": {
