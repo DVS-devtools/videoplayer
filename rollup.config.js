@@ -25,10 +25,12 @@ const plugins = [
         // 'debug',
     ]),
     nodeResolve({
-        jsnext: true,
-        main: true,
-        browser: true,
-        preferBuiltins: false,
+        mainFields: [
+            'jsnext',
+            'module',
+            'main',
+            'browser'
+        ],
     }),
     commonjs({
         exclude: ['node_modules/debug/**'],
