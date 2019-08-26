@@ -65,7 +65,7 @@ export default class TestProvider {
 
         const [videoBBB] = this.iframeDoc.getElementsByTagName('video');
 
-        this.iframeContentWindow.addEventListener('message', (receivedMessage) => {
+        this.iframeContentWindow.addEventListener('message', receivedMessage => {
             console.log([`iframe: ${id}`, 'received', receivedMessage]);
 
             const message = JSON.parse(receivedMessage.data);
@@ -166,7 +166,7 @@ export default class TestProvider {
 
     fireEvent(evt) {
         if (typeof this.listeners[evt] !== 'undefined') {
-            this.listeners[evt].forEach((callbackFunction) => {
+            this.listeners[evt].forEach(callbackFunction => {
                 callbackFunction();
             });
         }

@@ -8,7 +8,7 @@ export default (...fields) => function (target, key, descriptor) {
             return fn.call(this, ...args);
         };
     } else {
-        fields.forEach((field) => {
+        fields.forEach(field => {
             target.prototype[field] = () => {
                 console.warn(`Provider ${target.constructor.name} does not support the ${field} feature`);
             };

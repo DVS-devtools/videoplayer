@@ -90,8 +90,10 @@ class VimeoProvider {
     constructor(options, id) {
         this.id = id;
 
-        this.ready = this.createVM(options.domNode,
-            Object.assign({ id: options.videoId }, options.providerOptions || {}));
+        this.ready = this.createVM(options.domNode, {
+            id: options.videoId,
+            ...(options.providerOptions || {}),
+        });
     }
 
     /**
@@ -104,7 +106,7 @@ class VimeoProvider {
             if (typeof window.Vimeo === 'object' && typeof window.Vimeo.Player === 'function') {
                 global.VMSDK = Promise.resolve(window.Vimeo.Player);
             } else {
-                global.VMSDK = Promise.resolve(VimeoPlayer).then((p) => {
+                global.VMSDK = Promise.resolve(VimeoPlayer).then(p => {
                     window.Vimeo = {
                         Player: p,
                     };
@@ -124,7 +126,7 @@ class VimeoProvider {
      */
     createVM(domNode, options) {
         return new Promise((resolve, reject) => {
-            this.loadSdk().then((Player) => {
+            this.loadSdk().then(Player => {
                 domNode = getDomNode(domNode);
                 domNode.innerHTML = '';
                 this.vmPlayer = new Player(domNode, options);
@@ -155,7 +157,7 @@ class VimeoProvider {
      */
     fireEvent(evt, ...data) {
         if (typeof this.internalListeners[evt] !== 'undefined') {
-            this.internalListeners[evt].forEach((event) => {
+            this.internalListeners[evt].forEach(event => {
                 if (typeof event.callback === 'function') {
                     event.callback(...data);
                 }
@@ -197,7 +199,7 @@ class VimeoProvider {
      * Register default listeners on Player init
      */
     registerDefaultListeners() {
-        this.vmPlayer.on('timeupdate', (data) => {
+        this.vmPlayer.on('timeupdate', data => {
             this.onPercentage(25, data);
             this.onPercentage(50, data);
             this.onPercentage(75, data);
@@ -334,7 +336,7 @@ class VimeoProvider {
     togglePlay() {
         return this.ready
             .then(() => this.vmPlayer.getPaused())
-            .then((paused) => {
+            .then(paused => {
                 if (paused) {
                     return this.play();
                 }
