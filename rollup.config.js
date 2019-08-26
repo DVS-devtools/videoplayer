@@ -4,6 +4,8 @@ import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import ignore from 'rollup-plugin-ignore';
+import strip from 'rollup-plugin-strip';
+import shim from 'rollup-plugin-shim';
 import copy from 'rollup-plugin-copy';
 import { builtinModules } from 'module';
 
@@ -18,12 +20,18 @@ const paths = {
 
 const plugins = [
     babel({
-        exclude: 'node_modules/**'
+        exclude: 'node_modules/**',
+        runtimeHelpers: true,
     }),
     ignore([
         ...builtinModules,
-        // 'debug',
     ]),
+    strip({
+        functions: ['debug'],
+    }),
+    shim({
+        debug: 'export default () => () => undefined',
+    }),
     nodeResolve({
         jsnext: true,
         main: true,
