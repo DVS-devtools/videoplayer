@@ -1,4 +1,4 @@
-export default (domNode) => {
+export default domNode => {
     if (typeof domNode === 'string') {
         return document.querySelector(domNode);
         // if (domNode.indexOf('#') === 0) {

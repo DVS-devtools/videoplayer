@@ -88,9 +88,10 @@ class YoutubeProvider {
     constructor(options, id) {
         this.id = id;
 
-        this.ready = this.createYT(options.domNode,
-            Object.assign({}, { videoId: options.videoId }, options.providerOptions || {}));
-        // .catch(console.error); // TODO what to do in error?
+        this.ready = this.createYT(options.domNode, {
+            videoId: options.videoId,
+            ...(options.providerOptions || {}),
+        });
     }
 
     /**
@@ -103,7 +104,7 @@ class YoutubeProvider {
             if (typeof window.AYT === 'object' && typeof window.AYT.Player === 'function') {
                 global.YTSDK = Promise.resolve(window.AYT.Player);
             } else {
-                global.YTSDK = Promise.resolve(YTPlayer).then((p) => {
+                global.YTSDK = Promise.resolve(YTPlayer).then(p => {
                     window.AYT = {
                         Player: p,
                     };
@@ -123,7 +124,7 @@ class YoutubeProvider {
      */
     createYT(domNode, options) {
         return new Promise((resolve, reject) => {
-            this.loadSDK().then((Player) => {
+            this.loadSDK().then(Player => {
                 domNode = getDomNode(domNode);
                 const divElement = document.createElement('div');
                 divElement.setAttribute('id', this.id);
@@ -155,7 +156,7 @@ class YoutubeProvider {
      * and call the internal listeners based on the event.data value (eventsNameMapping)
      */
     registerDefaultListeners() {
-        this.ytPlayer.on('stateChange', (e) => {
+        this.ytPlayer.on('stateChange', e => {
             if (eventsNameMapping[e.data]) {
                 this.fireEvent(eventsNameMapping[e.data], e);
             }
@@ -206,7 +207,7 @@ class YoutubeProvider {
      */
     fireEvent(evt, ...data) {
         if (typeof this.internalListeners[evt] !== 'undefined') {
-            this.internalListeners[evt].forEach((event) => {
+            this.internalListeners[evt].forEach(event => {
                 if (typeof event.callback === 'function') {
                     event.callback(...data);
                 }
@@ -330,7 +331,7 @@ class YoutubeProvider {
      */
     toggleMute() {
         return this.ready.then(() => this.ytPlayer.isMuted())
-            .then((bool) => {
+            .then(bool => {
                 if (bool) {
                     return this.ytPlayer.unMute();
                 }
@@ -341,7 +342,7 @@ class YoutubeProvider {
     togglePlay() {
         return this.ready
             .then(() => this.ytPlayer.getPlayerState())
-            .then((state) => {
+            .then(state => {
                 if (state === YTSTATES.PLAY) {
                     return this.ytPlayer.pauseVideo();
                 }

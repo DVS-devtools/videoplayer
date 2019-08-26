@@ -69,10 +69,15 @@ class VideoPlayer {
             throw new Error('cannot create player: provider or VideoPlayer.default.provider is required!');
         }
         // Filter the given options, remove "events", they are registered after
-        const playerOptions = Object.assign({}, Object.keys(playerInitOptions).filter(k => k !== 'events').reduce((o, k) => {
-            o[k] = playerInitOptions[k];
-            return o;
-        }, {}), { provider });
+
+        const playerOptions = {
+            ...Object.keys(playerInitOptions).filter(k => k !== 'events').reduce((o, k) => {
+                o[k] = playerInitOptions[k];
+                return o;
+            }, {}),
+            provider,
+        };
+
         // Generate the unique id of the Player
         const id = this.generateId(playerInitOptions.videoId || playerInitOptions.url);
         // Create the Player
@@ -81,7 +86,7 @@ class VideoPlayer {
         this.playerInstances[id] = player;
         // Register all passed events
         if (playerInitOptions.events && Object.keys(playerInitOptions.events).length) {
-            Object.keys(playerInitOptions.events).forEach((eventName) => {
+            Object.keys(playerInitOptions.events).forEach(eventName => {
                 this.addEventListener(id, eventName, playerInitOptions.events[eventName]);
             });
         }
