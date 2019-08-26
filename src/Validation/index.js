@@ -33,7 +33,7 @@ export function ValidateObj(schema, position = 0, aliases = {}) {
     Expecting: object
     Received: ${typeof obj}`);
             }
-            keys.forEach((k) => {
+            keys.forEach(k => {
                 const alias = aliases[k];
                 let i = k;
                 if (!obj.hasOwnProperty(k)) {

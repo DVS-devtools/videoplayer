@@ -105,8 +105,10 @@ class DailymotionProvider {
     constructor(options, id) {
         this.id = id;
 
-        this.ready = this.createDM(options.domNode,
-            Object.assign({}, { video: options.videoId }, options.providerOptions || {}));
+        this.ready = this.createDM(options.domNode, {
+            video: options.videoId,
+            ...(options.providerOptions || {}),
+        });
     }
 
     /**
@@ -140,7 +142,7 @@ class DailymotionProvider {
      */
     createDM(domNode, options) {
         return new Promise((resolve, reject) => {
-            this.loadSDK().then((DM) => {
+            this.loadSDK().then(DM => {
                 domNode = getDomNode(domNode);
                 const iframe = document.createElement('iframe');
                 iframe.setAttribute('id', this.id);
@@ -177,7 +179,7 @@ class DailymotionProvider {
      */
     fireEvent(evt) {
         if (typeof this.internalListeners[evt] !== 'undefined') {
-            this.internalListeners[evt].forEach((event) => {
+            this.internalListeners[evt].forEach(event => {
                 if (typeof event.callback === 'function') {
                     event.callback();
                 }
