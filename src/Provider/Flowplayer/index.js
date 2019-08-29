@@ -198,20 +198,18 @@ export default class FlowPlayerProvider {
         if (!global.FPSDK) {
             const jqueryPromise = loadScript(this.jqueryUrl);
 
-            const fpPromise = loadScript(this.commercialKey ? this.fpCommercialUrl : this.fpUrl);
+            const fpPromise = loadScript(this.commercialKey ? this.fpCommercialUrl : this.fpUrl)
+                .then(() => {
+                    if (loadAudio) {
+                        return Promise.all([
+                            loadScript(this.fpAudioUrl),
+                            loadStyle(this.fpAudioCSSUrl)
+                        ]);
+                    }
+                    return Promise.resolve();
+                });
 
             const fpCSSPromise = loadStyle(this.fpCSSUrl);
-
-            let audioPromise;
-            let audioCssPromise;
-
-            if (loadAudio) {
-                audioPromise = loadScript(this.fpAudioUrl);
-                audioCssPromise = loadStyle(this.fpAudioCSSUrl);
-            } else {
-                // eslint-disable-next-line no-multi-assign
-                audioPromise = audioCssPromise = Promise.resolve();
-            }
 
             if (typeof window.flowplayer === 'function') {
                 global.FPSDK = Promise.resolve(window.flowplayer);
@@ -220,8 +218,6 @@ export default class FlowPlayerProvider {
                     jqueryPromise,
                     fpPromise,
                     fpCSSPromise,
-                    audioPromise,
-                    audioCssPromise,
                 ])
                     .then(() => window.flowplayer)
                     .catch(err => {
