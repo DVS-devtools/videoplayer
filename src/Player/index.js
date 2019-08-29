@@ -108,7 +108,7 @@ class Player {
      * * **play**: fired when video starts playing
      * * **pause**: fired when video stops playing
      * * **end**: fired at the end of the playback
-     * * **playbackProgress**: fired every N ms (depends ont the provider) while the video is playing
+     * * **playbackProgress**: fired every N ms (depends on the provider) while the video is playing
      * * **playbackProgress25**: fired when the video reach 25% of playback duration
      * * **playbackProgress50**: fired when the video reach 50% of playback duration
      * * **playbackProgress75**: fired when the video reach the 75% of playback duration
