@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>VideoPlayer - Documentation</title>
+    <title>Player - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">VideoPlayer</h1>
+    <h1 class="page-title">Player</h1>
     
 
     
@@ -42,8 +42,17 @@
 <header>
     
         <h2>
-        VideoPlayer
+        Player
         </h2>
+        
+            <div class="class-description"><p>This class will provide you a player instance. An instance is independent
+to all the other player instances, this means that you can have more
+players inside a single page, all managed independently.
+How to manage the instances is your own choice.
+You can use your own players manager, creating your interface and manage it in
+the way you want, or you can use the <a href="VideoPlayer.html"><code>VideoPlayer</code></a> interface,
+that provides you a faster and easier way to manage more players in a single page. Please
+remember that if you are using the VideoPlayer class you need to interact directly with that.</p></div>
         
     
 </header>
@@ -52,103 +61,20 @@
     <div class="container-overview">
     
         
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line4">line 4</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
 <div class="section-method">
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="name" id="addEventListener"><span class="type-signature"></span>addEventListener<span class="signature">(playerId, event, callback)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="Player"><span class="type-signature"></span>new Player<span class="signature">(options, id<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Add an event listener callback called when the specified event is fired</p>
-<p>Please remember to store the function inside a variable,
-in order to call the off method to remove the listener on a precise event</p>
-<p>Supported events:</p>
-<ul>
-<li><strong>play</strong>: fired when video starts playing</li>
-<li><strong>pause</strong>: fired when video stops playing</li>
-<li><strong>end</strong>: fired at the end of the playback</li>
-<li><strong>playbackProgress</strong>: fired every N ms (depends ont he provider) while the video is playing</li>
-<li><strong>playbackProgress25</strong>: fired when the video reach 25% of playback duration</li>
-<li><strong>playbackProgress50</strong>: fired when the video reach 50% of playback duration</li>
-<li><strong>playbackProgress75</strong>: fired when the video reach the 75% of playback duration</li>
-<li><strong>loadProgress</strong>: fired while the video data are downloading</li>
-<li><strong>seek</strong>: fired when the video seeks from the current time to another</li>
-<li><strong>setVolume</strong>: fired when the video changes volume</li>
-<li><strong>buffering</strong>: fired when the video starts buffering (an playback stops)</li>
-<li><strong>firstPlay</strong>: fired when the video starts to play for the first time
-(the stop() method reset the first play, the successive play() fires a firstPlay event )</li>
-</ul>
-<p><em>The method supports also every Provider specific events (ex. VimeoProvider <strong>bufferend</strong>)</em></p>
+    <p>Creates an instance of Player.</p>
 </div>
 
 
@@ -184,7 +110,7 @@ in order to call the off method to remove the listener on a precise event</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line171">line 171</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -216,223 +142,7 @@ in order to call the off method to remove the listener on a precise event</p>
         <th>Type</th>
 
         
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>event</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Event name (see supported events)</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>function</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>Function to call when the event is fired</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Promise.&lt;void></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-<div class="section-examples">
-<h5>Example</h5>
-
-    <pre class="prettyprint"><code>const callback = (evt) => {
-    // Do stuff..
-}
-VideoPlayer.addEventListener('video_sdHg79_1', 'play', callback);</code></pre>
-
-</div>
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="clear"><span class="type-signature"></span>clear<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Destroys a Player instance</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line202">line 202</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
+        <th>Attributes</th>
         
 
         
@@ -446,285 +156,7 @@ VideoPlayer.addEventListener('video_sdHg79_1', 'play', callback);</code></pre>
 
         <tr>
             
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Promise.&lt;void></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-<div class="section-examples">
-<h5>Example</h5>
-
-    <pre class="prettyprint"><code>VideoPlayer.clear('video_sdHg79_1').then(() => {
-    // Player is cleared
-})</code></pre>
-
-</div>
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="clearAll"><span class="type-signature"></span>clearAll<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Destroys all Player instances</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line216">line 216</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Promise.&lt;void></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-<div class="section-examples">
-<h5>Example</h5>
-
-    <pre class="prettyprint"><code>VideoPlayer.clearAll().then(() => {
-    // All players are cleared
-})</code></pre>
-
-</div>
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="createPlayer"><span class="type-signature"></span>createPlayer<span class="signature">(playerInitOptions)</span><span class="type-signature"> &rarr; {<a href="Player.html">Player</a>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Create a new <a href="Player.html"><code>Player</code></a> instance</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line67">line 67</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerInitOptions</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
@@ -737,11 +169,19 @@ VideoPlayer.addEventListener('video_sdHg79_1', 'play', callback);</code></pre>
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last">
-                <p>configuration options (provider, videoId, url, domNode...)</p>
+                <p>configuration options ( provider, videoId, url, domNode... )</p>
                 
                     
 
@@ -885,8 +325,7 @@ one of: 'dailymotion', 'vimeo', 'youtube', 'flowplayer' | 'iframe'</p>
             
 
             <td class="description last">
-                <p>ID of the video,
-passed to the provider to find the video</p>
+                <p>ID of the video, passed to the provider to find the video</p>
                 
             </td>
         </tr>
@@ -1072,8 +511,164 @@ see each provider doc to know what can be passed here:</p>
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>Id of the player,
+it is used by <a href="VideoPlayer.html"><code>VideoPlayer</code></a> to manage multiple Player instances</p>
+                
+            </td>
+        </tr>
+
+    
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-examples">
+<h5>Example</h5>
+
+    <pre class="prettyprint"><code>const options = {
+    domNode: document.getElementById('player'),
+    provider: 'dailymotion',
+    videoId: 'xwr14q',
+    providerOptions: {
+       params: {
+           quality: 720,
+       },
+    },
+};
+const player = new Player(options, 'player_1');</code></pre>
+
+</div>
+
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="clear"><span class="type-signature"></span>clear<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Destroy the Player (it will remove the active instance of the player and the
+player element in the DOM).</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line296">line 296</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
 
 
 
@@ -1099,7 +694,7 @@ see each provider doc to know what can be passed here:</p>
     </dt>
     <dd>
         
-<span class="param-type"><code><a href="Player.html">Player</a></code></span>
+<span class="param-type"><code>Promise.&lt;void></code></span>
 
 
     </dd>
@@ -1114,11 +709,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>const player = VideoPlayer.createPlayer({
-    domNode: '#el',
-    provider: 'vimeo',
-    videoId: 'sdHg79'
-});</code></pre>
+    <pre class="prettyprint"><code>player.clear();</code></pre>
 
 </div>
 
@@ -1129,7 +720,7 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="download"><span class="type-signature"></span>download<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {Promise.&lt;(void|string)>}</span></h4>
+    <h4 class="name" id="download"><span class="type-signature"></span>download<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;(void|string)>}</span></h4>
 
     
 
@@ -1172,7 +763,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line384">line 384</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line307">line 307</a>
     </li></ul></dd>
     
 
@@ -1189,58 +780,6 @@ see each provider doc to know what can be passed here:</p>
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -1281,9 +820,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.download('video_sdHg79_1').then((url)) => {
-    // For providers that not download directly, url is the provider website url to the video
-};</code></pre>
+    <pre class="prettyprint"><code>player.download();</code></pre>
 
 </div>
 
@@ -1294,14 +831,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="forward"><span class="type-signature"></span>forward<span class="signature">(playerId, seconds)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="forward"><span class="type-signature"></span>forward<span class="signature">(seconds)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send <a href="Player.html#forward"><code>forward</code></a> command to the Player</p>
+    <p>Go forward in the video by the specified value (in seconds)</p>
 </div>
 
 
@@ -1337,7 +874,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line355">line 355</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line257">line 257</a>
     </li></ul></dd>
     
 
@@ -1377,32 +914,6 @@ see each provider doc to know what can be passed here:</p>
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
     
 
         <tr>
@@ -1472,9 +983,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.forward('video_sdHg79_1', 10).then(() => {
-    // Player is forwarded
-})</code></pre>
+    <pre class="prettyprint"><code>player.forward(15);</code></pre>
 
 </div>
 
@@ -1485,14 +994,15 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="getPlayer"><span class="type-signature"></span>getPlayer<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {<a href="Player.html">Player</a>}</span></h4>
+    <h4 class="name" id="getListeners"><span class="type-signature"></span>getListeners<span class="signature">()</span><span class="type-signature"> &rarr; {Object.&lt;string, Array.&lt;function()>>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Get a previously created Player instance from its id</p>
+    <p>Get the list of all the active listeners on the player, with the
+added functions</p>
 </div>
 
 
@@ -1528,170 +1038,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line106">line 106</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code><a href="Player.html">Player</a></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-<div class="section-examples">
-<h5>Example</h5>
-
-    <pre class="prettyprint"><code>const player = VideoPlayer.getPlayer('video_sdHg79_1');</code></pre>
-
-</div>
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="getPlayers"><span class="type-signature"></span>getPlayers<span class="signature">()</span><span class="type-signature"> &rarr; {Object.&lt;string, <a href="Player.html">Player</a>>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Get all created Player instances keyed by their id</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line124">line 124</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line324">line 324</a>
     </li></ul></dd>
     
 
@@ -1733,7 +1080,7 @@ see each provider doc to know what can be passed here:</p>
     </dt>
     <dd>
         
-<span class="param-type"><code>Object.&lt;string, <a href="Player.html">Player</a>></code></span>
+<span class="param-type"><code>Object.&lt;string, Array.&lt;function()>></code></span>
 
 
     </dd>
@@ -1748,10 +1095,11 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.getPlayers()
-// {
-//   video_sdHg79_1: Player
-// }</code></pre>
+    <pre class="prettyprint"><code>player.getListeners();
+/* {
+*    play: [Function, Function, ...],
+*    pause: [Function, ...],
+*  }</code></pre>
 
 </div>
 
@@ -1762,14 +1110,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="getPlayersAsArray"><span class="type-signature"></span>getPlayersAsArray<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;<a href="Player.html">Player</a>>}</span></h4>
+    <h4 class="name" id="mute"><span class="type-signature"></span>mute<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Get an array of all created Player</p>
+    <p>Mute the video</p>
 </div>
 
 
@@ -1805,7 +1153,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line135">line 135</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line191">line 191</a>
     </li></ul></dd>
     
 
@@ -1822,170 +1170,6 @@ see each provider doc to know what can be passed here:</p>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Array.&lt;<a href="Player.html">Player</a>></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-<div class="section-examples">
-<h5>Example</h5>
-
-    <pre class="prettyprint"><code>VideoPlayer.getPlayersAsArray()
-// [Player]</code></pre>
-
-</div>
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="mute"><span class="type-signature"></span>mute<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Send <a href="Player.html#mute"><code>mute</code></a> command to the Player</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line272">line 272</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -2026,9 +1210,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.mute('video_sdHg79_1').then(() => {
-    // Player is muted
-})</code></pre>
+    <pre class="prettyprint"><code>player.mute();</code></pre>
 
 </div>
 
@@ -2039,14 +1221,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="pause"><span class="type-signature"></span>pause<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="off"><span class="type-signature"></span>off<span class="signature">(event, callback)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send <a href="Player.html#pause"><code>pause</code></a> command to the Player</p>
+    <p>Remove a listener from an event</p>
 </div>
 
 
@@ -2082,7 +1264,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line246">line 246</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line149">line 149</a>
     </li></ul></dd>
     
 
@@ -2122,362 +1304,6 @@ see each provider doc to know what can be passed here:</p>
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Promise.&lt;void></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-<div class="section-examples">
-<h5>Example</h5>
-
-    <pre class="prettyprint"><code>VideoPlayer.pause('video_sdHg79_1').then(() => {
-    // Player is paused
-})</code></pre>
-
-</div>
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="play"><span class="type-signature"></span>play<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Send <a href="Player.html#play"><code>play</code></a> command to the Player</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line233">line 233</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Promise.&lt;void></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-<div class="section-examples">
-<h5>Example</h5>
-
-    <pre class="prettyprint"><code>VideoPlayer.play('video_sdHg79_1').then(() => {
-    // Player is played
-})</code></pre>
-
-</div>
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="removeEventListener"><span class="type-signature"></span>removeEventListener<span class="signature">(playerId, event, callback)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Remove a previously registered callback to an event</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line187">line 187</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
     
 
         <tr>
@@ -2499,8 +1325,7 @@ see each provider doc to know what can be passed here:</p>
             
 
             <td class="description last">
-                <p>the Event name
-(see <a href="VideoPlayer.html#addEventListener"><code>addEventListener</code></a> supported events)</p>
+                <p>name of the event (see <a href="Player.html#on"><code>on</code></a> supported events)</p>
                 
             </td>
         </tr>
@@ -2526,7 +1351,7 @@ see each provider doc to know what can be passed here:</p>
             
 
             <td class="description last">
-                <p>Function registered</p>
+                <p>method to remove</p>
                 
             </td>
         </tr>
@@ -2574,7 +1399,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.removeEventListener('video_sdHg79_1', 'play', callback);</code></pre>
+    <pre class="prettyprint"><code>player.off('play', callback);</code></pre>
 
 </div>
 
@@ -2585,14 +1410,34 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="rewind"><span class="type-signature"></span>rewind<span class="signature">(playerId, seconds)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="on"><span class="type-signature"></span>on<span class="signature">(event, callback)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send <a href="Player.html#rewind"><code>rewind</code></a> command to the Player</p>
+    <p>Add a listener callback to an event.
+Note that the same event can manage more listeners.</p>
+<p>Please remember to store the function inside a variable, in order to call the off method
+to remove the listener on a precise event</p>
+<p>Supported events:</p>
+<ul>
+<li><strong>play</strong>: fired when video starts playing</li>
+<li><strong>pause</strong>: fired when video stops playing</li>
+<li><strong>end</strong>: fired at the end of the playback</li>
+<li><strong>playbackProgress</strong>: fired every N ms (depends on the provider) while the video is playing</li>
+<li><strong>playbackProgress25</strong>: fired when the video reach 25% of playback duration</li>
+<li><strong>playbackProgress50</strong>: fired when the video reach 50% of playback duration</li>
+<li><strong>playbackProgress75</strong>: fired when the video reach the 75% of playback duration</li>
+<li><strong>loadProgress</strong>: fired while the video data are downloading</li>
+<li><strong>seek</strong>: fired when the video seeks from the current time to another</li>
+<li><strong>setVolume</strong>: fired when the video changes volume</li>
+<li><strong>buffering</strong>: fired when the video starts buffering (an playback stops)</li>
+<li><strong>firstPlay</strong>: fired when the video starts to play for the first time
+(the stop() method reset the first play, the successive play() fires a firstPlay event )</li>
+</ul>
+<p><em>The method supports also every Provider specific events (ex. VimeoProvider <strong>bufferend</strong>)</em></p>
 </div>
 
 
@@ -2628,7 +1473,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line370">line 370</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line134">line 134</a>
     </li></ul></dd>
     
 
@@ -2672,7 +1517,7 @@ see each provider doc to know what can be passed here:</p>
 
         <tr>
             
-                <td class="name"><code>playerId</code></td>
+                <td class="name"><code>event</code></td>
             
 
             <td class="type">
@@ -2689,11 +1534,399 @@ see each provider doc to know what can be passed here:</p>
             
 
             <td class="description last">
-                <p>the Player Id</p>
+                <p>the Event name (see supported events)</p>
                 
             </td>
         </tr>
 
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>function</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>Function to call when the event is fired</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;void></code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+<div class="section-examples">
+<h5>Example</h5>
+
+    <pre class="prettyprint"><code>const callback = (evt) => {
+    // Do stuff..
+};
+player.on('play', callback);</code></pre>
+
+</div>
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="pause"><span class="type-signature"></span>pause<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Pause the video</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line171">line 171</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;void></code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+<div class="section-examples">
+<h5>Example</h5>
+
+    <pre class="prettyprint"><code>player.pause();</code></pre>
+
+</div>
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="play"><span class="type-signature"></span>play<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Play the video.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line161">line 161</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;void></code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+<div class="section-examples">
+<h5>Example</h5>
+
+    <pre class="prettyprint"><code>player.play();</code></pre>
+
+</div>
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="rewind"><span class="type-signature"></span>rewind<span class="signature">(seconds)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Go back in the video by the specified value (in seconds)</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line270">line 270</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
@@ -2763,9 +1996,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.rewind('video_sdHg79_1', 10).then(() => {
-    // Player is rewinded
-})</code></pre>
+    <pre class="prettyprint"><code>player.rewind(15);</code></pre>
 
 </div>
 
@@ -2776,14 +2007,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="seek"><span class="type-signature"></span>seek<span class="signature">(playerId, seconds)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="seek"><span class="type-signature"></span>seek<span class="signature">(seconds)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send <a href="Player.html#seek"><code>seek</code></a> command to the Player</p>
+    <p>Set the current time of the video at the specified value (in seconds)</p>
 </div>
 
 
@@ -2819,7 +2050,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line340">line 340</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line283">line 283</a>
     </li></ul></dd>
     
 
@@ -2859,32 +2090,6 @@ see each provider doc to know what can be passed here:</p>
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
     
 
         <tr>
@@ -2954,9 +2159,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.seek('video_sdHg79_1', 42).then(() => {
-    // Player is seeked
-})</code></pre>
+    <pre class="prettyprint"><code>player.seek(45);</code></pre>
 
 </div>
 
@@ -2967,14 +2170,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="setVolume"><span class="type-signature"></span>setVolume<span class="signature">(playerId, volume)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="setVolume"><span class="type-signature"></span>setVolume<span class="signature">(volumeLevel)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send <a href="Player.html#setVolume"><code>setVolume</code></a> command to the Player</p>
+    <p>Set the volume level to the given value.</p>
 </div>
 
 
@@ -3010,7 +2213,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line325">line 325</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line244">line 244</a>
     </li></ul></dd>
     
 
@@ -3054,13 +2257,13 @@ see each provider doc to know what can be passed here:</p>
 
         <tr>
             
-                <td class="name"><code>playerId</code></td>
+                <td class="name"><code>volumeLevel</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>String</code></span>
+<span class="param-type"><code>Number</code></span>
 
 
             
@@ -3071,28 +2274,7 @@ see each provider doc to know what can be passed here:</p>
             
 
             <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>volume</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>volume level to set, value between 0 and 1</p>
+                <p>Value between 0 and 1.</p>
                 
             </td>
         </tr>
@@ -3140,9 +2322,8 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.setVolume('video_sdHg79_1', 0.5).then(() => {
-    // Volume is set
-})</code></pre>
+    <pre class="prettyprint"><code>player.setVolume(1); // Max volume
+player.setVolume(0); // Muted</code></pre>
 
 </div>
 
@@ -3153,14 +2334,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="stop"><span class="type-signature"></span>stop<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="stop"><span class="type-signature"></span>stop<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send <a href="Player.html#stop"><code>stop</code></a> command to the Player</p>
+    <p>Stop the video (restarting from 0s)</p>
 </div>
 
 
@@ -3196,7 +2377,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line259">line 259</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line181">line 181</a>
     </li></ul></dd>
     
 
@@ -3213,58 +2394,6 @@ see each provider doc to know what can be passed here:</p>
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -3305,9 +2434,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.stop('video_sdHg79_1').then(() => {
-    // Player is stopped
-})</code></pre>
+    <pre class="prettyprint"><code>player.stop();</code></pre>
 
 </div>
 
@@ -3318,14 +2445,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="toggleFullScreen"><span class="type-signature"></span>toggleFullScreen<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="toggleFullScreen"><span class="type-signature"></span>toggleFullScreen<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send <a href="Player.html#toggleFullScreen"><code>toggleFullScreen</code></a> command to the Player</p>
+    <p>Enter/exit in fullscreen mode</p>
 </div>
 
 
@@ -3361,7 +2488,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line311">line 311</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line221">line 221</a>
     </li></ul></dd>
     
 
@@ -3378,58 +2505,6 @@ see each provider doc to know what can be passed here:</p>
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -3470,9 +2545,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.toggleFullScreen('video_sdHg79_1').then(() => {
-    // Full screen is toggled
-})</code></pre>
+    <pre class="prettyprint"><code>player.toggleFullScreen();</code></pre>
 
 </div>
 
@@ -3483,14 +2556,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="toggleMute"><span class="type-signature"></span>toggleMute<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="toggleMute"><span class="type-signature"></span>toggleMute<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send <a href="Player.html#toggleMute"><code>toggleMute</code></a> command to the Player</p>
+    <p>Switch between muted and unmuted</p>
 </div>
 
 
@@ -3526,7 +2599,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line298">line 298</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line211">line 211</a>
     </li></ul></dd>
     
 
@@ -3543,58 +2616,6 @@ see each provider doc to know what can be passed here:</p>
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -3635,9 +2656,7 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.toggleMute('video_sdHg79_1').then(() => {
-    // Mute is toggled
-})</code></pre>
+    <pre class="prettyprint"><code>player.toggleMute();</code></pre>
 
 </div>
 
@@ -3648,14 +2667,14 @@ see each provider doc to know what can be passed here:</p>
 
     
 
-    <h4 class="name" id="unmute"><span class="type-signature"></span>unmute<span class="signature">(playerId)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="togglePlay"><span class="type-signature"></span>togglePlay<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send <a href="Player.html#unmute"><code>unmute</code></a> command to the Player</p>
+    <p>Play/Pause the video</p>
 </div>
 
 
@@ -3691,7 +2710,7 @@ see each provider doc to know what can be passed here:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VideoPlayer_index.js.html">VideoPlayer/index.js</a>, <a href="VideoPlayer_index.js.html#line285">line 285</a>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line231">line 231</a>
     </li></ul></dd>
     
 
@@ -3708,58 +2727,6 @@ see each provider doc to know what can be passed here:</p>
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>playerId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>String</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>the Player Id</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -3800,9 +2767,118 @@ see each provider doc to know what can be passed here:</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>VideoPlayer.unmute('video_sdHg79_1').then(() => {
-    // Player is unmuted
-})</code></pre>
+    <pre class="prettyprint"><code>player.togglePlay();</code></pre>
+
+</div>
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="unmute"><span class="type-signature"></span>unmute<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Unmute the video</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Player_index.js.html">Player/index.js</a>, <a href="Player_index.js.html#line201">line 201</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;void></code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+<div class="section-examples">
+<h5>Example</h5>
+
+    <pre class="prettyprint"><code>player.unmute();</code></pre>
 
 </div>
 
@@ -3825,7 +2901,7 @@ see each provider doc to know what can be passed here:</p>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Aug 29 2019 14:53:40 GMT+0200 (Central European Summer Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Aug 29 2019 14:53:39 GMT+0200 (Central European Summer Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
