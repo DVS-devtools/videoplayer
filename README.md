@@ -74,7 +74,7 @@ VideoPlayer.removeEventListener(id, 'play', callback);
 ##### Create a new Player passing the DOM id instead of the DOM Node
 ```javascript
 VideoPlayer.createPlayer({
-    domNode: '#video', // Accepted also the DOM node (document.getElementByID('video'))
+    domNode: '#video', // Accepts also the DOM node (document.getElementByID('video'))
     provider: 'dailymotion',
     videoId: 'uxWvd',
     //...
@@ -110,7 +110,7 @@ const player = new Player({
     domNode: document.getElementById('video'),
     provider: 'dailymotion',
     videoId: 'uxWvd',
-    // ... Same options as VideoPlayer.createPlayer except for "events" (not supported here)
+    // ... Same options as VideoPlayer.createPlayer except for "events" (not supported here), you need to register events manually calling player.on(..)
 });
 // You can still have multiple Player instances, but they are not aware of each other
 const player2 = new Player({
