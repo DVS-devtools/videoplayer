@@ -46,6 +46,8 @@ class Player {
      * @param {String} [options.videoId] ID of the video, passed to the provider to find the video
      * @param {String} [options.url] url of the video resource, passed to the provider
      * @param {String} [options.mime = "video/mp4"] video mime type, default "video/mp4"
+     * @param {String} [options.audio = false] set true if playing an audio only file
+     * (Flowplayer provider only)
      * @param {Object<any>}[options.providerOptions] provider init options,
      * see each provider doc to know what can be passed here:
      * * **Vimeo**: https://github.com/vimeo/player.js#embed-options

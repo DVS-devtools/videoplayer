@@ -11,8 +11,8 @@ window.audioP = VideoPlayer.createPlayer({
     videoId: 'DD990047297',
     url: 'https://kidz.docomodigital.com/ota/stream/3afba7f0-4936-4ebd-8ceb-ae6a87a9709a',
     mime: 'audio/mpeg',
+    audio: true,
     providerOptions: {
-        audioOnly: true,
         poster: 'https://s.motime.com/l/images/abs/1024x760/cropin/mnt/alfresco_content_prod/contentstore/2015/5/11/15/39/d525d05c-ec72-488f-8f4b-f01bca3a2105.jpg'
     },
     events: {

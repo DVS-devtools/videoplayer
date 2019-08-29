@@ -184,6 +184,7 @@ export default class FlowPlayerProvider {
                     src: this.videoUrl
                 }]
             },
+            audioOnly: options.audio || false,
             ...(options.providerOptions || {}),
         });
     }
