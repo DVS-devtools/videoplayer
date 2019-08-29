@@ -112,13 +112,15 @@ describe('Flowplayer Provider Initialization', () => {
             providerOptions: { audioOnly: true },
         };
 
-        new FlowplayerProvider(audioOptions, id);
+        const player = new FlowplayerProvider(audioOptions, id);
 
-        expect(document.head.getElementsByTagName('script').length).toBe(3);
-        expect(document.head.getElementsByTagName('script')[2].src).toEqual(fpAudioUrl);
+        player.ready.then(() => {
+            expect(document.head.getElementsByTagName('script').length).toBe(3);
+            expect(document.head.getElementsByTagName('script')[2].src).toEqual(fpAudioUrl);
 
-        expect(document.head.getElementsByTagName('link').length).toBe(2);
-        expect(document.head.getElementsByTagName('link')[1].href).toEqual(fpAudioCSSUrl);
+            expect(document.head.getElementsByTagName('link').length).toBe(2);
+            expect(document.head.getElementsByTagName('link')[1].href).toEqual(fpAudioCSSUrl);
+        });
     });
 });
 
