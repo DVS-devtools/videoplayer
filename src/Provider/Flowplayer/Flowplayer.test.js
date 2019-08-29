@@ -7,7 +7,7 @@ const flushPromises = () => {
 
 class MockedPlayer {
     _events = {};
-    muted = false;  
+    muted = false;
     isFullscreen = false;
     video = {
         time: 4,
@@ -49,7 +49,7 @@ const videourl = 'myvideourl';
 const options = {
     domNode: '#fp-video',
     videoId: id,
-    url: videourl
+    url: videourl,
 };
 
 const fpCSSUrl = 'https://releases.flowplayer.org/7.2.7/skin/skin.css';
@@ -59,6 +59,8 @@ const jqueryUrl = 'https://code.jquery.com/jquery-1.12.4.min.js';
 const fpUrl = 'https://releases.flowplayer.org/7.2.7/flowplayer.min.js';
 const fpCommercialUrl = 'https://releases.flowplayer.org/7.2.7/commercial/flowplayer.min.js';
 
+const fpAudioUrl = 'https://releases.flowplayer.org/audio/flowplayer.audio.min.js';
+const fpAudioCSSUrl = 'https://releases.flowplayer.org/audio/flowplayer.audio.css';
 
 describe('Flowplayer Provider Initialization', () => {
     beforeEach(() => {
@@ -93,13 +95,30 @@ describe('Flowplayer Provider Initialization', () => {
             domNode: '#fp-video',
             videoId: id,
             url: videourl,
-            providerOptions: { key: 'abcd' }
+            providerOptions: { key: 'abcd' },
         };
 
         new FlowplayerProvider(commercialOptions, id);
         expect(document.head.getElementsByTagName('script').length).toBe(2);
         expect(document.head.getElementsByTagName('script')[0].src).toEqual(jqueryUrl);
         expect(document.head.getElementsByTagName('script')[1].src).toEqual(fpCommercialUrl);
+    });
+
+    it('should load audio urls id audioOnly is true', () => {
+        expect(document.head.getElementsByTagName('script').length).toBe(0);
+
+        const audioOptions = {
+            ...options,
+            providerOptions: { audioOnly: true },
+        };
+
+        new FlowplayerProvider(audioOptions, id);
+
+        expect(document.head.getElementsByTagName('script').length).toBe(3);
+        expect(document.head.getElementsByTagName('script')[2].src).toEqual(fpAudioUrl);
+
+        expect(document.head.getElementsByTagName('link').length).toBe(2);
+        expect(document.head.getElementsByTagName('link')[1].href).toEqual(fpAudioCSSUrl);
     });
 });
 
@@ -241,7 +260,7 @@ describe('Flowplayer getters and cleanup', () => {
 
     it('should remove the DOM element on clear()', async () => {
         expect(Array.from(document.querySelector(options.domNode).querySelectorAll('div')).length).toBe(1);
-        
+
         spies = {
             stop: jest.spyOn(Instance.fpPlayer, 'stop'),
             unload: jest.spyOn(Instance.fpPlayer, 'unload'),
@@ -260,28 +279,28 @@ describe('Flowplayer getters and cleanup', () => {
             expect(Array.from(document.querySelector(options.domNode).querySelectorAll('div')).length).toBe(0);
             done();
         }, 1600);
-        
+
     });
 
     it('should remove the DOM element on clear()', async () => {
         const el = document.querySelector(options.domNode).querySelectorAll('div');
-    
+
         expect(Array.from(el).length).toBe(1);
-    
+
         document.querySelector(options.domNode).remove();
-    
+
         expect(document.querySelector(options.domNode)).toBe(null);
-    
+
         spies = {
             stop: jest.spyOn(Instance.fpPlayer, 'stop'),
             unload: jest.spyOn(Instance.fpPlayer, 'unload'),
             shutdown: jest.spyOn(Instance.fpPlayer, 'shutdown')
         }
-        
+
         await Instance.clear();
         Instance.fpPlayer.fireEvent('resume');
 
-        
+
         //wait promise to finish
         setTimeout(() => {
             expect(spies.stop).toHaveBeenCalled();
@@ -290,9 +309,9 @@ describe('Flowplayer getters and cleanup', () => {
             expect(Array.from(document.querySelector(options.domNode).querySelectorAll('div')).length).toBe(0);
             done();
         }, 200);
-        
+
     });
-    
+
 });
 
 describe('Flowplayer providers event on - off - one', () => {

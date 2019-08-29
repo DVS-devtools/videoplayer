@@ -107,6 +107,16 @@ export default class FlowPlayerProvider {
     fpCommercialUrl = 'https://releases.flowplayer.org/7.2.7/commercial/flowplayer.min.js';
 
     /**
+     * Flowplayer Audio plugin CSS
+     */
+    fpAudioCSSUrl = 'https://releases.flowplayer.org/audio/flowplayer.audio.css';
+
+    /**
+     * Flowplayer Audio plugin
+     */
+    fpAudioUrl = 'https://releases.flowplayer.org/audio/flowplayer.audio.min.js';
+
+    /**
      * The Flowplayer Player instance
      */
     fpPlayer = null;
@@ -170,7 +180,7 @@ export default class FlowPlayerProvider {
             clip: {
                 videoId: options.videoId,
                 sources: [{
-                    type: 'video/mp4',
+                    type: options.mime || 'video/mp4',
                     src: this.videoUrl
                 }]
             },
@@ -183,19 +193,35 @@ export default class FlowPlayerProvider {
      * If multiple instances of this provider exists in the same page,
      * only one SDK is loaded and shared between all instances
      */
-    loadSDK() {
+    loadSDK(loadAudio = false) {
         if (!global.FPSDK) {
             const jqueryPromise = loadScript(this.jqueryUrl);
 
-            const fpPromise = this.commercialKey ? loadScript(this.fpCommercialUrl)
-                : loadScript(this.fpUrl);
+            const fpPromise = loadScript(this.commercialKey ? this.fpCommercialUrl : this.fpUrl);
 
             const fpCSSPromise = loadStyle(this.fpCSSUrl);
+
+            let audioPromise;
+            let audioCssPromise;
+
+            if (loadAudio) {
+                audioPromise = loadScript(this.fpAudioUrl);
+                audioCssPromise = loadStyle(this.fpAudioCSSUrl);
+            } else {
+                // eslint-disable-next-line no-multi-assign
+                audioPromise = audioCssPromise = Promise.resolve();
+            }
 
             if (typeof window.flowplayer === 'function') {
                 global.FPSDK = Promise.resolve(window.flowplayer);
             } else {
-                global.FPSDK = Promise.all([jqueryPromise, fpPromise, fpCSSPromise])
+                global.FPSDK = Promise.all([
+                    jqueryPromise,
+                    fpPromise,
+                    fpCSSPromise,
+                    audioPromise,
+                    audioCssPromise,
+                ])
                     .then(() => window.flowplayer)
                     .catch(err => {
                         throw err;
@@ -214,7 +240,7 @@ export default class FlowPlayerProvider {
      */
     createFP(domNode, options) {
         return new Promise((resolve, reject) => {
-            this.loadSDK().then(FP => {
+            this.loadSDK(options.audioOnly).then(FP => {
                 if (typeof FP === 'function') {
                     domNode = getDomNode(domNode);
                     const divElement = document.createElement('div');
