@@ -1,6 +1,6 @@
 {
   "name": "@docomodigital/videoplayer",
-  "version": "2.1.0-beta.1",
+  "version": "2.1.0",
   "description": "Video player integrated with Flowplayer/YouTube/Vimeo/DailyMotion/iFrame",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
