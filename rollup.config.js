@@ -30,7 +30,8 @@ const plugins = [
         functions: ['debug'],
     }),
     shim({
-        debug: 'export default () => () => undefined',
+        // can't use es6 here
+        debug: 'export default function debug() { return function() { return undefined; }; }',
     }),
     nodeResolve({
         mainFields: [
