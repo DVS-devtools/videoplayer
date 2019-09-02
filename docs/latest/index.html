@@ -48,22 +48,30 @@
 
 
     <section class="readme">
-        <article><h2>VideoPlayer</h2><p><a href="https://travis-ci.com/docomodigital/videoplayer"><img src="https://travis-ci.com/docomodigital/videoplayer.svg?branch=master" alt="Build Status"></a>
+        <article><h2>VideoPlayer</h2>
+<p><a href="https://travis-ci.com/docomodigital/videoplayer"><img src="https://travis-ci.com/docomodigital/videoplayer.svg?branch=master" alt="Build Status"></a>
 <a href="https://coveralls.io/github/docomodigital/videoplayer?branch=master"><img src="https://coveralls.io/repos/github/docomodigital/videoplayer/badge.svg?branch=master" alt="Coverage Status"></a>
 <a href="https://badge.fury.io/js/%40docomodigital%2Fvideoplayer"><img src="https://badge.fury.io/js/%40docomodigital%2Fvideoplayer.svg" alt="npm version"></a>
 <a href="https://greenkeeper.io/"><img src="https://badges.greenkeeper.io/docomodigital/videoplayer.svg" alt="Greenkeeper badge"></a></p>
 <p>VideoPlayer is a Manager for all the videos displayed in a web page.</p>
 <p>It can manage multiple video instances with multiple video Provider:</p>
-<h4>Supported providers:</h4><ul>
+<h4>Supported providers:</h4>
+<ul>
 <li>Vimeo</li>
 <li>Dailymotion</li>
 <li>Youtube</li>
 <li>Flowplayer (internal player, just pass a video source url)</li>
 <li>Iframe</li>
 </ul>
-<h2>Install</h2><p>With NPM:</p>
-<pre class="prettyprint source lang-javascript"><code>npm install --save @docomodigital/videoplayer</code></pre><p>or with Yarn:</p>
-<pre class="prettyprint source lang-javascript"><code>yarn add @docomodigital/videoplayer</code></pre><h2>Usage</h2><pre class="prettyprint source lang-javascript"><code>import VideoPlayer from '@docomodigital/videoplayer';
+<h2>Install</h2>
+<p>With NPM:</p>
+<pre class="prettyprint source lang-javascript"><code>npm install --save @docomodigital/videoplayer
+</code></pre>
+<p>or with Yarn:</p>
+<pre class="prettyprint source lang-javascript"><code>yarn add @docomodigital/videoplayer
+</code></pre>
+<h2>Usage</h2>
+<pre class="prettyprint source lang-javascript"><code>import VideoPlayer from '@docomodigital/videoplayer';
 
 // VideoPlayer is already an instance, no need to create a new one
 
@@ -87,16 +95,28 @@ const id = player.id; // video_uxWvd_1
 VideoPlayer.stop(id); // player.stop()
 // Clear (remove) the video with the given id
 VideoPlayer.clear(id) // player.clear()
-</code></pre><h5>Add an event listener</h5><pre class="prettyprint source lang-javascript"><code>const callback = (evt) => {
+
+</code></pre>
+<h5>Add an event listener</h5>
+<pre class="prettyprint source lang-javascript"><code>const callback = (evt) => {
     // Do stuff...
 }
-VideoPlayer.addEventListener(id, 'play', callback);</code></pre><h5>Remove an event listener</h5><pre class="prettyprint source lang-javascript"><code>VideoPlayer.removeEventListener(id, 'play', callback);</code></pre><p><em>See the <a href="#documentation">Documentation</a> for a list of all available commands</em></p>
-<h5>Create a new Player passing the DOM id instead of the DOM Node</h5><pre class="prettyprint source lang-javascript"><code>VideoPlayer.createPlayer({
-    domNode: '#video', // Accepted also the DOM node (document.getElementByID('video'))
+VideoPlayer.addEventListener(id, 'play', callback);
+</code></pre>
+<h5>Remove an event listener</h5>
+<pre class="prettyprint source lang-javascript"><code>VideoPlayer.removeEventListener(id, 'play', callback);
+</code></pre>
+<p><em>See the <a href="#documentation">Documentation</a> for a list of all available commands</em></p>
+<h5>Create a new Player passing the DOM id instead of the DOM Node</h5>
+<pre class="prettyprint source lang-javascript"><code>VideoPlayer.createPlayer({
+    domNode: '#video', // Accepts also the DOM node (document.getElementByID('video'))
     provider: 'dailymotion',
     videoId: 'uxWvd',
     //...
-});</code></pre><h4>Register event listeners when creating the Player</h4><pre class="prettyprint source lang-javascript"><code>const playCallback = (evt) => {
+});
+</code></pre>
+<h4>Register event listeners when creating the Player</h4>
+<pre class="prettyprint source lang-javascript"><code>const playCallback = (evt) => {
     //
 }
 
@@ -112,20 +132,25 @@ VideoPlayer.createPlayer({
         play: playCallback,
         pause: pauseCallback,
     },
-});</code></pre><p><strong>The Player instance is exposed and directly accessible, you can bypass at all the VideoPlayer interface</strong></p>
+});
+</code></pre>
+<p><strong>The Player instance is exposed and directly accessible, you can bypass at all the VideoPlayer interface</strong></p>
 <pre class="prettyprint source lang-javascript"><code>import { Player } from './src'
 const player = new Player({
     domNode: document.getElementById('video'),
     provider: 'dailymotion',
     videoId: 'uxWvd',
-    // ... Same options as VideoPlayer.createPlayer except for &quot;events&quot; (not supported here)
+    // ... Same options as VideoPlayer.createPlayer except for &quot;events&quot; (not supported here), you need to register events manually calling player.on(..)
 });
 // You can still have multiple Player instances, but they are not aware of each other
 const player2 = new Player({
     domNode: document.getElementById('video2'),
     provider: 'vimeo',
     videoId: 'da45hds',
-});</code></pre><h2>Documentation</h2><p>To read the documentation, go to:</p>
+});
+</code></pre>
+<h2>Documentation</h2>
+<p>To read the documentation, go to:</p>
 <p><a href="https://docomodigital.github.io/videoplayer/latest">https://docomodigital.github.io/videoplayer/latest</a></p></article>
     </section>
 
@@ -139,7 +164,7 @@ const player2 = new Player({
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jun 10 2019 12:16:39 GMT+0200 (Central European Summer Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Aug 29 2019 15:58:40 GMT+0200 (Central European Summer Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

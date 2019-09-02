@@ -45,6 +45,9 @@ class Player {
      * one of: 'dailymotion', 'vimeo', 'youtube', 'flowplayer' | 'iframe'
      * @param {String} [options.videoId] ID of the video, passed to the provider to find the video
      * @param {String} [options.url] url of the video resource, passed to the provider
+     * @param {String} [options.mime = "video/mp4"] video mime type, default "video/mp4"
+     * @param {String} [options.audio = false] set true if playing an audio only file
+     * (Flowplayer provider only)
      * @param {Object<any>}[options.providerOptions] provider init options,
      * see each provider doc to know what can be passed here:
      * * **Vimeo**: https://github.com/vimeo/player.js#embed-options
@@ -107,7 +110,7 @@ class Player {
      * * **play**: fired when video starts playing
      * * **pause**: fired when video stops playing
      * * **end**: fired at the end of the playback
-     * * **playbackProgress**: fired every N ms (depends ont he provider) while the video is playing
+     * * **playbackProgress**: fired every N ms (depends on the provider) while the video is playing
      * * **playbackProgress25**: fired when the video reach 25% of playback duration
      * * **playbackProgress50**: fired when the video reach 50% of playback duration
      * * **playbackProgress75**: fired when the video reach the 75% of playback duration
