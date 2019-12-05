@@ -6,3 +6,4 @@ npm-debug.log
 example/dist/
 coverage/
 dist/
+umd/
