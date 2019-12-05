@@ -29,7 +29,7 @@ export declare class Player {
 
 export interface PlayerOptions {
   provider: 'youtube' | 'vimeo' | 'dailymotion' | 'flowplayer' | 'iframe';
-  videoID?: string | number;
+  videoId?: string | number;
   url?: string;
   providerOptions: any;
 }

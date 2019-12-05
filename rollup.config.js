@@ -1,91 +1,79 @@
 import path from 'path';
-import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
+import babel from 'rollup-plugin-babel';
+import replace from 'rollup-plugin-replace';
+import nodeGlobals from 'rollup-plugin-node-globals';
 import { terser } from 'rollup-plugin-terser';
-import ignore from 'rollup-plugin-ignore';
 import strip from 'rollup-plugin-strip';
 import shim from 'rollup-plugin-shim';
 import copy from 'rollup-plugin-copy';
-import { builtinModules } from 'module';
 
-const srcDir = path.resolve(__dirname, 'src');
-const distDir = path.resolve(__dirname, 'dist');
+function onwarn(warning) {
+    throw Error(typeof warning === 'string' ? warning : warning.message);
+}
 
-const paths = {
-    entry: path.join(srcDir, 'index.js'),
-    browserEntry: path.join(srcDir, 'index.browser.js'),
-    distDir,
-};
+const input = 'src/index.browser.js';
 
-const plugins = [
+const extensions = ['.js', '.jsx'];
+
+const commonPlugins = [
+
     babel({
-        exclude: 'node_modules/**',
+        extensions,
+        exclude: /node_modules/,
         runtimeHelpers: true,
+        configFile: path.resolve(process.cwd(), 'babel.config.js'),
     }),
-    ignore([
-        ...builtinModules,
-    ]),
     strip({
         functions: ['debug'],
     }),
     shim({
-        // can't use es6 here
         debug: 'export default function debug() { return function() { return undefined; }; }',
     }),
-    nodeResolve({
-        mainFields: [
-            'jsnext',
-            'module',
-            'main',
-            'browser'
-        ],
-    }),
+    nodeResolve({ extensions }),
     commonjs({
+        ignoreGlobal: true,
+        include: /node_modules/,
         exclude: ['node_modules/debug/**'],
     }),
+    nodeGlobals(),
 ];
 
 export default [
     {
-        input: paths.browserEntry,
-        output: [
-            {
-                file: path.join(paths.distDir, 'browser.js'),
-                format: 'iife',
-                name: 'VideoPlayer',
-            },
-        ],
+        input,
+        onwarn,
+        output: {
+            format: 'umd',
+            file: 'umd/index.js',
+            name: 'VideoPlayer',
+        },
         plugins: [
-            ...plugins,
-            terser(),
+            ...commonPlugins,
+            replace({ 'process.env.NODE_ENV': JSON.stringify('development') }),
         ],
     },
     {
-        input: paths.entry,
-        output: [
-            {
-                file: path.join(paths.distDir, 'index.js'),
-                format: 'cjs',
-                name: 'VideoPlayer',
-                sourcemap: true,
-            },
-            {
-                file: path.join(paths.distDir, 'index.es.js'),
-                format: 'esm',
-                sourcemap: true,
-            },
-        ],
+        input,
+        onwarn,
+        output: {
+            format: 'umd',
+            file: 'umd/index.min.js',
+            name: 'VideoPlayer',
+        },
         plugins: [
-            ...plugins,
+            ...commonPlugins,
+            replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
+            terser(),
             copy({
                 targets: [
                     {
-                        src: path.join(srcDir, 'index.d.ts'),
-                        dest: path.join(distDir),
+                        src: path.resolve(__dirname, 'src/index.d.ts'),
+                        dest: path.resolve(__dirname, 'dist'),
                     },
                 ],
             })
-        ]
-    }
+        ],
+    },
 ];
