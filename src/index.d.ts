@@ -32,6 +32,7 @@ export interface PlayerOptions {
   videoId?: string | number;
   url?: string;
   providerOptions: any;
+  domNode: string | Element;
 }
 
 export namespace VideoPlayer {

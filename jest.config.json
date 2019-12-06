@@ -8,5 +8,6 @@
         "!src/lib/index.js",
         "!src/index.browser.js"
     ],
+    "testPathIgnorePatterns": ["/node_modules/", "/dist/", "/umd/"],
     "coverageReporters": ["lcov", "text", "text-summary"]
 }
