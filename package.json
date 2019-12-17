@@ -61,7 +61,7 @@
     "jsdoc": "^3.5.5",
     "jsdom": "^12.0.0",
     "minami": "^1.2.3",
-    "mini-css-extract-plugin": "^0.4.4",
+    "mini-css-extract-plugin": "^0.8.1",
     "rimraf": "^2.6.2",
     "rollup": "^1.25.1",
     "rollup-plugin-babel": "^4.3.3",
