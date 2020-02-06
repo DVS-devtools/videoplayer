@@ -7,3 +7,4 @@ example/dist/
 coverage/
 dist/
 umd/
+.env

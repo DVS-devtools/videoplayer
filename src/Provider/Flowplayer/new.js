@@ -88,35 +88,17 @@ export default class FlowPlayerProvider {
     /**
      * CSS url of flowplayer, can also be custom, must be implemented
      */
-    fpCSSUrl = 'https://releases.flowplayer.org/7.2.7/skin/skin.css';
-    // fpCSSUrl = 'https://cdn.flowplayer.com/releases/native/stable/style/flowplayer.css';
-
-    /**
-     * Flowplayer needs jquery, it's url is specified here
-     */
-    jqueryUrl = 'https://code.jquery.com/jquery-1.12.4.min.js';
+    fpCSSUrl = 'https://cdn.flowplayer.com/releases/native/stable/style/flowplayer.css';
 
     /**
      * Flowplayer JS url
      */
-    fpUrl = 'https://releases.flowplayer.org/7.2.7/flowplayer.min.js';
-    // fpUrl = 'https://cdn.flowplayer.com/releases/native/stable/flowplayer.min.js';
-
-    /**
-     * Flowplayer JS Commercial Url
-     */
-    fpCommercialUrl = 'https://releases.flowplayer.org/7.2.7/commercial/flowplayer.min.js';
-
-    /**
-     * Flowplayer Audio plugin CSS
-     */
-    fpAudioCSSUrl = 'https://releases.flowplayer.org/audio/flowplayer.audio.css';
+    fpUrl = 'https://cdn.flowplayer.com/releases/native/stable/flowplayer.min.js';
 
     /**
      * Flowplayer Audio plugin
      */
-    fpAudioUrl = 'https://releases.flowplayer.org/audio/flowplayer.audio.min.js';
-    // fpAudioUrl = 'https://cdn.flowplayer.com/releases/native/stable/plugins/audio.min.js';
+    fpAudioUrl = 'https://cdn.flowplayer.com/releases/native/stable/plugins/audio.min.js';
 
     /**
      * The Flowplayer Player instance
@@ -174,20 +156,13 @@ export default class FlowPlayerProvider {
             // GENERATE URL
         }
 
-        if (options.providerOptions && typeof options.providerOptions.key === 'string') {
-            this.commercialKey = options.providerOptions.key;
+        if (options.providerOptions && typeof options.providerOptions.token === 'string') {
+            this.commercialKey = options.providerOptions.token;
         }
 
         this.ready = this.createFP(options.domNode, {
-            clip: {
-                videoId: options.videoId,
-                sources: [{
-                    type: options.mime || 'video/mp4',
-                    src: this.videoUrl
-                }]
-            },
-            audioOnly: options.audio || false,
-            ...(options.providerOptions || {}),
+            src: this.videoUrl,
+            ...(options.providerOptions || {})
         });
     }
 
@@ -196,28 +171,17 @@ export default class FlowPlayerProvider {
      * If multiple instances of this provider exists in the same page,
      * only one SDK is loaded and shared between all instances
      */
-    loadSDK(loadAudio = false) {
-        if (!global.FPSDK) {
-            const jqueryPromise = loadScript(this.jqueryUrl);
-
-            const fpPromise = loadScript(this.commercialKey ? this.fpCommercialUrl : this.fpUrl)
-                .then(() => {
-                    if (loadAudio) {
-                        return Promise.all([
-                            loadScript(this.fpAudioUrl),
-                            loadStyle(this.fpAudioCSSUrl)
-                        ]);
-                    }
-                    return Promise.resolve();
-                });
+    loadSDK() {
+        if (!global.FPSDK__new) {
+            const fpPromise = loadScript(this.fpUrl)
+                .then(() => Promise.resolve());
 
             const fpCSSPromise = loadStyle(this.fpCSSUrl);
 
-            if (typeof window.flowplayer === 'function') {
-                global.FPSDK = Promise.resolve(window.flowplayer);
+            if (typeof window.flowplayer__new === 'function') {
+                global.FPSDK__new = Promise.resolve(window.flowplayer__new);
             } else {
-                global.FPSDK = Promise.all([
-                    jqueryPromise,
+                global.FPSDK__new = Promise.all([
                     fpPromise,
                     fpCSSPromise,
                 ])
@@ -228,7 +192,7 @@ export default class FlowPlayerProvider {
             }
         }
 
-        return global.FPSDK;
+        return global.FPSDK__new;
     }
 
     /**
@@ -239,7 +203,8 @@ export default class FlowPlayerProvider {
      */
     createFP(domNode, options) {
         return new Promise((resolve, reject) => {
-            this.loadSDK(options.audioOnly).then(FP => {
+            this.loadSDK().then(FP => {
+                console.log(FP);
                 if (typeof FP === 'function') {
                     domNode = getDomNode(domNode);
                     const divElement = document.createElement('div');

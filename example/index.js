@@ -9,10 +9,30 @@ window.audioP = VideoPlayer.createPlayer({
     domNode: '#audioOnly',
     provider: 'flowplayer',
     videoId: 'DD990047297',
-    url: 'https://kidz.docomodigital.com/ota/stream/f783d7c7-9615-403b-8fbf-b767c724545f',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4',
     mime: 'audio/mpeg',
-    audio: true,
+    audio: false,
     providerOptions: {
+        autoplay: true,
+        poster: 'https://s.motime.com/l/images/abs/1024x760/cropin/mnt/alfresco_content_prod/contentstore/2015/5/11/15/39/d525d05c-ec72-488f-8f4b-f01bca3a2105.jpg'
+    },
+    events: {
+        play: cb('play'),
+        pause: cb('pause'),
+        playbackProgress25: cb('playback25')
+    }
+});
+
+// New version
+window.newFP = VideoPlayer.createPlayer({
+    domNode: '#newVersion',
+    provider: 'newflowplayer',
+    videoId: 'DD990047298',
+    url: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    mime: 'audio/mpeg',
+    audio: false,
+    providerOptions: {
+        token: 'TOKEN',
         autoplay: true,
         poster: 'https://s.motime.com/l/images/abs/1024x760/cropin/mnt/alfresco_content_prod/contentstore/2015/5/11/15/39/d525d05c-ec72-488f-8f4b-f01bca3a2105.jpg'
     },
