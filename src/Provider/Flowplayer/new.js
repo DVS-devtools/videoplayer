@@ -23,12 +23,14 @@ import global from '../../global';
     for all the player commands, please refer to: https://flowplayer.com/help/developers/flowplayer-7/api
 */
 
+// const dbg = (msg) => console.log('DEBUG', msg);
+
 const eventsNameMapping = {
     end: 'finish',
     playbackProgress: 'progress',
     loadProgress: 'buffer',
     setVolume: 'volume',
-    play: 'resume',
+    play: 'playing',
 };
 
 const eventsToIgnore = [
@@ -178,8 +180,8 @@ export default class FlowPlayerProvider {
 
             const fpCSSPromise = loadStyle(this.fpCSSUrl);
 
-            if (typeof window.flowplayer__new === 'function') {
-                global.FPSDK__new = Promise.resolve(window.flowplayer__new);
+            if (typeof window.flowplayer === 'function') {
+                global.FPSDK__new = Promise.resolve(window.flowplayer);
             } else {
                 global.FPSDK__new = Promise.all([
                     fpPromise,
@@ -204,7 +206,6 @@ export default class FlowPlayerProvider {
     createFP(domNode, options) {
         return new Promise((resolve, reject) => {
             this.loadSDK().then(FP => {
-                console.log(FP);
                 if (typeof FP === 'function') {
                     domNode = getDomNode(domNode);
                     const divElement = document.createElement('div');
@@ -214,9 +215,11 @@ export default class FlowPlayerProvider {
 
                     this.domNodeId = divElement.id;
                     this.fpPlayer = FP(divElement, options);
-                    this.fpPlayer.on('ready', () => resolve());
 
                     this.registerDefaultListeners();
+                    this.ready = Promise.resolve();
+
+                    return resolve();
                 } else {
                     throw new Error('Unable to load flowplayer');
                 }
@@ -258,7 +261,7 @@ export default class FlowPlayerProvider {
      * if yes, fire the playbackProgress% event
      */
     onPercentage(percentage) {
-        const { duration, time } = this.fpPlayer.video;
+        const { duration, time } = this.fpPlayer;
 
         if (Math.floor((duration / 100) * percentage) === Math.floor(time)) {
             if (!this.timeupdatePercentages[percentage]) {
@@ -457,7 +460,7 @@ export default class FlowPlayerProvider {
      */
     forward(seconds) {
         return this.ready.then(() => {
-            this.fpPlayer.seek(this.fpPlayer.video.time + seconds);
+            this.fpPlayer.seek(this.fpPlayer.time + seconds);
         });
     }
 
@@ -466,7 +469,7 @@ export default class FlowPlayerProvider {
      */
     rewind(seconds) {
         return this.ready.then(() => {
-            this.fpPlayer.seek(this.fpPlayer.video.time - seconds);
+            this.fpPlayer.seek(this.fpPlayer.time - seconds);
         });
     }
 
