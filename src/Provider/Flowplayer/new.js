@@ -140,14 +140,16 @@ export default class FlowPlayerProvider {
      * Get video muted status
      */
     get isMuted() {
-        return this.ready.then(() => this.fpPlayer.muted);
+        // FIXME: this.ready is a stale pending proise
+        return this.fpPlayer.muted;
     }
 
     /**
      * Get video fullscreen status
      */
     get isFullScreen() {
-        return this.ready.then(() => this.fpPlayer.isFullscreen);
+        // FIXME: this.ready is a stale pending proise
+        return this.fpPlayer.in_fullscreen;
     }
 
     constructor(options, id) {
@@ -405,7 +407,7 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, send play command
      */
     play() {
-        return this.ready.then(() => { this.fpPlayer.resume(); });
+        return this.ready.then(() => { this.fpPlayer.play(); });
     }
 
     /**
@@ -419,7 +421,13 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, send togglePlay command
      */
     togglePlay() {
-        return this.ready.then(() => { this.fpPlayer.toggle(); });
+        return this.ready.then(() => {
+            if (this.fpPlayer.paused == false) {
+                this.fpPlayer.pause();
+            } else {
+                this.fpPlayer.play();
+            }
+        });
     }
 
     /**
@@ -437,28 +445,30 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, send mute command
      */
     mute() {
-        return this.ready.then(() => { this.fpPlayer.mute(true); });
+        return this.ready.then(() => { this.fpPlayer.muted = true; });
     }
 
     /**
      * When Flowplayer Player is ready, send unmute command
      */
     unmute() {
-        return this.ready.then(() => { this.fpPlayer.mute(false); });
+        return this.ready.then(() => { this.fpPlayer.muted = false; });
     }
 
     /**
      * When Flowplayer Player is ready, send togglemute command
      */
     toggleMute() {
-        return this.ready.then(() => { this.fpPlayer.mute(); });
+        return this.ready.then(() => { this.fpPlayer.muted = !this.fpPlayer.muted; });
     }
 
     /**
      * When Flowplayer Player is ready, send togglefullscreen command
      */
     toggleFullScreen() {
-        return this.ready.then(() => { this.fpPlayer.fullscreen(); });
+        return this.ready.then(() => {
+            this.fpPlayer.toggleFullScreen()
+        });
     }
 
     /**
@@ -466,10 +476,10 @@ export default class FlowPlayerProvider {
      */
     setVolume(volumeLevel) {
         if (volumeLevel > 1) {
+            this.fpPlayer.muted = false;
             volumeLevel /= 100;
         }
-
-        return this.ready.then(() => this.fpPlayer.volume(volumeLevel));
+        return this.ready.then(() => this.fpPlayer.volume = volumeLevel);
     }
 
     /**
@@ -477,7 +487,7 @@ export default class FlowPlayerProvider {
      */
     forward(seconds) {
         return this.ready.then(() => {
-            this.fpPlayer.seek(this.fpPlayer.time + seconds);
+            this.fpPlayer.currentTime = this.fpPlayer.currentTime + seconds;
         });
     }
 
@@ -486,7 +496,7 @@ export default class FlowPlayerProvider {
      */
     rewind(seconds) {
         return this.ready.then(() => {
-            this.fpPlayer.seek(this.fpPlayer.time - seconds);
+            this.fpPlayer.currentTime = this.fpPlayer.currentTime - seconds;
         });
     }
 
@@ -494,7 +504,7 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, set the current time to a specified time (in seconds)
      */
     seek(seconds) {
-        return this.ready.then(() => { this.fpPlayer.seek(seconds); });
+        return this.ready.then(() => { this.fpPlayer.currentTime = seconds; });
     }
 
     /**
