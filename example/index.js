@@ -12,7 +12,7 @@ window.FPlayer = VideoPlayer.createPlayer({
     mime: 'audio/mpeg',
     audio: false,
     providerOptions: {
-        token: 'TOKEN',
+        token: 'eyJraWQiOiJqNFJjN3QzeEZpTUsiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJjIjoie1wiYWNsXCI6NixcImlkXCI6XCJqNFJjN3QzeEZpTUtcIn0iLCJpc3MiOiJGbG93cGxheWVyIn0.7X2ag-N3b1kAtTFmpwKdu8BzZ7PT5wXjvFIQKfYw226DdZq93TgYbMcOuR36vFJ6qzilRe2OqvZppZsu4glW8A',
     },
     events: {
         play: cb('play'),
