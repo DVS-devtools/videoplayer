@@ -37,12 +37,15 @@ window.newFP = VideoPlayer.createPlayer({
     events: {
         play: cb('play'),
         pause: cb('pause'),
-        playbackProgress25: cb('playback25')
+        playbackProgress25: cb('playback25'),
+        playbackProgress50: cb('playback50'),
+        playbackProgress75: cb('playback75'),
     }
 })
 
 window.newFP.player.ready.then(() => {
-  let ppp = window.newFP.player.fpPlayer
+    // get a reference to the <video> tag
+    let ppp = window.newFP.player.fpPlayer;
 })
 
 window.toAll = (command) => {

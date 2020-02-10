@@ -127,6 +127,8 @@ export default class FlowPlayerProvider {
     */
     isPlayed = false;
 
+    relevantTimePercentages = [25, 50, 75];
+
     /**
      * Return all the registered internalListeners grouped by their event
      */
@@ -205,6 +207,7 @@ export default class FlowPlayerProvider {
      */
     createFP(domNode, options) {
         return new Promise((resolve, reject) => {
+            // loads the js bundle
             this.loadSDK().then(FP => {
                 if (typeof FP === 'function') {
                     domNode = getDomNode(domNode);
@@ -219,10 +222,22 @@ export default class FlowPlayerProvider {
                     this.registerDefaultListeners();
                     this.ready = Promise.resolve();
 
-                    return resolve();
-                } else {
-                    throw new Error('Unable to load flowplayer');
+                    this.fpPlayer.addEventListener('timeupdate', () => {
+                        const { duration, currentTime } = this.fpPlayer;
+                        const keys = Object.keys(this.timeupdatePercentages);
+                        keys.forEach(percentage => {
+                            if (
+                                Math.floor((duration / 100)
+                                * percentage) === Math.floor(currentTime)) {
+                                if (!this.timeupdatePercentages[percentage]) {
+                                    this.timeupdatePercentages[percentage] = true;
+                                    this.fireEvent(`playbackProgress${percentage}`);
+                                }
+                            }
+                        });
+                    }, false);
                 }
+                return resolve();
             }).catch(err => reject(err));
         });
     }
@@ -261,16 +276,18 @@ export default class FlowPlayerProvider {
      * if yes, fire the playbackProgress% event
      */
     onPercentage(percentage) {
-        const { duration, time } = this.fpPlayer;
+        this.timeupdatePercentages[percentage] = false;
+    }
 
-        if (Math.floor((duration / 100) * percentage) === Math.floor(time)) {
-            if (!this.timeupdatePercentages[percentage]) {
-                this.timeupdatePercentages[percentage] = true;
-                this.fireEvent(`playbackProgress${percentage}`);
-            }
-        } else {
-            this.timeupdatePercentages[percentage] = false;
-        }
+    timeUpdateCallback() {
+        this.ready.then(() => {
+            const { duration, currentTime } = this.fpPlayer;
+            this.relevantTimePercentages.forEach(percentage => {
+                if (Math.floor((duration / 100) * percentage) === Math.floor(currentTime)) {
+                    this.fireEvent(`playbackProgress${percentage}`);
+                }
+            });
+        });
     }
 
     /**
@@ -484,6 +501,6 @@ export default class FlowPlayerProvider {
      * start download flow
      */
     download() {
-        // to implement;
+        // to be implemented
     }
 }
