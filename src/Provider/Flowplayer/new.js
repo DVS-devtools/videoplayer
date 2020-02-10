@@ -223,21 +223,6 @@ export default class FlowPlayerProvider {
 
                     this.registerDefaultListeners();
                     this.ready = Promise.resolve();
-
-                    this.fpPlayer.addEventListener('timeupdate', () => {
-                        const { duration, currentTime } = this.fpPlayer;
-                        const keys = Object.keys(this.timeupdatePercentages);
-                        keys.forEach(percentage => {
-                            if (
-                                Math.floor((duration / 100)
-                                * percentage) === Math.floor(currentTime)) {
-                                if (!this.timeupdatePercentages[percentage]) {
-                                    this.timeupdatePercentages[percentage] = true;
-                                    this.fireEvent(`playbackProgress${percentage}`);
-                                }
-                            }
-                        });
-                    }, false);
                 }
                 return resolve();
             }).catch(err => reject(err));
@@ -308,12 +293,22 @@ export default class FlowPlayerProvider {
      * Register default internalListeners on Player init
      */
     registerDefaultListeners() {
-        this.fpPlayer.on('progress', () => {
-            this.onPercentage(25);
-            this.onPercentage(50);
-            this.onPercentage(75);
-        });
-
+        this.ready.then(() => {
+            this.fpPlayer.addEventListener('timeupdate', () => {
+                const { duration, currentTime } = this.fpPlayer;
+                const keys = Object.keys(this.timeupdatePercentages);
+                keys.forEach(percentage => {
+                    if (
+                        Math.floor((duration / 100)
+                        * percentage) === Math.floor(currentTime)) {
+                        if (!this.timeupdatePercentages[percentage]) {
+                            this.timeupdatePercentages[percentage] = true;
+                            this.fireEvent(`playbackProgress${percentage}`);
+                        }
+                    }
+                });
+            }, false);
+        })
         this.fpPlayer.on('resume', this.fireFirstPlay);
     }
 

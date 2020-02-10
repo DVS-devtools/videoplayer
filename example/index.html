@@ -1,35 +1,101 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Videoplayer</title>
-</head>
-<body>
-    <table width="100%">
-        <tr>
-            <td width="50%">
-                <h1>Videoplayer</h1>
-                <div id="audioOnly"></div>
-            </td>
-            <td>
-                <h1>Latest</h1>
-                <div id="newVersion"></div>
-            </td>
-        </tr>
-    </table>
-    <button onclick="window.newFP.player.rewind(2);">rewind 2s</button>
-    <button onclick="window.newFP.player.forward(2);">forward 2s</button>
-    <button onclick="window.newFP.player.seek(2);">seek at 00:02</button>
-    <button onclick="window.newFP.player.toggleFullScreen();">toggle full screen</button>
-    <button onclick="window.newFP.player.mute();">mute</button>
-    <button onclick="window.newFP.player.unmute();">unmute</button>
-    <button onclick="window.newFP.player.toggleMute();">toggle mute</button>
-    <button onclick="window.newFP.player.pause();">pause</button>
-    <button onclick="window.newFP.player.play();">play</button>
-    <button onclick="window.newFP.player.togglePlay();">toggle play</button>
-    <button onclick="window.newFP.player.setVolume(0.5);">volume to 50%</button>
-    <button onclick="console.log(window.newFP.player.isMuted)">is muted?</button>
-    <button onclick="console.log(window.newFP.player.isFullScreen)">is full screen?</button>
-</body>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+          'Segoe UI Symbol';
+        color: rgb(255, 255, 255);
+        background-color: rgb(30, 30, 30);
+      }
+
+      button {
+        color: white;
+        background-color: rgb(10, 132, 255);
+        border: none;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 15px;
+        cursor: pointer;
+        margin: 4px;
+        font-weight: 600;
+      }
+
+      button:hover {
+        background-color: rgb(95, 175, 255);;
+      }
+
+      .demo-container {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-evenly;
+          padding-left: 100px;
+          padding-right: 100px;
+      }
+
+      .controls {
+          width: 50%;
+      }
+
+      .video-frame {
+          width: 50%;
+      }
+
+      @media only screen and (max-width: 800px) {
+        .demo-container {
+          display: flex;
+          flex-direction: column-reverse;
+          justify-content: space-evenly;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .controls {
+            width: 100%;
+        }
+
+        .video-frame {
+            width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-container">
+      <div class="controls">
+        <h1>Controls</h1>
+        <h3>Playback</h3>
+        <button onclick="window.FPlayer.player.play();">Play</button>
+        <button onclick="window.FPlayer.player.pause();">Pause</button>
+        <button onclick="window.FPlayer.player.togglePlay();">Toggle play</button>
+        <button onclick="window.FPlayer.player.seek(2);">Seek 00:02</button>
+        <button onclick="window.FPlayer.player.rewind(2);">Rewind 2s</button>
+        <button onclick="window.FPlayer.player.forward(2);">Forward 2s</button>
+        <button onclick="window.FPlayer.player.toggleFullScreen();">
+          Toggle Fullscreen
+        </button>
+        <h3>Audio</h3>
+        <button onclick="window.FPlayer.player.setVolume(0.5);">
+          Set Volume to 50%
+        </button>
+        <button onclick="window.FPlayer.player.mute();">Mute</button>
+        <button onclick="window.FPlayer.player.unmute();">Unmute</button>
+        <button onclick="window.FPlayer.player.toggleMute();">Toggle mute</button>
+        <h3>Properties</h3>
+        <button onclick="console.log(window.FPlayer.player.isMuted)">
+          Is Muted?
+        </button>
+        <button onclick="console.log(window.FPlayer.player.isFullScreen)">
+          Is Fullscreen?
+        </button>
+      </div>
+      <div class="video-frame">
+        <h1>Video Player</h1>
+        <div id="newVersion"></div>
+      </div>
+    </div>
+  </body>
 </html>
