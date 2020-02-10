@@ -1,6 +1,7 @@
 import TestProvider from '../Provider/testProvider';
 import DailymotionProvider from '../Provider/Dailymotion';
 import FlowplayerProvider from '../Provider/Flowplayer';
+import NewFlowplayerProvider from '../Provider/Flowplayer/new';
 import VimeoProvider from '../Provider/Vimeo';
 import YoutubeProvider from '../Provider/Youtube';
 import IframeProvider from '../Provider/Iframe';
@@ -82,6 +83,9 @@ class Player {
             break;
         case 'flowplayer':
             this.player = new FlowplayerProvider(options, id);
+            break;
+        case 'newflowplayer':
+            this.player = new NewFlowplayerProvider(options, id);
             break;
         case 'vimeo':
             this.player = new VimeoProvider(options, id);

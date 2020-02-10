@@ -23,12 +23,14 @@ import global from '../../global';
     for all the player commands, please refer to: https://flowplayer.com/help/developers/flowplayer-7/api
 */
 
+// const dbg = (msg) => console.log('DEBUG', msg);
+
 const eventsNameMapping = {
     end: 'finish',
     playbackProgress: 'progress',
     loadProgress: 'buffer',
     setVolume: 'volume',
-    play: 'resume',
+    play: 'playing',
 };
 
 const eventsToIgnore = [
@@ -88,35 +90,17 @@ export default class FlowPlayerProvider {
     /**
      * CSS url of flowplayer, can also be custom, must be implemented
      */
-    fpCSSUrl = 'https://releases.flowplayer.org/7.2.7/skin/skin.css';
-    // fpCSSUrl = 'https://cdn.flowplayer.com/releases/native/stable/style/flowplayer.css';
-
-    /**
-     * Flowplayer needs jquery, it's url is specified here
-     */
-    jqueryUrl = 'https://code.jquery.com/jquery-1.12.4.min.js';
+    fpCSSUrl = 'https://cdn.flowplayer.com/releases/native/stable/style/flowplayer.css';
 
     /**
      * Flowplayer JS url
      */
-    fpUrl = 'https://releases.flowplayer.org/7.2.7/flowplayer.min.js';
-    // fpUrl = 'https://cdn.flowplayer.com/releases/native/stable/flowplayer.min.js';
-
-    /**
-     * Flowplayer JS Commercial Url
-     */
-    fpCommercialUrl = 'https://releases.flowplayer.org/7.2.7/commercial/flowplayer.min.js';
-
-    /**
-     * Flowplayer Audio plugin CSS
-     */
-    fpAudioCSSUrl = 'https://releases.flowplayer.org/audio/flowplayer.audio.css';
+    fpUrl = 'https://cdn.flowplayer.com/releases/native/stable/flowplayer.min.js';
 
     /**
      * Flowplayer Audio plugin
      */
-    fpAudioUrl = 'https://releases.flowplayer.org/audio/flowplayer.audio.min.js';
-    // fpAudioUrl = 'https://cdn.flowplayer.com/releases/native/stable/plugins/audio.min.js';
+    fpAudioUrl = 'https://cdn.flowplayer.com/releases/native/stable/plugins/audio.min.js';
 
     /**
      * The Flowplayer Player instance
@@ -143,6 +127,8 @@ export default class FlowPlayerProvider {
     */
     isPlayed = false;
 
+    relevantTimePercentages = [25, 50, 75];
+
     /**
      * Return all the registered internalListeners grouped by their event
      */
@@ -154,14 +140,16 @@ export default class FlowPlayerProvider {
      * Get video muted status
      */
     get isMuted() {
-        return this.ready.then(() => this.fpPlayer.muted);
+        // FIXME: this.ready is a stale pending proise
+        return this.fpPlayer.muted;
     }
 
     /**
      * Get video fullscreen status
      */
     get isFullScreen() {
-        return this.ready.then(() => this.fpPlayer.isFullscreen);
+        // FIXME: this.ready is a stale pending proise
+        return this.fpPlayer.in_fullscreen;
     }
 
     constructor(options, id) {
@@ -174,20 +162,13 @@ export default class FlowPlayerProvider {
             // GENERATE URL
         }
 
-        if (options.providerOptions && typeof options.providerOptions.key === 'string') {
-            this.commercialKey = options.providerOptions.key;
+        if (options.providerOptions && typeof options.providerOptions.token === 'string') {
+            this.commercialKey = options.providerOptions.token;
         }
 
         this.ready = this.createFP(options.domNode, {
-            clip: {
-                videoId: options.videoId,
-                sources: [{
-                    type: options.mime || 'video/mp4',
-                    src: this.videoUrl
-                }]
-            },
-            audioOnly: options.audio || false,
-            ...(options.providerOptions || {}),
+            src: this.videoUrl,
+            ...(options.providerOptions || {})
         });
     }
 
@@ -196,28 +177,17 @@ export default class FlowPlayerProvider {
      * If multiple instances of this provider exists in the same page,
      * only one SDK is loaded and shared between all instances
      */
-    loadSDK(loadAudio = false) {
-        if (!global.FPSDK) {
-            const jqueryPromise = loadScript(this.jqueryUrl);
-
-            const fpPromise = loadScript(this.commercialKey ? this.fpCommercialUrl : this.fpUrl)
-                .then(() => {
-                    if (loadAudio) {
-                        return Promise.all([
-                            loadScript(this.fpAudioUrl),
-                            loadStyle(this.fpAudioCSSUrl)
-                        ]);
-                    }
-                    return Promise.resolve();
-                });
+    loadSDK() {
+        if (!global.FPSDK__new) {
+            const fpPromise = loadScript(this.fpUrl)
+                .then(() => Promise.resolve());
 
             const fpCSSPromise = loadStyle(this.fpCSSUrl);
 
             if (typeof window.flowplayer === 'function') {
-                global.FPSDK = Promise.resolve(window.flowplayer);
+                global.FPSDK__new = Promise.resolve(window.flowplayer);
             } else {
-                global.FPSDK = Promise.all([
-                    jqueryPromise,
+                global.FPSDK__new = Promise.all([
                     fpPromise,
                     fpCSSPromise,
                 ])
@@ -228,7 +198,7 @@ export default class FlowPlayerProvider {
             }
         }
 
-        return global.FPSDK;
+        return global.FPSDK__new;
     }
 
     /**
@@ -239,7 +209,8 @@ export default class FlowPlayerProvider {
      */
     createFP(domNode, options) {
         return new Promise((resolve, reject) => {
-            this.loadSDK(options.audioOnly).then(FP => {
+            // loads the js bundle
+            this.loadSDK().then(FP => {
                 if (typeof FP === 'function') {
                     domNode = getDomNode(domNode);
                     const divElement = document.createElement('div');
@@ -249,12 +220,11 @@ export default class FlowPlayerProvider {
 
                     this.domNodeId = divElement.id;
                     this.fpPlayer = FP(divElement, options);
-                    this.fpPlayer.on('ready', () => resolve());
 
                     this.registerDefaultListeners();
-                } else {
-                    throw new Error('Unable to load flowplayer');
+                    this.ready = Promise.resolve();
                 }
+                return resolve();
             }).catch(err => reject(err));
         });
     }
@@ -293,16 +263,18 @@ export default class FlowPlayerProvider {
      * if yes, fire the playbackProgress% event
      */
     onPercentage(percentage) {
-        const { duration, time } = this.fpPlayer.video;
+        this.timeupdatePercentages[percentage] = false;
+    }
 
-        if (Math.floor((duration / 100) * percentage) === Math.floor(time)) {
-            if (!this.timeupdatePercentages[percentage]) {
-                this.timeupdatePercentages[percentage] = true;
-                this.fireEvent(`playbackProgress${percentage}`);
-            }
-        } else {
-            this.timeupdatePercentages[percentage] = false;
-        }
+    timeUpdateCallback() {
+        this.ready.then(() => {
+            const { duration, currentTime } = this.fpPlayer;
+            this.relevantTimePercentages.forEach(percentage => {
+                if (Math.floor((duration / 100) * percentage) === Math.floor(currentTime)) {
+                    this.fireEvent(`playbackProgress${percentage}`);
+                }
+            });
+        });
     }
 
     /**
@@ -321,12 +293,22 @@ export default class FlowPlayerProvider {
      * Register default internalListeners on Player init
      */
     registerDefaultListeners() {
-        this.fpPlayer.on('progress', () => {
-            this.onPercentage(25);
-            this.onPercentage(50);
-            this.onPercentage(75);
+        this.ready.then(() => {
+            this.fpPlayer.addEventListener('timeupdate', () => {
+                const { duration, currentTime } = this.fpPlayer;
+                const keys = Object.keys(this.timeupdatePercentages);
+                keys.forEach(percentage => {
+                    if (
+                        Math.floor((duration / 100)
+                        * percentage) === Math.floor(currentTime)) {
+                        if (!this.timeupdatePercentages[percentage]) {
+                            this.timeupdatePercentages[percentage] = true;
+                            this.fireEvent(`playbackProgress${percentage}`);
+                        }
+                    }
+                });
+            }, false);
         });
-
         this.fpPlayer.on('resume', this.fireFirstPlay);
     }
 
@@ -420,7 +402,7 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, send play command
      */
     play() {
-        return this.ready.then(() => { this.fpPlayer.resume(); });
+        return this.ready.then(() => { this.fpPlayer.play(); });
     }
 
     /**
@@ -434,7 +416,13 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, send togglePlay command
      */
     togglePlay() {
-        return this.ready.then(() => { this.fpPlayer.toggle(); });
+        return this.ready.then(() => {
+            if (this.fpPlayer.paused === false) {
+                this.fpPlayer.pause();
+            } else {
+                this.fpPlayer.play();
+            }
+        });
     }
 
     /**
@@ -452,28 +440,28 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, send mute command
      */
     mute() {
-        return this.ready.then(() => { this.fpPlayer.mute(true); });
+        return this.ready.then(() => { this.fpPlayer.muted = true; });
     }
 
     /**
      * When Flowplayer Player is ready, send unmute command
      */
     unmute() {
-        return this.ready.then(() => { this.fpPlayer.mute(false); });
+        return this.ready.then(() => { this.fpPlayer.muted = false; });
     }
 
     /**
      * When Flowplayer Player is ready, send togglemute command
      */
     toggleMute() {
-        return this.ready.then(() => { this.fpPlayer.mute(); });
+        return this.ready.then(() => { this.fpPlayer.muted = !this.fpPlayer.muted; });
     }
 
     /**
      * When Flowplayer Player is ready, send togglefullscreen command
      */
     toggleFullScreen() {
-        return this.ready.then(() => { this.fpPlayer.fullscreen(); });
+        return this.ready.then(() => this.fpPlayer.toggleFullScreen());
     }
 
     /**
@@ -481,10 +469,10 @@ export default class FlowPlayerProvider {
      */
     setVolume(volumeLevel) {
         if (volumeLevel > 1) {
+            this.fpPlayer.muted = false;
             volumeLevel /= 100;
         }
-
-        return this.ready.then(() => this.fpPlayer.volume(volumeLevel));
+        return this.ready.then(() => { this.fpPlayer.volume = volumeLevel; });
     }
 
     /**
@@ -492,7 +480,7 @@ export default class FlowPlayerProvider {
      */
     forward(seconds) {
         return this.ready.then(() => {
-            this.fpPlayer.seek(this.fpPlayer.video.time + seconds);
+            this.fpPlayer.currentTime += seconds;
         });
     }
 
@@ -501,7 +489,7 @@ export default class FlowPlayerProvider {
      */
     rewind(seconds) {
         return this.ready.then(() => {
-            this.fpPlayer.seek(this.fpPlayer.video.time - seconds);
+            this.fpPlayer.currentTime -= seconds;
         });
     }
 
@@ -509,13 +497,13 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, set the current time to a specified time (in seconds)
      */
     seek(seconds) {
-        return this.ready.then(() => { this.fpPlayer.seek(seconds); });
+        return this.ready.then(() => { this.fpPlayer.currentTime = seconds; });
     }
 
     /**
      * start download flow
      */
     download() {
-        // to implement;
+        // to be implemented
     }
 }
