@@ -12,7 +12,7 @@ window.FPlayer = VideoPlayer.createPlayer({
     mime: 'audio/mpeg',
     audio: false,
     providerOptions: {
-        token: '<YOUR_TOKEN_HERE>',
+        token: 'TOKEN',
     },
     events: {
         play: cb('play'),

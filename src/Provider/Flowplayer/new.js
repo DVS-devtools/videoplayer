@@ -308,7 +308,7 @@ export default class FlowPlayerProvider {
                     }
                 });
             }, false);
-        })
+        });
         this.fpPlayer.on('resume', this.fireFirstPlay);
     }
 
@@ -417,7 +417,7 @@ export default class FlowPlayerProvider {
      */
     togglePlay() {
         return this.ready.then(() => {
-            if (this.fpPlayer.paused == false) {
+            if (this.fpPlayer.paused === false) {
                 this.fpPlayer.pause();
             } else {
                 this.fpPlayer.play();
@@ -461,9 +461,7 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, send togglefullscreen command
      */
     toggleFullScreen() {
-        return this.ready.then(() => {
-            this.fpPlayer.toggleFullScreen()
-        });
+        return this.ready.then(() => this.fpPlayer.toggleFullScreen());
     }
 
     /**
@@ -474,7 +472,7 @@ export default class FlowPlayerProvider {
             this.fpPlayer.muted = false;
             volumeLevel /= 100;
         }
-        return this.ready.then(() => this.fpPlayer.volume = volumeLevel);
+        return this.ready.then(() => { this.fpPlayer.volume = volumeLevel; });
     }
 
     /**
@@ -482,7 +480,7 @@ export default class FlowPlayerProvider {
      */
     forward(seconds) {
         return this.ready.then(() => {
-            this.fpPlayer.currentTime = this.fpPlayer.currentTime + seconds;
+            this.fpPlayer.currentTime += seconds;
         });
     }
 
@@ -491,7 +489,7 @@ export default class FlowPlayerProvider {
      */
     rewind(seconds) {
         return this.ready.then(() => {
-            this.fpPlayer.currentTime = this.fpPlayer.currentTime - seconds;
+            this.fpPlayer.currentTime -= seconds;
         });
     }
 
