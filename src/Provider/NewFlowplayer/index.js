@@ -166,10 +166,20 @@ export default class FlowPlayerProvider {
             this.commercialKey = options.providerOptions.token;
         }
 
-        this.ready = this.createFP(options.domNode, {
-            src: this.videoUrl,
-            ...(options.providerOptions || {})
-        });
+        if (typeof options.mime === 'string') {
+            this.ready = this.createFP(options.domNode, {
+                src: {
+                    src: this.videoUrl,
+                    type: options.mime
+                },
+                ...(options.providerOptions || {})
+            });
+        } else {
+            this.ready = this.createFP(options.domNode, {
+                src: this.videoUrl,
+                ...(options.providerOptions || {})
+            });
+        }
     }
 
     /**

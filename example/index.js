@@ -9,7 +9,7 @@ window.FPlayer = VideoPlayer.createPlayer({
     provider: 'newflowplayer',
     videoId: 'DD990047298',
     url: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    mime: 'audio/mpeg',
+    mime: 'video/mp4',
     audio: false,
     providerOptions: {
         token: 'TOKEN',
