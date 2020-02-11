@@ -319,7 +319,7 @@ export default class FlowPlayerProvider {
                 });
             }, false);
         });
-        this.fpPlayer.on('resume', this.fireFirstPlay);
+        this.fpPlayer.on('playing', this.fireFirstPlay);
     }
 
     /**
