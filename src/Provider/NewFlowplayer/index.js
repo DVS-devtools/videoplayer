@@ -295,7 +295,7 @@ export default class FlowPlayerProvider {
             this.fireEvent('firstPlay');
             this.isPlayed = true;
 
-            this.off('resume', this.fireFirstPlay);
+            this.off('playing', this.fireFirstPlay);
         }
     };
 
@@ -343,7 +343,7 @@ export default class FlowPlayerProvider {
                     this.fpPlayer.shutdown();
                 }
             } else {
-                this.fpPlayer.on('resume', () => {
+                this.fpPlayer.on('playing', () => {
                     if (this.fpPlayer) {
                         this.fpPlayer.stop();
                         this.fpPlayer.unload();
@@ -442,7 +442,7 @@ export default class FlowPlayerProvider {
         return this.ready.then(() => {
             this.fpPlayer.stop();
             this.isPlayed = false;
-            this.fpPlayer.on('resume', this.fireFirstPlay);
+            this.fpPlayer.on('playing', this.fireFirstPlay);
         });
     }
 

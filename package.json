@@ -26,6 +26,7 @@
     "test:coveralls": "npm run test -- --coverageReporters=text-lcov | coveralls",
     "preversion": "npm run lint && npm run test",
     "version": "npm run build && npm run doc && npm run doc:latest",
+    "prepublish": "rm -rf dist/; yarn build",
     "postversion": "git add docs/ && git commit -am \"Documentation ${npm_package_version}\" && git push --follow-tags"
   },
   "dependencies": {
