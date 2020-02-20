@@ -22,7 +22,8 @@ window.FPlayer = VideoPlayer.createPlayer({
         playbackProgress25: cb('playback25'),
         playbackProgress50: cb('playback50'),
         playbackProgress75: cb('playback75'),
-        firstPlay: cb('firstPlay')
+        firstPlay: cb('firstPlay'),
+        end: cb('end')
     }
 })
 

@@ -26,7 +26,7 @@ import global from '../../global';
 // const dbg = (msg) => console.log('DEBUG', msg);
 
 const eventsNameMapping = {
-    end: 'finish',
+    end: 'ended',
     playbackProgress: 'progress',
     loadProgress: 'buffer',
     setVolume: 'volume',
