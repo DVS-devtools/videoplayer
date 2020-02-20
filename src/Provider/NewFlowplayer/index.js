@@ -127,6 +127,11 @@ export default class FlowPlayerProvider {
     */
     isPlayed = false;
 
+    /**
+     * Used for false-play event fired on seek
+     */
+    isSeeking = false;
+
     relevantTimePercentages = [25, 50, 75];
 
     /**
@@ -320,6 +325,14 @@ export default class FlowPlayerProvider {
             }, false);
         });
         this.fpPlayer.on('playing', this.fireFirstPlay);
+        this.fpPlayer.on('seeking', () => {
+            this.isSeeking = true;
+        });
+        this.fpPlayer.addEventListener('seeked', () => {
+            setTimeout(() => {
+                this.isSeeking = false;
+            }, 1);
+        });
     }
 
     /**
@@ -376,7 +389,18 @@ export default class FlowPlayerProvider {
                 }
             }
 
-            this.internalListeners[event].unshift({ callback, once });
+            if (eventName === 'playing') {
+                this.internalListeners[event].unshift({
+                    callback: () => {
+                        if (!this.isSeeking) {
+                            callback();
+                        }
+                    },
+                    once
+                });
+            } else {
+                this.internalListeners[event].unshift({ callback, once });
+            }
         });
     }
 
@@ -412,14 +436,14 @@ export default class FlowPlayerProvider {
      * When Flowplayer Player is ready, send play command
      */
     play() {
-        return this.ready.then(() => { this.fpPlayer.play(); });
+        return this.ready.then(() => this.fpPlayer.play());
     }
 
     /**
      * When Flowplayer Player is ready, send pause command
      */
     pause() {
-        return this.ready.then(() => { this.fpPlayer.pause(); });
+        return this.ready.then(() => this.fpPlayer.pause());
     }
 
     /**
