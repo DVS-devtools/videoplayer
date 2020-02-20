@@ -146,7 +146,7 @@ export default class FlowPlayerProvider {
      */
     get isMuted() {
         // FIXME: this.ready is a stale pending proise
-        return this.fpPlayer.muted;
+        return Promise.resolve(this.fpPlayer.muted || false);
     }
 
     /**
@@ -154,7 +154,7 @@ export default class FlowPlayerProvider {
      */
     get isFullScreen() {
         // FIXME: this.ready is a stale pending proise
-        return this.fpPlayer.in_fullscreen;
+        return Promise.resolve(this.fpPlayer.in_fullscreen || false);
     }
 
     constructor(options, id) {
