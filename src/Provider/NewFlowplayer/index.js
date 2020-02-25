@@ -171,17 +171,26 @@ export default class FlowPlayerProvider {
             this.commercialKey = options.providerOptions.token;
         }
 
+        let pluginsList = [];
+        if (options.audio && options.audio === true) {
+            pluginsList = ['audio'];
+        }
+
         if (typeof options.mime === 'string') {
             this.ready = this.createFP(options.domNode, {
                 src: {
                     src: this.videoUrl,
-                    type: options.mime
+                    type: options.mime,
                 },
+                plugins: pluginsList,
+                audio: options.audio || false,
                 ...(options.providerOptions || {})
             });
         } else {
             this.ready = this.createFP(options.domNode, {
                 src: this.videoUrl,
+                plugins: pluginsList,
+                audio: options.audio || false,
                 ...(options.providerOptions || {})
             });
         }
@@ -195,7 +204,11 @@ export default class FlowPlayerProvider {
     loadSDK() {
         if (!global.FPSDK__new) {
             const fpPromise = loadScript(this.fpUrl)
-                .then(() => Promise.resolve());
+                .then(() => {
+                    Promise.all([
+                        loadScript(this.fpAudioUrl)
+                    ]);
+                });
 
             const fpCSSPromise = loadStyle(this.fpCSSUrl);
 
@@ -235,6 +248,10 @@ export default class FlowPlayerProvider {
 
                     this.domNodeId = divElement.id;
                     this.fpPlayer = FP(divElement, options);
+                    if (options.audio) {
+                        divElement.classList.add('show-controls-only');
+                        divElement.classList.add('is-audio-player');
+                    }
 
                     this.registerDefaultListeners();
                     this.ready = Promise.resolve();
