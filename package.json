@@ -1,6 +1,6 @@
 {
   "name": "@docomodigital/videoplayer",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "Video player integrated with Flowplayer/YouTube/Vimeo/DailyMotion/iFrame",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
